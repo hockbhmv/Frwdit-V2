@@ -31,7 +31,7 @@ async def pub_(bot, message):
         async with lock:
             try:
                 pling=0
-                async for message in bot.USER.search_messages(chat_id=FROM,offset=int(SKIP),limit=int(LIMIT),filter=FILTER):
+                async for message in bot.iter_messages(chat_id=FROM, limit=int(LIMIT), offset=int(SKIP)):
                     if IS_CANCELLED:
                         IS_CANCELLED = False
                         break
