@@ -4,7 +4,8 @@
 
 import os
 import sys
-import asyncio
+import asyncio 
+import logging
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message
 from pyrogram.errors import FloodWait
@@ -14,6 +15,8 @@ from translation import Translation
 FILTER = Config.FILTER_TYPE
 IS_CANCELLED = False
 lock = asyncio.Lock()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
@@ -31,7 +34,7 @@ async def pub_(bot, message):
         async with lock:
             try:
                 pling=0
-                limit = app.get_history(FROM, limit=1)
+                limit = bot.get_history(FROM, limit=1)
                 async for message in bot.iter_messages(chat_id=FROM, limit=int(limit.message_id), offset=int(SKIP)):
                     if IS_CANCELLED:
                         IS_CANCELLED = False
