@@ -34,8 +34,10 @@ async def pub_(bot, message):
         async with lock:
             try:
                 pling=0
-                limit = bot.get_history(FROM, limit=1)
-                async for message in bot.iter_messages(chat_id=FROM, limit=int(limit.message_id), offset=int(SKIP)):
+                last = bot.get_history(FROM, limit=1)
+                for i in last:
+                    limit = i.message_id
+                async for message in bot.iter_messages(chat_id=FROM, limit=int(limit), offset=int(SKIP)):
                     if IS_CANCELLED:
                         IS_CANCELLED = False
                         break
