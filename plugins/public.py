@@ -27,7 +27,7 @@ async def run(bot, message):
     if fromid.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return
-    elif not fromid.text.startswith('@'):
+    elif not fromid.text.startswith('@') and fromid.text is None:
         return await message.reply(Translation.USERNAME)
     toid = await bot.ask(message.chat.id, Translation.TO_MSG)
     if toid.text.startswith('/'):
