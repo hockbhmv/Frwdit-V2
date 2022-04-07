@@ -33,58 +33,67 @@ async def pub_(bot, message):
         total_files=0
         async with lock:
             try:
-                pling=0
-                limit = LIMIT
-                async for last_msg in bot.USER.iter_history(FROM, limit=1):
-                     limit = last_msg.message_id
-                async for message in bot.iter_messages(chat_id=FROM, limit=int(limit), offset=int(SKIP)):
-                    if IS_CANCELLED:
-                        IS_CANCELLED = False
-                        break
-                    try:
-                        if message.video:
-                            file_name = message.video.file_name
-                        elif message.document:
-                            file_name = message.document.file_name
-                        elif message.audio:
-                            file_name = message.audio.file_name
-                        else:
-                            file_name = None
-                        await bot.copy_message(
-                            chat_id=TO,
-                            from_chat_id=FROM,
-                            parse_mode="md",       
-                            caption=Translation.CAPTION.format(file_name),
-                            message_id=message.message_id
-                        )
-                        total_files += 1
-                        await asyncio.sleep(1)
-                    except FloodWait as e:
-                        await asyncio.sleep(e.x)
-                        await bot.copy_message(
-                            chat_id=TO,
-                            from_chat_id=FROM,
-                            parse_mode="md",       
-                            caption=Translation.CAPTION.format(file_name),
-                            message_id=message.message_id
-                        )
-                        total_files += 1
-                        await asyncio.sleep(1)
-                    except Exception as e:
-                        print(e)
-                        pass
+              pling=0
+              fetched = 0
+              deleted = 0
+              limit = LIMIT 
+              MSG = []
+              async for last_msg in bot.USER.iter_history(FROM, limit=1):
+                limit = last_msg.message_id
+              async for message in bot.iter_messages(chat_id=FROM, limit=int(limit), offset=int(SKIP)):
+                if IS_CANCELLED:
+                   IS_CANCELLED = False
+                      break
+                   if message.empty or msg.service:
+                      deleted+=1
+                      continue 
+                    if message.video:
+                       file_name = message.video.file_name
+                    elif message.document:
+                       file_name = message.document.file_name
+                    elif message.audio:
+                       file_name = message.audio.file_name
+                    else:
+                       file_name = None 
                     pling += 1
-                    if pling == 10: 
-                        buttons = [[
-                            InlineKeyboardButton('Cancel🚫', 'terminate_frwd')
-                        ]]
-                        reply_markup = InlineKeyboardMarkup(buttons)
-                        await m.edit_text(
-                            text=f'<b><u>FORWARD STATUS</b></u>\n\n<b>Succefully forwarded file count :</b> <code>{total_files} files</code>',
-                            reply_markup=reply_markup, 
-                            parse_mode="html"
-                        )
-                        pling -= 10
+                    if pling %10 == 0: 
+                        reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
+                        await m.edit_text(text=f'<b><u>FORWARD STATUS</b></u>\n\n<b>Feched messages count: {fetched}\ndeleted messages: {deleted}\nSuccefully forwarded file count :</b> <code>{total_files} files</code>',
+                            reply_markup=reply_markup, parse_mode="html")
+                    MSG.append({"msg_id": message.message_id, "file_name": file_name})
+                    fetched+=1
+                    if len(MSG) >= 50:
+                      for msgs in MSG:
+                        pling += 1
+                        if pling % 10 == 0: 
+                           reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
+                           await m.edit_text(text=f'<b><u>FORWARD STATUS</b></u>\n\n<b>Feched messages count: {fetched}\ndeleted messages: {deleted}\nSuccefully forwarded file count :</b> <code>{total_files} files</code>',
+                                 reply_markup=reply_markup, parse_mode="html")
+                        try:
+                          await bot.copy_message(
+                            chat_id=TO,
+                            from_chat_id=FROM,
+                            parse_mode="md",       
+                            caption=Translation.CAPTION.format(msgs.get("file_name")),
+                            message_id= msgs.get("msg_id")
+                         )
+                         total_files += 1
+                         await asyncio.sleep(0.7)
+                       except FloodWait as e:
+                         await asyncio.sleep(e.x)
+                         await bot.copy_message(
+                            chat_id=TO,
+                            from_chat_id=FROM,
+                            parse_mode="md",       
+                            caption=Translation.CAPTION.format(msgs.get("file_name")),
+                            message_id=msgs.get("msg_id")
+                         )
+                         total_files += 1
+                         await asyncio.sleep(0.7)
+                       except Exception as e:
+                         print(e)
+                         pass
+                    
             except Exception as e:
                 print(e)
                 await m.edit_text(f'Error: {e}')
