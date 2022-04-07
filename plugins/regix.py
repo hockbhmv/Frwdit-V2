@@ -37,10 +37,12 @@ async def pub_(bot, message):
               pling=0
               fetched = 0
               deleted = 0
-              limit = LIMIT 
+              skip = int(SKIP)
+              TEXT = '<b><u>FORWARD STATUS</b></u>\n\nFeched messages count: `{}`\ndeleted messages: `{}`\nSuccefully forwarded file count :<code>{} files</code>\nskipped messages `{}`\nstatus : {}'
+              reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
               async for last_msg in bot.USER.iter_history(FROM, limit=1):
                 limit = last_msg.message_id
-              async for message in bot.iter_messages(chat_id=FROM, limit=int(limit), offset=int(SKIP)):
+              async for message in bot.iter_messages(chat_id=FROM, limit=int(limit), offset=skip):
                     if IS_CANCELLED:
                        IS_CANCELLED = False
                        break
@@ -57,18 +59,14 @@ async def pub_(bot, message):
                        file_name = None 
                     pling += 1
                     if pling %10 == 0: 
-                        reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
-                        await m.edit_text(text=f'<b><u>FORWARD STATUS</b></u>\n\n<b>Feched messages count: {fetched}\ndeleted messages: {deleted}\nSuccefully forwarded file count :</b> <code>{total_files} files</code>',
-                            reply_markup=reply_markup, parse_mode="html")
+                       await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "fetching messages"), reply_markup=reply_markup)
                     MSG.append({"msg_id": message.message_id, "file_name": file_name})
                     fetched+=1
-                    if len(MSG) >= 50:
+                    if len(MSG) >= 100:
                       for msgs in MSG:
                         pling += 1
                         if pling % 10 == 0: 
-                           reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
-                           await m.edit_text(text=f'<b><u>FORWARD STATUS</b></u>\n\n<b>Feched messages count: {fetched}\ndeleted messages: {deleted}\nSuccefully forwarded file count :</b> <code>{total_files} files</code>',
-                                 reply_markup=reply_markup, parse_mode="html")
+                           await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "forwarding"), reply_markup=reply_markup)
                         try:
                           await bot.copy_message(
                             chat_id=TO,
@@ -80,7 +78,9 @@ async def pub_(bot, message):
                           total_files += 1
                           await asyncio.sleep(1)
                         except FloodWait as e:
+                          await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "sleeping") + f"\n🕐 sleeping: {e.x}", reply_markup=reply_markup)
                           await asyncio.sleep(e.x)
+                          await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "forwarding"), reply_markup=reply_markup)
                           await bot.copy_message(
                             chat_id=TO,
                             from_chat_id=FROM,
