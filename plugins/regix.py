@@ -33,17 +33,17 @@ async def pub_(bot, message):
         total_files=0
         async with lock:
             try:
+              MSG = []
               pling=0
               fetched = 0
               deleted = 0
               limit = LIMIT 
-              MSG = []
               async for last_msg in bot.USER.iter_history(FROM, limit=1):
                 limit = last_msg.message_id
               async for message in bot.iter_messages(chat_id=FROM, limit=int(limit), offset=int(SKIP)):
                 if IS_CANCELLED:
                    IS_CANCELLED = False
-                      break
+                   break
                    if message.empty or msg.service:
                       deleted+=1
                       continue 
