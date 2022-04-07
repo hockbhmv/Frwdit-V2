@@ -34,13 +34,11 @@ async def pub_(bot, message):
         async with lock:
             try:
               MSG = []
-              DUPLICATE = []
               pling=0
               fetched = 0
               deleted = 0
-              duplicate = 0
               skip = int(SKIP)
-              TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code>files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Duplicate file skipped:</b> <code>{}</code><b>🔘 Status:</b> <code>{}</code>'
+              TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code>files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n><b>🔘 Status:</b> <code>{}</code>'
               reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
               async for last_msg in bot.USER.iter_history(FROM, limit=1):
                 limit = last_msg.message_id
@@ -61,18 +59,14 @@ async def pub_(bot, message):
                        file_name = None 
                     pling += 1
                     if pling %10 == 0: 
-                       await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, duplicate, "Fetching messages"), reply_markup=reply_markup)
+                       await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "Fetching messages"), reply_markup=reply_markup)
                     MSG.append({"msg_id": message.message_id, "file_name": file_name})
-                    DUPLICATE.append(file_name)
                     fetched+=1 
                     if len(MSG) >= 200:
                       for msgs in MSG:
-                        if msgs.get("file_name") in DUPLICATE:
-                            duplicate+=1
-                            continue
                         pling += 1
                         if pling % 10 == 0: 
-                           await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, duplicate, "Forwarding"), reply_markup=reply_markup)
+                           await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "Forwarding"), reply_markup=reply_markup)
                         try:
                           await bot.copy_message(
                             chat_id=TO,
@@ -84,9 +78,9 @@ async def pub_(bot, message):
                           total_files += 1
                           await asyncio.sleep(1)
                         except FloodWait as e:
-                          await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, duplicate, f"Sleeping {e.x} s"), reply_markup=reply_markup)
+                          await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s"), reply_markup=reply_markup)
                           await asyncio.sleep(e.x)
-                          await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, duplicate, "Forwarding"), reply_markup=reply_markup)
+                          await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "Forwarding"), reply_markup=reply_markup)
                           await bot.copy_message(
                             chat_id=TO,
                             from_chat_id=FROM,
