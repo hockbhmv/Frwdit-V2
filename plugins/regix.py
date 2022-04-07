@@ -44,7 +44,7 @@ async def pub_(bot, message):
                     if IS_CANCELLED:
                        IS_CANCELLED = False
                        break
-                    if message.empty or msg.service:
+                    if message.empty or message.service:
                        deleted+=1
                        continue 
                     if message.video:
