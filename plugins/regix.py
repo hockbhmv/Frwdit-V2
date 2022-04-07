@@ -76,7 +76,7 @@ async def pub_(bot, message):
                             message_id= msgs.get("msg_id")
                           )
                           total_files += 1
-                          await asyncio.sleep(1)
+                          await asyncio.sleep(1.7)
                         except FloodWait as e:
                           await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s"), reply_markup=reply_markup)
                           await asyncio.sleep(e.x)
@@ -89,7 +89,7 @@ async def pub_(bot, message):
                             message_id=msgs.get("msg_id")
                           )
                           total_files += 1
-                          await asyncio.sleep(1)
+                          await asyncio.sleep(1.7)
                         except Exception as e:
                           print(e)
                           pass
