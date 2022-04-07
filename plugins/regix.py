@@ -38,7 +38,7 @@ async def pub_(bot, message):
               fetched = 0
               deleted = 0
               skip = int(SKIP)
-              TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code>files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n><b>🔘 Status:</b> <code>{}</code>'
+              TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>'
               reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
               async for last_msg in bot.USER.iter_history(FROM, limit=1):
                 limit = last_msg.message_id
