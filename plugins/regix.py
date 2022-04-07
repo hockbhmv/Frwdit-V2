@@ -41,12 +41,12 @@ async def pub_(bot, message):
               async for last_msg in bot.USER.iter_history(FROM, limit=1):
                 limit = last_msg.message_id
               async for message in bot.iter_messages(chat_id=FROM, limit=int(limit), offset=int(SKIP)):
-                if IS_CANCELLED:
-                   IS_CANCELLED = False
-                   break
-                   if message.empty or msg.service:
-                      deleted+=1
-                      continue 
+                    if IS_CANCELLED:
+                       IS_CANCELLED = False
+                       break
+                    if message.empty or msg.service:
+                       deleted+=1
+                       continue 
                     if message.video:
                        file_name = message.video.file_name
                     elif message.document:
