@@ -17,7 +17,7 @@ async def token(bot, m):
     # return await msg.reply_text("This not a Forward message")
   copy = await msg.copy(m.from_user.id)
   regex = re.compile(r'\d{9}:[0-9A-Za-z_-]{35}')
-  token = regex.match(copy.text)
+  token = regex.search(copy.text)
   if not token:
      await msg.reply_text("invalid bot token")
   if token is None:
