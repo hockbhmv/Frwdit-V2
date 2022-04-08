@@ -8,7 +8,8 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 from pyrogram.errors import FloodWait
 from config import Config
 from translation import Translation
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 @Client.on_message(filters.private & filters.command('add'))
 async def token(bot, m):
@@ -20,11 +21,12 @@ async def token(bot, m):
   token = regex.search(copy.text)
   if not token:
      await msg.reply_text("invalid bot token")
-  if token is None:
-    for match in regex.finditer(copy.text):
-        tokens = match 
-    else: 
-        await msg.reply_text(f"error on find bottoken")
+  print(token)
+  #if token is None:
+  for match in regex.finditer(copy.text):
+     tokens = match 
+  else: 
+     await msg.reply_text(f"error on find bottoken")
   await msg.reply_text(f"your token :- \n{token}\nilter :- {tokens}")
   return
     
