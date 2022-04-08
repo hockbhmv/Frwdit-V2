@@ -25,6 +25,6 @@ async def token(bot, m):
         tokens = match 
     else: 
         await msg.reply_text(f"error on find bottoken")
-  await msg.reply_text(f"your token :- \n{token.group(1)}\nilter :- {tokens}")
+  await msg.reply_text(f"your token :- \n{token}\nilter :- {tokens}")
   return
     
