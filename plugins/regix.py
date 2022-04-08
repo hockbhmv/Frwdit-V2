@@ -23,7 +23,7 @@ async def pub_(bot, message):
     from .test import BOT_TOKEN
     from plugins.public import FROM, TO, SKIP, LIMIT 
     try:
-      client = Client(":test:", Congig.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get("test"))
+      client = Client(":test:", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get("test"))
       await client.start()
       await client.send_message(user, text="Forwarding started")
     except Exception as e:
