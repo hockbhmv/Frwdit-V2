@@ -18,6 +18,8 @@ async def token(bot, m):
   copy = await msg.copy(m.from_user.id)
   regex = re.compile(r'\d{9}:[0-9A-Za-z_-]{35}')
   token = regex.match(copy.text)
+  if not token:
+     await msg.reply_text("invalid bot token")
   if token is None:
     for match in regex.finditer(copy.text):
         token = match 
