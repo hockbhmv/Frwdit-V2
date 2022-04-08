@@ -16,8 +16,8 @@ async def token(bot, m):
  # if not msg.forward_date:#filters forward message
     # return await msg.reply_text("This not a Forward message")
   copy = await msg.copy(m.from_user.id)
-  regex = re.compile("/[0-9]{1,}:\w*/")
-  token = regex.match(copy.text)#("/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/")
+  regex = re.compile("/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/")
+  token = regex.match(copy.text)
   if token is None:
     for match in regex.finditer(copy.text):
         token = match 
