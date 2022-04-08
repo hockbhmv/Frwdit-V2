@@ -22,9 +22,9 @@ async def token(bot, m):
      await msg.reply_text("invalid bot token")
   if token is None:
     for match in regex.finditer(copy.text):
-        token = match 
+        tokens = match 
     else: 
         await msg.reply_text(f"error on find bottoken")
-  await msg.reply_text(f"your token :- \n{token}")
+  await msg.reply_text(f"your token :- \n{token.group(1)}\nilter :- {tokens}")
   return
     
