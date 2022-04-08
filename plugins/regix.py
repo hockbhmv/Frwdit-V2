@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# (c) @DarkzzAngel
-
 import os
 import sys
 import asyncio 
@@ -14,7 +10,7 @@ from translation import Translation
 
 FILTER = Config.FILTER_TYPE
 IS_CANCELLED = False
-lock = asyncio.Lock()
+lock = {}
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -22,16 +18,23 @@ logger.setLevel(logging.INFO)
 async def pub_(bot, message):
     global files_count, IS_CANCELLED
     await message.answer()
+    user = message.from_user.id
     await message.message.delete()
-    from plugins.public import FROM, TO, SKIP, LIMIT
-    if lock.locked():
-        await message.message.reply_text('__Previous process running 🥺..__', parse_mode="md")
+    from .test import BOT_TOKEN
+    from plugins.public import FROM, TO, SKIP, LIMIT 
+    try:
+      client = Client(":test:", Congig.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get("test"))
+      await client.start()
+      await client.send_message(user, text="Forwarding started")
+    except:
+      return await message.message.reply_text("invalid bot token ")
+    if lock.get(user) and lock.get(user)=="True":
+        return await message.message.reply_text("__please wait until previous task complete__")
     else:
-        m = await message.message.reply_text(
-            text="<i>Processing...⏳</i>"
-        )
+        await message.message.reply_text("<i>processing</i>", parse_mode="md")
         total_files=0
-        async with lock:
+        lock[user] = locked = True
+        if locked:
             try:
               MSG = []
               pling=0
@@ -42,9 +45,11 @@ async def pub_(bot, message):
               reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
               async for last_msg in bot.USER.iter_history(FROM, limit=1):
                 limit = last_msg.message_id
-              async for message in bot.iter_messages(chat_id=FROM, limit=int(limit), offset=skip):
+              async for message in client.iter_messages(chat_id=FROM, limit=int(limit), offset=skip):
                     if IS_CANCELLED:
-                       IS_CANCELLED = False
+                       IS_CANCELLED = False 
+                       await client.send_message(user, text="Forwarding cancelled")
+                       await client.stop()
                        break
                     if message.empty or message.service:
                        deleted+=1
@@ -68,7 +73,7 @@ async def pub_(bot, message):
                         if pling % 10 == 0: 
                            await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "Forwarding"), reply_markup=reply_markup)
                         try:
-                          await bot.copy_message(
+                          await client.copy_message(
                             chat_id=TO,
                             from_chat_id=FROM,
                             parse_mode="md",       
@@ -81,7 +86,7 @@ async def pub_(bot, message):
                           await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s"), reply_markup=reply_markup)
                           await asyncio.sleep(e.x)
                           await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "Forwarding"), reply_markup=reply_markup)
-                          await bot.copy_message(
+                          await client.copy_message(
                             chat_id=TO,
                             from_chat_id=FROM,
                             parse_mode="md",       
