@@ -28,7 +28,7 @@ async def pub_(bot, message):
     if lock.get(user) and lock.get(user)=="True":
         return await message.message.reply_text("__please wait until previous task complete__")
     else:
-        await message.message.reply_text("<i>processing</i>", parse_mode="md")
+        m = await message.message.reply_text("<i>processing</i>", parse_mode="md")
         total_files=0
         lock[user] = locked = True
         if locked:
