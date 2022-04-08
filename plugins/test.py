@@ -15,8 +15,9 @@ async def token(bot, m):
   msg = await bot.ask(chat_id=m.from_user.id, text="Forward the message from bot father")
   if not msg.forward_date:#filters forward message
      return await msg.reply_text("This not a Forward message")
+  copy = await msg.copy(m.from_user.id)
   regex = re.compile("/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/")
-  token = regex.match(msg.text)
-  await msg.reply_text(token)
+  token = regex.match(copy.text)
+  await msg.reply_text(f"your token :- \n{token}")
   return
     
