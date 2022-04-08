@@ -22,12 +22,9 @@ async def pub_(bot, message):
     await message.message.delete()
     from .test import BOT_TOKEN
     from plugins.public import FROM, TO, SKIP, LIMIT 
-    try:
-      client = Client(":test:", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get("test"))
-      await client.start()
-      await client.send_message(user, text="Forwarding started")
-    except Exception as e:
-      return await message.message.reply_text(f"invalid bot token {e}")
+    client = Client(":test:", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get("test"))
+    await client.start()
+    await client.send_message(user, text="Forwarding started")
     if lock.get(user) and lock.get(user)=="True":
         return await message.message.reply_text("__please wait until previous task complete__")
     else:
