@@ -19,7 +19,7 @@ async def token(bot, m):
   regex = re.compile("/[0-9]{1,}:\w*/")
   token = regex.match(copy.text)#("/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/")
   if token is None:
-    for match in regex.finditer(copy.text)
+    for match in regex.finditer(copy.text):
         token = match 
     else: 
         await msg.reply_text(f"error on find bottoken")
