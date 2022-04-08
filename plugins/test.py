@@ -11,6 +11,8 @@ from translation import Translation
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+BOT_TOKEN = {} 
+
 @Client.on_message(filters.private & filters.command('add'))
 async def token(bot, m):
   msg = await bot.ask(chat_id=m.from_user.id, text="Forward the message from bot father")
@@ -27,6 +29,7 @@ async def token(bot, m):
      tokens = match 
   else: 
      await msg.reply_text(f"error on find bottoken")
+  BOT_TOKEN["test"] = copy.text
   await msg.reply_text(f"your token :- \n{token}\nilter :- {tokens}")
   return
     
