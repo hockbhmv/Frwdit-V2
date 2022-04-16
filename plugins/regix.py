@@ -20,7 +20,7 @@ TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
-    global files_count, IS_CANCELLED
+    global files_count, IS_CANCELLED, BOT_NO
     await message.answer()
     user = message.from_user.id
     await message.message.delete()
