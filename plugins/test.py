@@ -23,5 +23,5 @@ async def token(bot, m):
   if token is None:
      await msg.reply_text("There is no bot token in that message")
   BOT_TOKEN[m.from_user.id] = copy.text
-  await msg.reply_text(f"your token :- \n{token}\nilter :- {tokens}")
+  await msg.reply_text(f"your bot with  token <code>{token}</code> successfully added")
   return
