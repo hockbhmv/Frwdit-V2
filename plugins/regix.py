@@ -11,7 +11,7 @@ from translation import Translation
 
 FILTER = Config.FILTER_TYPE
 IS_CANCELLED = False
-lock = {}
+block = {}
 lock = asyncio.Lock()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -24,10 +24,8 @@ async def pub_(bot, message):
     await message.message.delete()
     from .test import BOT_TOKEN
     from plugins.public import FROM, TO, SKIP, LIMIT 
-    if lock.get(user) and lock.get(user)=="True":
+    if block.get(user) and block.get(user)=="True":
         return await message.message.reply_text("__please wait until previous task complete__", parse_mode="md")
-    else:
-        unlock = True
     try:
       client = Client("test", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get(user))
       await client.start()
@@ -39,7 +37,7 @@ async def pub_(bot, message):
     async with lock:
         m = await message.message.reply_text("<i>processing</i>")
         total_files=0
-        lock[user] = locked = True
+        block[user] = locked = True
         if locked:
             try:
               MSG = []
