@@ -5,7 +5,7 @@ import logging
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
-from pyrogram.errors import FloodWait
+from pyrogram.errors import FloodWait, MessageNotModified
 from config import Config
 from translation import Translation
 
@@ -15,6 +15,7 @@ block = {}
 lock = asyncio.Lock()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>'
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
@@ -45,7 +46,6 @@ async def pub_(bot, message):
               fetched = 0
               deleted = 0
               skip = int(SKIP)
-              TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>'
               reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
               async for last_msg in bot.USER.iter_history(FROM, limit=1):
                 limit = last_msg.message_id
@@ -68,14 +68,14 @@ async def pub_(bot, message):
                        file_name = None 
                     pling += 1
                     if pling %10 == 0: 
-                       await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "Fetching messages"), reply_markup=reply_markup)
+                       await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding"),reply_markup)
                     MSG.append({"msg_id": message.message_id, "file_name": file_name})
                     fetched+=1 
                     if len(MSG) >= 200:
                       for msgs in MSG:
                         pling += 1
                         if pling % 10 == 0: 
-                           await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "Forwarding"), reply_markup=reply_markup)
+                           await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding"),reply_markup)
                         try:
                           await client.copy_message(
                             chat_id=TO,
@@ -87,9 +87,9 @@ async def pub_(bot, message):
                           total_files += 1
                           await asyncio.sleep(1.7)
                         except FloodWait as e:
-                          await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s"), reply_markup=reply_markup)
+                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding"),reply_markup)
                           await asyncio.sleep(e.x)
-                          await m.edit_text(text=TEXT.format(fetched, deleted, total_files, skip, "Forwarding"), reply_markup=reply_markup)
+                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding"),reply_markup)
                           await client.copy_message(
                             chat_id=TO,
                             from_chat_id=FROM,
@@ -118,6 +118,13 @@ async def pub_(bot, message):
                     reply_markup=reply_markup,
                     parse_mode="html")
       
+async def edit(msg, text, button):
+   try:
+     await msg.edit_text(text=text, reply_markup=button)
+   except MessageNotModified:
+     pass 
+   return
+
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, update):
     global IS_CANCELLED
