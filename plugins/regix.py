@@ -12,6 +12,7 @@ from translation import Translation
 FILTER = Config.FILTER_TYPE
 IS_CANCELLED = False
 lock = {}
+lock = asyncio.Lock()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -28,14 +29,14 @@ async def pub_(bot, message):
     else:
         unlock = True
     try:
-      client = Client("test", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get("test"))
+      client = Client("test", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get(user))
       await client.start()
     except (AccessTokenExpired, AccessTokenInvalid):
         return await message.message.reply_text("The given bot token is invalid")
     except Exception as e:
         return await message.message.reply_text(f"Error:- {e}")
     await client.send_message(user, text="Forwarding started")
-    if unlock:
+    async with lock:
         m = await message.message.reply_text("<i>processing</i>")
         total_files=0
         lock[user] = locked = True
