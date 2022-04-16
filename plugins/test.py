@@ -17,12 +17,12 @@ BOT_TOKEN = {}
 async def token(bot, m):
   msg = await bot.ask(chat_id=m.from_user.id, text="1) create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me")
   if not msg.forward_date:
-     return await msg.reply_text("**This is not a forward message**")
+     return await msg.reply_text("This is not a forward message")
   if str(msg.forward_from.id) != "93372553":
-     return await msg.reply_text("**This message was not forward from bot father**")
+     return await msg.reply_text("This message was not forward from bot father")
   token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
   if not token and token == []:
      return await msg.reply_text("There is no bot token in that message")
-  BOT_TOKEN[m.from_user.id] = token
-  await msg.reply_text(f"your bot with  token <code>{token}</code> successfully added")
+  BOT_TOKEN[m.from_user.id] = token[0]
+  await msg.reply_text(f"your bot with  token <code>{token[0]}</code> successfully added")
   return
