@@ -9,6 +9,7 @@ from pyrogram.errors import FloodWait, MessageNotModified
 from config import Config
 from translation import Translation
 
+BOT_NO = 0
 FILTER = Config.FILTER_TYPE
 IS_CANCELLED = False
 block = {}
@@ -28,15 +29,13 @@ async def pub_(bot, message):
     if block.get(user) and str(block.get(user))=="True":
         return await message.message.reply_text("__please wait until previous task complete__", parse_mode="md")
     try:
-      client = Client("test", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get(user))
+      client = Client(f"test {BOT_NO}", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get(user))
       await client.start()
+      BOT_NO+=1
     except (AccessTokenExpired, AccessTokenInvalid):
         return await message.message.reply_text("The given bot token is invalid")
     except Exception as e:
-        if str(e) == "database is locked":
-            pass 
-        else:
-            return await message.message.reply_text(f"Bot Error:- {e}")
+        return await message.message.reply_text(f"Bot Error:- {e}")
     await client.send_message(user, text="Forwarding started")
     async with lock:
         m = await message.message.reply_text("<i>processing</i>")
