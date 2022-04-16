@@ -25,7 +25,7 @@ async def pub_(bot, message):
     await message.message.delete()
     from .test import BOT_TOKEN
     from plugins.public import FROM, TO, SKIP, LIMIT 
-    if block.get(user) and block.get(user)=="True":
+    if block.get(user) and str(block.get(user))=="True":
         return await message.message.reply_text("__please wait until previous task complete__", parse_mode="md")
     try:
       client = Client("test", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get(user))
@@ -33,7 +33,7 @@ async def pub_(bot, message):
     except (AccessTokenExpired, AccessTokenInvalid):
         return await message.message.reply_text("The given bot token is invalid")
     except Exception as e:
-        return await message.message.reply_text(f"Error:- {e}")
+        return await message.message.reply_text(f"Bot Error:- {e}")
     await client.send_message(user, text="Forwarding started")
     async with lock:
         m = await message.message.reply_text("<i>processing</i>")
