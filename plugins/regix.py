@@ -104,13 +104,19 @@ async def pub_(bot, message):
                           pass
                         MSG = []
             except Exception as e:
-                print(e)
-                await client.stop()
+                print(e) 
                 block[user] = False
                 await m.edit_text(f'Error: {e}')
+                try:
+                  await client.stop()
+                except:
+                  pass
             else:
-                await client.stop()
                 block[user] = False
+                try:
+                  await client.stop()
+                except:
+                  pass
                 buttons = [[
                     InlineKeyboardButton('📜 Support Group', url='https://t.me/DxHelpDesk')
                     ],[
