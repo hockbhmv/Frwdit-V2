@@ -18,7 +18,7 @@ async def token(bot, m):
   msg = await bot.ask(chat_id=m.from_user.id, text="1) create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me")
   if not msg.forward_date:
      return await msg.reply_text("**This is not a forward message**")
-  if msg.forward_from.id != "93372553":
+  if str(msg.forward_from.id) != "93372553":
      return await msg.reply_text("**This message was not forward from bot father**")
   token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
   if token is None:
