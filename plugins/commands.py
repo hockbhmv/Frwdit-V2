@@ -11,9 +11,9 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMedi
 
 @Client.on_message(filters.private & filters.command(['start']))
 async def start(client, message):
-    user_id = message.from_user.id
-    if not await db.is_user_exist(user_id):
-      await db.add_user(user_id)
+    user = message.from_user
+    if not await db.is_user_exist(user.id):
+      await db.add_user(user.id, user.first_name)
     buttons = [[
         InlineKeyboardButton('📜 Support Group', url='https://t.me/DxHelpDesk'),
         InlineKeyboardButton('Update Channel ♻️', url='https://t.me/DX_Botz')
