@@ -2,7 +2,8 @@ import os
 import re 
 import sys
 import asyncio 
-import logging
+import logging 
+from database import db
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message
 from pyrogram.errors import FloodWait
@@ -11,7 +12,7 @@ from translation import Translation
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-BOT_TOKEN = {} 
+CONFIGS = {}
 
 @Client.on_message(filters.private & filters.command('add'))
 async def token(bot, m):
@@ -23,6 +24,20 @@ async def token(bot, m):
   token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
   if not token and token == []:
      return await msg.reply_text("There is no bot token in that message")
-  BOT_TOKEN[m.from_user.id] = token[0]
-  await msg.reply_text(f"your bot with  token <code>{token[0]}</code> successfully added")
+  await update_configs(m.from_user.id, 'bot_token', token[0])
+  await msg.reply_text(f"bot token successfully added to db")
   return
+
+async def get_configs(user_id):
+  configs = CONFIGS.get(user_id)
+  if not configs:
+     configs = await db.get_configs(user_id)
+     CONFIGS[user_id] = configs 
+  return configs
+                          
+async def update_configs(user_id, key, value):
+  current = await get_configs(user_id)
+  current[key] = value 
+  CONFIGS[user_id] = value 
+  await db.update_configs(user_id, current)
+        
