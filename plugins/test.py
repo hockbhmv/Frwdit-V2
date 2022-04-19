@@ -35,8 +35,7 @@ async def get_configs(user_id):
   return configs
                           
 async def update_configs(user_id, key, value):
-  current = await get_configs(user_id)
+  current = await db.get_configs(user_id)
   current[key] = value 
-  Config.CONFIGS[user_id] = value 
   await db.update_configs(user_id, current)
         
