@@ -39,8 +39,9 @@ async def pub_(bot, message):
        await update_configs(user, "session_name", session_name)
     await message.message.reply_text(f"token :- <code>{bot_token}</code>\nsession name :- <code>{session_name}</code>")
     try:
-      client = Client(f":memory:", #Config.API_ID, Config.API_HASH, 
-                      bot_token = bot_token)
+      api_id = 12345
+      api_hash = "0123456789abcdef0123456789abcdef"
+      client = Client(f":memory:", api_id, api_hash, bot_token=bot_token)
       await client.start()
     except (AccessTokenExpired, AccessTokenInvalid):
         return await message.message.reply_text("The given bot token is invalid")
