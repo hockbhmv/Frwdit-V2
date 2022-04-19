@@ -3,7 +3,8 @@ import re
 import sys
 import asyncio 
 import logging 
-from database import db
+from database import db 
+from config import Config
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message
 from pyrogram.errors import FloodWait
@@ -11,8 +12,6 @@ from config import Config
 from translation import Translation
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-CONFIGS = {}
 
 @Client.on_message(filters.private & filters.command('add'))
 async def token(bot, m):
@@ -29,15 +28,15 @@ async def token(bot, m):
   return
 
 async def get_configs(user_id):
-  configs = CONFIGS.get(user_id)
+  configs = Config.CONFIGS.get(user_id)
   if not configs:
      configs = await db.get_configs(user_id)
-     CONFIGS[user_id] = configs 
+     Config.CONFIGS[user_id] = configs 
   return configs
                           
 async def update_configs(user_id, key, value):
   current = await get_configs(user_id)
   current[key] = value 
-  CONFIGS[user_id] = value 
+  Config.CONFIGS[user_id] = value 
   await db.update_configs(user_id, current)
         
