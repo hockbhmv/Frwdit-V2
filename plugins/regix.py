@@ -36,7 +36,7 @@ async def pub_(bot, message):
     try:
       client = Client(f"{session_name}-forward-bot", Config.API_ID, Config.API_HASH, bot_token = configs["bot_token"])
       await client.start()
-   except (AccessTokenExpired, AccessTokenInvalid):
+    except (AccessTokenExpired, AccessTokenInvalid):
         return await message.message.reply_text("The given bot token is invalid")
     except Exception as e:
         return await message.message.reply_text(f"Bot Error:- {e}")
