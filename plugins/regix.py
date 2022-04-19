@@ -25,28 +25,20 @@ async def pub_(bot, message):
     await message.answer()
     user = message.from_user.id
     await message.message.delete()
-    from .test import get_configs, update_configs
     from plugins.public import FROM, TO, SKIP, LIMIT 
     if block.get(user) and str(block.get(user))=="True":
-        return await message.message.reply_text("__please wait until previous task complete__", parse_mode="md")
+        return await message.answer("__please wait until previous task complete__", show_alert=True)
     configs = await db.get_configs(user)
-    session_name = configs["session_name"]
     bot_token = configs["bot_token"]
     if not bot_token:
         return await message.message.reply_text("please add your bot using /settings !")
-    if session_name is None:
-       session_name = message.from_user.first_name
-       await update_configs(user, "session_name", session_name)
-    await message.message.reply_text(f"token :- <code>{bot_token}</code>\nsession name :- <code>{session_name}</code>")
     try:
-      api_id = 12345
-      api_hash = "0123456789abcdef0123456789abcdef"
       client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=bot_token)
       await client.start()
     except (AccessTokenExpired, AccessTokenInvalid):
-        return await message.message.reply_text("The given bot token is invalid")
+      return await message.message.reply_text("The given bot token is invalid")
     except Exception as e:
-        return await message.message.reply_text(f"Bot Error:- {e}")
+      return await message.message.reply_text(f"Bot Error:- {e}")
     test = await client.send_message(user, text="Forwarding started")
     if test:
         m = await message.message.reply_text("<i>processing</i>")
