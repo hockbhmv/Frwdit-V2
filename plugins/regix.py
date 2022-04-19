@@ -48,9 +48,12 @@ async def pub_(bot, message):
               pling=0
               fetched = 0
               deleted = 0 
-              FORWARD = FORWARD[user]
+              FORWARD = FORWARD.get(user)
+              if not FORWARD:
+                 return await message.answer("your are clicking on my old button")
+              skip = int(FORWARD['SKIP'])
               reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
-              async for message in client.iter_messages(chat_id=FORWARD['FROM'], limit=int(FORWARD['LIMIT']), offset=int(FORWARD['SKIP'])):
+              async for message in client.iter_messages(chat_id=FORWARD['FROM'], limit=int(FORWARD['LIMIT']), offset=skip):
                     if IS_CANCELLED:
                        IS_CANCELLED = False 
                        await client.send_message(user, text="Forwarding cancelled")
@@ -106,14 +109,14 @@ async def pub_(bot, message):
                         MSG = []
             except Exception as e:
                 print(e) 
-                block[user] = False
+                lock[user] = False
                 await m.edit_text(f'Error: {e}')
                 try:
                   await client.stop()
                 except:
                   pass
             else:
-                block[user] = False
+                lock[user] = False
                 try:
                   await client.stop()
                 except:
