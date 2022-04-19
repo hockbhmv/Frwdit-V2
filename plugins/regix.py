@@ -47,8 +47,8 @@ async def pub_(bot, message):
         return await message.message.reply_text("The given bot token is invalid")
     except Exception as e:
         return await message.message.reply_text(f"Bot Error:- {e}")
-    await client.send_message(user, text="Forwarding started")
-    async with lock:
+    test = await client.send_message(user, text="Forwarding started")
+    if test:
         m = await message.message.reply_text("<i>processing</i>")
         total_files=0
         block[user] = locked = True
