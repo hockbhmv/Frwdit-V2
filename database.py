@@ -1,8 +1,7 @@
 from os import environ 
+from config import Config
 import motor.motor_asyncio
  
-DATABASE_URI = environ.get("DATABASE", "")
-
 class Database:
     
     def __init__(self, uri, database_name):
@@ -66,7 +65,7 @@ class Database:
     async def get_banned(self):
         users = self.col.find({'ban_status.is_banned': True})
         b_users = [user['id'] async for user in users]
-        return 
+        return b_users
 
     async def update_configs(self, id, configs):
         await self.col.update_one({'id': int(id)}, {'$set': {'configs': configs}})
@@ -82,4 +81,4 @@ class Database:
             return user.get('configs', default)
         return default
       
-db = Database(DATABASE_URI, "forward-bot")
+db = Database(Config.DATABASE_URI, "forward-bot")
