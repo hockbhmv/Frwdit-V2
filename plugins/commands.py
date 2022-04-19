@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# (c) @DarkzzAngel
-
 import os
 import sys
-import asyncio
+import asyncio 
+from database import db
 from config import Config
 from translation import Translation
 from pyrogram import Client, filters
@@ -14,6 +11,9 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMedi
 
 @Client.on_message(filters.private & filters.command(['start']))
 async def start(client, message):
+    user_id = message.from_user.id
+    if not await db.is_user_exist(user_id):
+      await db.add_user(user_id)
     buttons = [[
         InlineKeyboardButton('📜 Support Group', url='https://t.me/DxHelpDesk'),
         InlineKeyboardButton('Update Channel ♻️', url='https://t.me/DX_Botz')
