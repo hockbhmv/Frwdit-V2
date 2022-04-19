@@ -68,8 +68,8 @@ async def run(bot, message):
     if re.match('-100\d+', toid.text):
        toid.text = int(toid.text)
     FORWARD[user_id] = {
-        'TO'= toid.text,
-        'FROM'= chat_id,
-        'SKIP' = skipno.text,
-        'LIMIT' = last_msg_id
+        'TO': toid.text,
+        'FROM': chat_id,
+        'SKIP': skipno.text,
+        'LIMIT': last_msg_id
     }
