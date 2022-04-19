@@ -74,7 +74,8 @@ class Database:
     async def get_configs(self, id):
         default = {
             'bot_token': None,
-            'db_channels': None
+            'db_channels': None,
+            'session_name': None
         }
         user = await self.col.find_one({'id':int(id)})
         if user:
