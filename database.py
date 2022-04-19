@@ -81,4 +81,4 @@ class Database:
             return user.get('configs', default)
         return default
       
-db = Database(DATABASE_URI, "forward bot")
+db = Database(DATABASE_URI, "forward-bot")
