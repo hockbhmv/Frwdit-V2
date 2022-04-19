@@ -1,7 +1,8 @@
 import os
 import sys
 import asyncio 
-import logging
+import logging 
+from database import db
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
@@ -28,7 +29,7 @@ async def pub_(bot, message):
     from plugins.public import FROM, TO, SKIP, LIMIT 
     if block.get(user) and str(block.get(user))=="True":
         return await message.message.reply_text("__please wait until previous task complete__", parse_mode="md")
-    configs = await get_configs(user)
+    configs = await db.get_configs(user)
     session_name = configs["session_name"]
     if session_name is None:
        session_name = message.from_user.first_name
