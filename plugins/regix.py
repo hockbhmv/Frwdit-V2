@@ -2,31 +2,29 @@ import os
 import sys
 import asyncio 
 import logging 
-from database import db
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
-from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
-from pyrogram.errors import FloodWait, MessageNotModified
+from database import db 
 from config import Config
 from translation import Translation
+from pyrogram import Client, filters 
+from pyrogram.errors import FloodWait, MessageNotModified
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
+from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
 
-BOT_NO = 0
 FILTER = Config.FILTER_TYPE
 IS_CANCELLED = False
-block = {}
-lock = asyncio.Lock()
+lock = {}
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>'
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
-    global files_count, IS_CANCELLED, BOT_NO
+    global files_count, IS_CANCELLED
     await message.answer()
     user = message.from_user.id
     await message.message.delete()
-    from plugins.public import FROM, TO, SKIP, LIMIT 
-    if block.get(user) and str(block.get(user))=="True":
+    from plugins.public import FORWARD
+    if lock.get(user) and str(lock.get(user))=="True":
         return await message.answer("__please wait until previous task complete__", show_alert=True)
     configs = await db.get_configs(user)
     bot_token = configs["bot_token"]
@@ -43,18 +41,16 @@ async def pub_(bot, message):
     if test:
         m = await message.message.reply_text("<i>processing</i>")
         total_files=0
-        block[user] = locked = True
+        lock[user] = locked = True
         if locked:
             try:
               MSG = []
               pling=0
               fetched = 0
-              deleted = 0
-              skip = int(SKIP)
+              deleted = 0 
+              FORWARD = FORWARD[user]
               reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
-              async for last_msg in bot.USER.iter_history(FROM, limit=1):
-                limit = last_msg.message_id
-              async for message in client.iter_messages(chat_id=FROM, limit=int(limit), offset=skip):
+              async for message in client.iter_messages(chat_id=FORWARD['FROM'], limit=int(FORWARD['LIMIT']), offset=int(FORWARD['SKIP'])):
                     if IS_CANCELLED:
                        IS_CANCELLED = False 
                        await client.send_message(user, text="Forwarding cancelled")
@@ -83,8 +79,8 @@ async def pub_(bot, message):
                            await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding"),reply_markup)
                         try:
                           await client.copy_message(
-                            chat_id=TO,
-                            from_chat_id=FROM,
+                            chat_id=FORWARD['TO'],
+                            from_chat_id=FORWARD['FROM'],
                             parse_mode="md",       
                             caption=Translation.CAPTION.format(msgs.get("file_name")),
                             message_id= msgs.get("msg_id")
@@ -96,8 +92,8 @@ async def pub_(bot, message):
                           await asyncio.sleep(e.x)
                           await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding"),reply_markup)
                           await client.copy_message(
-                            chat_id=TO,
-                            from_chat_id=FROM,
+                            chat_id=FORWARD['TO'],
+                            from_chat_id=FORWARD['FROM'],
                             parse_mode="md",       
                             caption=Translation.CAPTION.format(msgs.get("file_name")),
                             message_id=msgs.get("msg_id")
