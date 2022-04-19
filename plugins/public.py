@@ -1,15 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# (c) @DarkzzAngel
-
-import asyncio
 import re
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.errors import FloodWait
+import asyncio 
 from config import Config
 from translation import Translation
-
+from pyrogram import Client, filters 
+from pyrogram.errors import FloodWait
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
+ 
+FORWARD = {}
 FILTER = Config.FILTER_TYPE
 files_count = 0
 
@@ -17,28 +15,45 @@ files_count = 0
 
 @Client.on_message(filters.private & filters.command(["run"]))
 async def run(bot, message):
-    global SKIP
-    global FROM
-    global TO
-    global LIMIT
-    if str(message.from_user.id) not in Config.OWNER_ID:
-        return
-    fromid = await bot.ask(message.chat.id, Translation.FROM_MSG)
-    if fromid.text.startswith('/'):
-        await message.reply(Translation.CANCEL)
-        return
-    elif not fromid.text.startswith('@') and fromid.text is None:
-        return await message.reply(Translation.USERNAME)
+    user_id = message.from_user.id
     toid = await bot.ask(message.chat.id, Translation.TO_MSG)
     if toid.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return
+    fromid = await bot.ask(message.chat.id, Translation.FROM_MSG)
+    if fromid.text.startswith('/'):
+        await message.reply(Translation.CANCEL)
+        return 
+    if fromid.text:
+        regex = re.compile("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
+        match = regex.match(fromid.text)
+        if not match:
+            return await message.reply('Invalid link')
+        chat_id = match.group(4)
+        last_msg_id = int(match.group(5))
+        if chat_id.isnumeric():
+            chat_id  = int(("-100" + chat_id))
+    elif fromid.forward_from_chat.type == 'channel':
+        last_msg_id = fromid.forward_from_message_id
+        chat_id = fromid.forward_from_chat.username or fromid.forward_from_chat.id
+    else:
+        return 
+    try:
+        await bot.get_chat(chat_id)
+    except ChannelInvalid:
+        return await message.reply('This may be a private channel / group. Make me an admin over there to forward messages.')
+    except (UsernameInvalid, UsernameNotModified):
+        return await message.reply('Invalid Link specified.')
+    except Exception as e:
+        return await message.reply(f'Errors - {e}')
+    try:
+        k = await bot.get_messages(chat_id, last_msg_id)
+    except:
+        return await message.reply('This may be a private channel / group. Make me an admin over there')
+    if k.empty:
+        return await message.reply('This may be group and iam not a admin of the group.')
     skipno = await bot.ask(message.chat.id, Translation.SKIP_MSG)
     if skipno.text.startswith('/'):
-        await message.reply(Translation.CANCEL)
-        return
-    limitno = await bot.ask(message.chat.id, Translation.LIMIT_MSG)
-    if limitno.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return
     buttons = [[
@@ -50,9 +65,11 @@ async def run(bot, message):
         text=Translation.DOUBLE_CHECK.format(fromid.text),
         reply_markup=reply_markup
     )
-    SKIP = skipno.text
-    FROM = fromid.text
-    TO = toid.text
-    LIMIT = limitno.text
-    if re.match('-100\d+', TO):
-        TO = int(TO)
+    if re.match('-100\d+', toid.text):
+       toid.text = int(toid.text)
+    FORWARD[user_id] = {
+        'TO'= toid.text
+        'FROM'= chat_id
+        'SKIP' = skipno.text
+        'LIMIT' = last_msg_id
+    }
