@@ -29,12 +29,12 @@ async def pub_(bot, message):
     if block.get(user) and str(block.get(user))=="True":
         return await message.message.reply_text("__please wait until previous task complete__", parse_mode="md")
     configs = await get_configs(user)
-    session_name = configs.get('session_name')
+    session_name = configs['session_name']
     if session_name is None:
        session_name = message.from_user.first_name
        await update_configs(user, 'session_name', session_name)
     try:
-      client = Client(f"{session_name}-forward-bot", Config.API_ID, Config.API_HASH, bot_token = configs.get('bot_token'))
+      client = Client(f"{session_name}-forward-bot", Config.API_ID, Config.API_HASH, bot_token = configs['bot_token'])
       await client.start()
       BOT_NO+=1
     except (AccessTokenExpired, AccessTokenInvalid):
