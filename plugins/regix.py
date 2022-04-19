@@ -24,12 +24,17 @@ async def pub_(bot, message):
     await message.answer()
     user = message.from_user.id
     await message.message.delete()
-    from .test import BOT_TOKEN
+    from .test import get_configs, update_configs
     from plugins.public import FROM, TO, SKIP, LIMIT 
     if block.get(user) and str(block.get(user))=="True":
         return await message.message.reply_text("__please wait until previous task complete__", parse_mode="md")
+    configs = await get_configs(user)
+    session_name = configs.get('session_name')
+    if session_name is None:
+       session_name = message.from_user.first_name
+       await update_configs(user, 'session_name', session_name)
     try:
-      client = Client(f"test {BOT_NO}", Config.API_ID, Config.API_HASH, bot_token = BOT_TOKEN.get(user))
+      client = Client(f"{session_name}-forward-bot", Config.API_ID, Config.API_HASH, bot_token = configs.get('bot_token'))
       await client.start()
       BOT_NO+=1
     except (AccessTokenExpired, AccessTokenInvalid):
