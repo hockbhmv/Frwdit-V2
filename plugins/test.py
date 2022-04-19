@@ -23,7 +23,7 @@ async def token(bot, m):
   token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
   if not token and token == []:
      return await msg.reply_text("There is no bot token in that message")
-  await update_configs(m.from_user.id, 'bot_token', token[0])
+  await update_configs(m.from_user.id, "bot_token", token[0])
   await msg.reply_text(f"bot token successfully added to db")
   return
 
