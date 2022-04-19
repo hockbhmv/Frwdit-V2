@@ -33,11 +33,11 @@ async def pub_(bot, message):
     session_name = configs["session_name"]
     bot_token = configs["bot_token"]
     if not bot_token:
-        return await message.reply_text("please add your bot using /settings !")
+        return await message.message.reply_text("please add your bot using /settings !")
     if session_name is None:
        session_name = message.from_user.first_name
        await update_configs(user, "session_name", session_name)
-    await message.reply_text(f"token :- <code>{bot_token}</code>\nsession name :- <code>{session_name}</code>")
+    await message.message.reply_text(f"token :- <code>{bot_token}</code>\nsession name :- <code>{session_name}</code>")
     try:
       client = Client(f"{session_name}-forward-bot", Config.API_ID, Config.API_HASH, bot_token = bot_token)
       await client.start()
