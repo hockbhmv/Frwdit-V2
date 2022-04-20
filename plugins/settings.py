@@ -22,11 +22,18 @@ async def settings_query(bot, query):
        reply_markup=main_buttons())
        
   elif type=="bots":
-     buttons = [[InlineKeyboardButton('➕ Add bot ➕', 
-                         callback_data="settings#addbot")
-                ],[
-                InlineKeyboardButton('back', 
-                         callback_data="settings#main")]]
+     buttons = [] 
+     data = await db.get_configs(query.from_user.id)
+     bot_id = data['bot_id']
+     if bot_id is not None:
+        c_bot = await bot.get_users(bot_id) 
+        buttons.append([InlineKeyboardButton(f'- {c_bot.first_name}',
+                         callback_data="settings#editbot")])
+     else:
+        buttons.append([InlineKeyboardButton('➕ Add bot ➕', 
+                         callback_data="settings#addbot")])
+     buttons.append([InlineKeyboardButton('back', 
+                      callback_data="settings#main")])
      await query.message.edit_text(
        "<b><u>My Bots</b></u>\n\nyou can manage your bots in here",
        reply_markup=InlineKeyboardMarkup(buttons))
@@ -34,7 +41,7 @@ async def settings_query(bot, query):
   elif type=="channels":
      buttons = []
      data = await db.get_configs(query.from_user.id)
-     channels = data['channels"]
+     channels = data['channels']
      if channels is not None:
         chat = await bot.get_chat(channels) 
         buttons.append([InlineKeyboardButton(f'- {chat.title}',
