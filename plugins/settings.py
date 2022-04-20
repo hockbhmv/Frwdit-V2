@@ -13,7 +13,7 @@ async def settings(client, message):
     
 @Client.on_callback_query(filters.regex(r'^settings'))
 async def settings_query(bot, query):
-  i, type = query.message.text.split("#")
+  i, type = query.data.split("#")
   buttons = [[InlineKeyboardButton('back', callback_data="settings#main")]]
   
   if type=="main":
