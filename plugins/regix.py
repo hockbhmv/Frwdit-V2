@@ -88,7 +88,9 @@ async def pub_(bot, message):
                              message_ids=MSG 
                           )
                         except FloodWait as e:
+                          await edit(m, TEXT.format('', fetched, deleted, total_files, skip, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                           await asyncio.sleep(e.x)
+                          await edit(m, TEXT.format('', fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                           await client.forward_messages(
                              chat_id=FORWARD['TO'],
                              from_chat_id=FORWARD['FROM'],
