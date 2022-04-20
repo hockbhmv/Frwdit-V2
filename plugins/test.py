@@ -27,11 +27,11 @@ async def token(bot, m):
   try:
     client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=token[0])
     await client.start()
-    bot_id = (client.get_me()).id
+    bot_id = (await client.get_me()).id
   except (AccessTokenExpired, AccessTokenInvalid):
-    return await message.message.reply_text("The given bot token is invalid")
+    return await msg.reply_text("The given bot token is invalid")
   except Exception as e:
-    return await message.message.reply_text(f"Bot Error:- {e}")
+    return await msg.reply_text(f"Bot Error:- {e}")
   await update_configs(m.from_user.id, "bot_token", token[0])
   await update_configs(m.from_user.id, "bot_id", bot_id)
   await msg.reply_text(f"bot token successfully added to db")
