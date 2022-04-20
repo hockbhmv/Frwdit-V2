@@ -15,7 +15,7 @@ IS_CANCELLED = False
 lock = {}
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>'
+TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>\n<b>🔘 percentage:</b> <code>{}</code>'
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
@@ -52,8 +52,10 @@ async def pub_(bot, message):
               if not FORWARD:
                  return await message.answer("your are clicking on my old button")
               skip = int(FORWARD['SKIP'])
+              total = int(FORWARD['LIMIT'])
+              completed = deleted + total_files
               reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
-              async for message in client.iter_messages(chat_id=FORWARD['FROM'], limit=int(FORWARD['LIMIT']), offset=skip):
+              async for message in client.iter_messages(chat_id=FORWARD['FROM'], limit=total, offset=skip):
                     if IS_CANCELLED:
                        IS_CANCELLED = False 
                        await client.send_message(user, text="Forwarding cancelled")
@@ -72,14 +74,19 @@ async def pub_(bot, message):
                        file_name = None 
                     pling += 1
                     if pling %10 == 0: 
-                       await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Fetching"),reply_markup)
+                       await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Fetching", completed*100/total),reply_markup)
                     MSG.append({"msg_id": message.message_id, "file_name": file_name})
                     fetched+=1 
                     if len(MSG) >= 200:
                       for msgs in MSG:
+                        if IS_CANCELLED:
+                          IS_CANCELLED = False 
+                          await client.send_message(user, text="Forwarding cancelled")
+                          await client.stop()
+                          break
                         pling += 1
                         if pling % 10 == 0: 
-                           await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding"),reply_markup)
+                           await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding", completed*100/total),reply_markup)
                         try:
                           await client.copy_message(
                             chat_id=FORWARD['TO'],
@@ -91,9 +98,9 @@ async def pub_(bot, message):
                           total_files += 1
                           await asyncio.sleep(1.7)
                         except FloodWait as e:
-                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s"),reply_markup)
+                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s", completed*100/total),reply_markup)
                           await asyncio.sleep(e.x)
-                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding"),reply_markup)
+                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding", completed*100/total),reply_markup)
                           await client.copy_message(
                             chat_id=FORWARD['TO'],
                             from_chat_id=FORWARD['FROM'],
