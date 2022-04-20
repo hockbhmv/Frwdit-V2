@@ -6,7 +6,8 @@ import logging
 from database import db 
 from config import Config
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
+from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
 from pyrogram.errors import FloodWait
 from config import Config
 from translation import Translation
@@ -23,8 +24,21 @@ async def token(bot, m):
   token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
   if not token and token == []:
      return await msg.reply_text("There is no bot token in that message")
+  try:
+    client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=token[0])
+    await client.start()
+    bot_id = (client.get_me()).id
+  except (AccessTokenExpired, AccessTokenInvalid):
+    return await message.message.reply_text("The given bot token is invalid")
+  except Exception as e:
+    return await message.message.reply_text(f"Bot Error:- {e}")
   await update_configs(m.from_user.id, "bot_token", token[0])
+  await update_configs(m.from_user.id, "bot_id", bot_id)
   await msg.reply_text(f"bot token successfully added to db")
+  try:
+    await client.stop()
+  except:
+    pass
   return
 
 @Client.on_message(filters.private & filters.command('reset'))
