@@ -15,7 +15,7 @@ IS_CANCELLED = False
 lock = {}
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-TEXT = '<b><u>FORWARD STATUS</b></u>\n\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>\n<b>🔘 percentage:</b> <code>{}</code> %'
+TEXT = '<b><u>FORWARD STATUS</b></u>\n{}\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>\n<b>🔘 percentage:</b> <code>{}</code> %'
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
@@ -73,46 +73,56 @@ async def pub_(bot, message):
                        file_name = None 
                     pling += 1
                     if pling %10 == 0: 
-                       await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Fetching", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))),reply_markup)
-                    MSG.append({"msg_id": message.message_id, "file_name": file_name})
+                       await edit(m, TEXT.format('', fetched, deleted, total_files, skip, "Fetching", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                    if not configs['forward_tag']:
+                       MSG.append({"msg_id": message.message_id, "file_name": file_name})
+                    else:
+                       MSG.append(message.message_id)
                     fetched+=1 
                     if len(MSG) >= 200:
-                      for msgs in MSG:
-                        if IS_CANCELLED:
-                          IS_CANCELLED = False 
-                          await client.send_message(user, text="Forwarding cancelled")
-                          await client.stop()
-                          break
-                        pling += 1
-                        if pling % 10 == 0: 
-                           await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))),reply_markup)
-                        try:
-                          await client.copy_message(
-                            chat_id=FORWARD['TO'],
-                            from_chat_id=FORWARD['FROM'],
-                            parse_mode="md",       
-                            caption=Translation.CAPTION.format(msgs.get("file_name")),
-                            message_id= msgs.get("msg_id")
-                          )
-                          total_files += 1
-                          await asyncio.sleep(1.7)
-                        except FloodWait as e:
-                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))),reply_markup)
-                          await asyncio.sleep(e.x)
-                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))),reply_markup)
-                          await client.copy_message(
-                            chat_id=FORWARD['TO'],
-                            from_chat_id=FORWARD['FROM'],
-                            parse_mode="md",       
-                            caption=Translation.CAPTION.format(msgs.get("file_name")),
-                            message_id=msgs.get("msg_id")
-                          )
-                          total_files += 1
-                          await asyncio.sleep(1.7)
-                        except Exception as e:
-                          print(e)
-                          pass
-                        MSG = []
+                      if configs['forward_tag']:
+                         await client.forward_messages(
+                             chat_id=FORWARD['TO'],
+                             from_chat_id=FORWARD['FROM'],
+                             message_ids=MSG 
+                         )
+                      else:
+                        for msgs in MSG:
+                          if IS_CANCELLED:
+                            IS_CANCELLED = False 
+                            await client.send_message(user, text="Forwarding cancelled")
+                            await client.stop()
+                            break
+                          pling += 1
+                          if pling % 10 == 0: 
+                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                          try:
+                            await client.copy_message(
+                               chat_id=FORWARD['TO'],
+                               from_chat_id=FORWARD['FROM'],
+                               parse_mode="md",       
+                               caption=Translation.CAPTION.format(msgs.get("file_name")),
+                               message_id= msgs.get("msg_id")
+                            )
+                            total_files += 1
+                            await asyncio.sleep(1.7)
+                          except FloodWait as e:
+                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                            await asyncio.sleep(e.x)
+                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                            await client.copy_message(
+                               chat_id=FORWARD['TO'],
+                               from_chat_id=FORWARD['FROM'],
+                               parse_mode="md",       
+                               caption=Translation.CAPTION.format(msgs.get("file_name")),
+                               message_id=msgs.get("msg_id")
+                            )
+                            total_files += 1
+                            await asyncio.sleep(1.7)
+                          except Exception as e:
+                            print(e)
+                            pass
+                      MSG = []
             except Exception as e:
                 print(e) 
                 lock[user] = False
@@ -128,16 +138,13 @@ async def pub_(bot, message):
                 except:
                   pass
                 buttons = [[
-                    InlineKeyboardButton('📜 Support Group', url='https://t.me/DxHelpDesk')
+                    InlineKeyboardButton('📜 Support Group', url='https://t.me/venombotsupport')
                     ],[
-                    InlineKeyboardButton('📡 Update Channel', url='https://t.me/DX_Botz')
+                    InlineKeyboardButton('📡 Update Channel', url='https://t.me/venombotupdates')
                 ]]
                 reply_markup = InlineKeyboardMarkup(buttons)
-                await m.edit_text(
-                    text=f"<u><i>Successfully Forwarded</i></u>\n\n<b>Total Forwarded Files:-</b> <code>{total_files}</code> <b>Files</b>\n<b>Thanks For Using Me❤️</b>",
-                    reply_markup=reply_markup,
-                    parse_mode="html")
-      
+                await edit(m, TEXT.format('FORWARDING SUCCESSFULLY COMPLETED', fetched, deleted, total_files, skip, "completed", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                   
 async def edit(msg, text, button):
    try:
      await msg.edit_text(text=text, reply_markup=button)
