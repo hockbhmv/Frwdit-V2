@@ -73,7 +73,7 @@ async def pub_(bot, message):
                        file_name = None 
                     pling += 1
                     if pling %10 == 0: 
-                       await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Fetching", float(deleted + total_files*100/total)),reply_markup)
+                       await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Fetching", "{:.0f}".format(float(deleted + total_files)*100/float(total))),reply_markup)
                     MSG.append({"msg_id": message.message_id, "file_name": file_name})
                     fetched+=1 
                     if len(MSG) >= 200:
@@ -85,7 +85,7 @@ async def pub_(bot, message):
                           break
                         pling += 1
                         if pling % 10 == 0: 
-                           await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding", float(deleted + total_files*100/total)),reply_markup)
+                           await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files)*100/float(total)),reply_markup)
                         try:
                           await client.copy_message(
                             chat_id=FORWARD['TO'],
@@ -97,9 +97,9 @@ async def pub_(bot, message):
                           total_files += 1
                           await asyncio.sleep(1.7)
                         except FloodWait as e:
-                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s", float(deleted + total_files*100/total)),reply_markup)
+                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files)*100/float(total))),reply_markup)
                           await asyncio.sleep(e.x)
-                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding", float(deleted + total_files*100/total)),reply_markup)
+                          await edit(m, TEXT.format(fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files)*100/float(total))),reply_markup)
                           await client.copy_message(
                             chat_id=FORWARD['TO'],
                             from_chat_id=FORWARD['FROM'],
