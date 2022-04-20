@@ -28,7 +28,7 @@ async def settings_query(bot, query):
      if bot_id is not None:
         c_bot = await bot.get_users(bot_id) 
         buttons.append([InlineKeyboardButton(f'- {c_bot.first_name}',
-                         callback_data="settings#editbot")])
+                         callback_data=f"settings#editbot_{bot_id})])
      else:
         buttons.append([InlineKeyboardButton('➕ Add bot ➕', 
                          callback_data="settings#addbot")])
@@ -45,7 +45,7 @@ async def settings_query(bot, query):
      if channels is not None:
         chat = await bot.get_chat(channels) 
         buttons.append([InlineKeyboardButton(f'- {chat.title}',
-                         callback_data="settings#editchannels")])
+                         callback_data=f"settings#editchannels_{chat.id}")])
      buttons.append([InlineKeyboardButton('➕ Add bot ➕', 
                       callback_data="settings#addchannel")])
      buttons.append([InlineKeyboardButton('back', 
@@ -64,7 +64,40 @@ async def settings_query(bot, query):
      await query.message.edit_text(
         "Successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
-      
+  
+  elif type.startswith("editbot"): 
+     bot_id = type.split('_')[1]
+     bot = await bot.get_chat(bot_id)
+     buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removebot")
+               ],
+               [InlineKeyboardButton('back', callback_data="settings#channels")]]
+     await query.message.edit_text(
+        f"<b><u>Channel Details</b></u>\n\n<b>Name -</b> {bot.first_name}\n<b>Bot ID -</b> {bot.id}\n<b>Username -</b> @{bot.username}",
+        reply_markup=InlineKeyboardMarkup(buttons))
+                                             
+  elif type=="removebot":
+     await update_configs(query.from_user.id, "bot_id", None)
+     await update_configs(query.from_user.id, "bot_token", None)
+     await query.message.edit_text(
+        "successfully updated",
+        reply_markup=InlineKeyboardMarkup(buttons))
+                                             
+  elif type.startswith("editchannels"): 
+     chat_id = type.split('_')[1]
+     chat = await bot.get_chat(chat_id)
+     buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removechannel")
+               ],
+               [InlineKeyboardButton('back', callback_data="settings#channels")]]
+     await query.message.edit_text(
+        f"<b><u>Channel Details</b></u>\n\n<b>Title -</b> {chat.title}\n<b>Channel ID -</b> {chat.id}\n<b>Username -</b> @{chat.username}",
+        reply_markup=InlineKeyboardMarkup(buttons))
+                                             
+  elif type=="removechannel":
+     await update_configs(query.from_user.id, "channels", None)
+     await query.message.edit_text(
+        "successfully updated",
+        reply_markup=InlineKeyboardMarkup(buttons))
+                                             
 def main_buttons():
   buttons = [[
        InlineKeyboardButton('BOTS 🤖',
