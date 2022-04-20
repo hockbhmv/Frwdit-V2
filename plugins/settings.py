@@ -28,7 +28,7 @@ async def settings_query(bot, query):
      if bot_id is not None:
         c_bot = await bot.get_users(bot_id) 
         buttons.append([InlineKeyboardButton(f'- {c_bot.first_name}',
-                         callback_data=f"settings#editbot_{bot_id})])
+                         callback_data=f"settings#editbot_{bot_id}")])
      else:
         buttons.append([InlineKeyboardButton('➕ Add bot ➕', 
                          callback_data="settings#addbot")])
