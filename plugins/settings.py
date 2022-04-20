@@ -32,15 +32,32 @@ async def settings_query(bot, query):
        reply_markup=InlineKeyboardMarkup(buttons))
    
   elif type=="channels":
-     buttons = [[InlineKeyboardButton('➕ Add bot ➕', 
-                         callback_data="settings#channel")
-                ],[
-                InlineKeyboardButton('back', 
-                         callback_data="settings#main")]]
+     buttons = []
+     data = await db.get_configs(query.from_user.id)
+     channels = data['channels"]
+     if channels is not None:
+        chat = await bot.get_chat(channels) 
+        buttons.append([InlineKeyboardButton(f'- {chat.title}',
+                         callback_data="settings#editchannels")])
+     buttons.append([InlineKeyboardButton('➕ Add bot ➕', 
+                      callback_data="settings#addchannel")])
+     buttons.append([InlineKeyboardButton('back', 
+                      callback_data="settings#main")])
      await query.message.edit_text( 
        "<b><u>My Channels</b></u>\n\nyou can manage your channels in here",
        reply_markup=InlineKeyboardMarkup(buttons))
-       
+   
+  elif type=="addchannel":  
+     chat_id = await bot.ask(chat_id=query.message.chat.id, text="Forward a message from To channel or give me your To channel id")
+     if chat_id is int:
+        chat_id = int(chat_id)
+     else:
+        chat_id = chat_id.forward_from_chat.id
+     await update_configs(query.from_user.id, "channels", chat_id)
+     await query.message.edit_text(
+        "Successfully updated",
+        reply_markup=InlineKeyboardMarkup(buttons))
+      
 def main_buttons():
   buttons = [[
        InlineKeyboardButton('BOTS 🤖',
