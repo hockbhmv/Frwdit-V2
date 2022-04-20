@@ -27,7 +27,7 @@ async def token(bot, m):
   try:
     client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=token[0])
     await client.start()
-    bot_id = (await client.get_me()).id
+    bot_id = (await client.get_me()).username
   except (AccessTokenExpired, AccessTokenInvalid):
     return await msg.reply_text("The given bot token is invalid")
   except Exception as e:
