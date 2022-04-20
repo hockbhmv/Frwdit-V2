@@ -46,7 +46,7 @@ async def settings_query(bot, query):
         chat = await bot.get_chat(channels) 
         buttons.append([InlineKeyboardButton(f'- {chat.title}',
                          callback_data=f"settings#editchannels_{chat.id}")])
-     buttons.append([InlineKeyboardButton('➕ Add bot ➕', 
+     buttons.append([InlineKeyboardButton('➕ Add Channel ➕', 
                       callback_data="settings#addchannel")])
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
@@ -56,7 +56,7 @@ async def settings_query(bot, query):
    
   elif type=="addchannel":  
      chat_id = await bot.ask(chat_id=query.message.chat.id, text="Forward a message from To channel or give me your To channel id")
-     if chat_id is int:
+     if not chat_id.forward_from_chat:
         chat_id = int(chat_id)
      else:
         chat_id = chat_id.forward_from_chat.id
@@ -72,7 +72,7 @@ async def settings_query(bot, query):
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>Channel Details</b></u>\n\n<b>Name -</b> {bot.first_name}\n<b>Bot ID -</b> {bot.id}\n<b>Username -</b> @{bot.username}",
+        f"<b><u>📄 BOT DETAILS</b></u>\n\n<b>NAME -</b> {bot.first_name}\n<b>BOT ID -</b> {bot.id}\n<b>USERNAME -</b> @{bot.username}",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removebot":
@@ -89,7 +89,7 @@ async def settings_query(bot, query):
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>Channel Details</b></u>\n\n<b>Title -</b> {chat.title}\n<b>Channel ID -</b> {chat.id}\n<b>Username -</b> @{chat.username}",
+        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>TITLE -</b> <code>{chat.title}</code>\n<b>CHANNEL ID -</b> <code>{chat.id}</code>\n<b>USERNAME -</b> {}".format("@" + chat.username if chat.username else "None"),
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removechannel":
