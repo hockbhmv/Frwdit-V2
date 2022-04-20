@@ -27,6 +27,18 @@ async def token(bot, m):
   await msg.reply_text(f"bot token successfully added to db")
   return
 
+@Client.on_message(filters.private & filters.command('forward_tag'))
+async def forward_tag(bot, m):
+   configs = await db.get_configs(m.from_user.id)
+   forward_tag = configs.get('forward_tag')
+   if not forward_tag:
+      forward_tag = True 
+   if forward_tag != "True":
+       await update_configs(m.from_user.id, "forward_tag", True)
+   else:
+       await update_configs(m.from_user.id, "forward_tag", False)
+   await m.reply("Now Forward messages without tag" if forward_tag=="True" else "Now Forward messages with tag")
+  
 async def get_configs(user_id):
   configs = Config.CONFIGS.get(user_id)
   if not configs:
