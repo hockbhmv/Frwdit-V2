@@ -81,11 +81,20 @@ async def pub_(bot, message):
                     fetched+=1 
                     if len(MSG) >= 200:
                       if configs['forward_tag']:
-                         await client.forward_messages(
+                        try:
+                          await client.forward_messages(
                              chat_id=FORWARD['TO'],
                              from_chat_id=FORWARD['FROM'],
                              message_ids=MSG 
-                         )
+                          )
+                        except FloodWait as e:
+                          await asyncio.sleep(e.x)
+                          await client.forward_messages(
+                             chat_id=FORWARD['TO'],
+                             from_chat_id=FORWARD['FROM'],
+                             message_ids=MSG 
+                          )
+                        total_files+=200
                       else:
                         for msgs in MSG:
                           if IS_CANCELLED:
@@ -143,7 +152,7 @@ async def pub_(bot, message):
                     InlineKeyboardButton('📡 Update Channel', url='https://t.me/venombotupdates')
                 ]]
                 reply_markup = InlineKeyboardMarkup(buttons)
-                await edit(m, TEXT.format('FORWARDING SUCCESSFULLY COMPLETED', fetched, deleted, total_files, skip, "completed", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, deleted, total_files, skip, "completed", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                    
 async def edit(msg, text, button):
    try:
