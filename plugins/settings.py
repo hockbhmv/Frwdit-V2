@@ -85,11 +85,12 @@ async def settings_query(bot, query):
   elif type.startswith("editchannels"): 
      chat_id = type.split('_')[1]
      chat = await bot.get_chat(chat_id)
+     username = "@" + chat.username if chat.username else "None"
      buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removechannel")
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>TITLE -</b> <code>{chat.title}</code>\n<b>CHANNEL ID -</b> <code>{chat.id}</code>\n<b>USERNAME -</b> {}".format("@" + chat.username if chat.username else "None"),
+        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>TITLE -</b> <code>{chat.title}</code>\n<b>CHANNEL ID -</b> <code>{chat.id}</code>\n<b>USERNAME -</b> {username}",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removechannel":
