@@ -13,7 +13,7 @@ async def settings(client, message):
     
 @Client.on_callback_query(filters.regex(r'^settings'))
 async def settings_query(bot, query):
-  i, type = query.text.split("#")
+  i, type = query.message.text.split("#")
   buttons = [[InlineKeyboardButton('back', callback_data="settings#main")]]
   
   if type=="main":
@@ -22,8 +22,23 @@ async def settings_query(bot, query):
        reply_markup=main_buttons())
        
   elif type=="bots":
+     buttons = [[InlineKeyboardButton('➕ Add bot ➕', 
+                         callback_data="settings#addbot")
+                ],[
+                InlineKeyboardButton('back', 
+                         callback_data="settings#main")]]
      await query.message.edit_text(
-       "<b><u>Your Bots</b></u>\nyou can manage your bot here",
+       "<b><u>My Bots</b></u>\n\nyou can manage your bots in here",
+       reply_markup=InlineKeyboardMarkup(buttons))
+   
+  elif type=="channels":
+     buttons = [[InlineKeyboardButton('➕ Add bot ➕', 
+                         callback_data="settings#channel")
+                ],[
+                InlineKeyboardButton('back', 
+                         callback_data="settings#main")]]
+     await query.message.edit_text( 
+       "<b><u>My Channels</b></u>\n\nyou can manage your channels in here",
        reply_markup=InlineKeyboardMarkup(buttons))
        
 def main_buttons():
