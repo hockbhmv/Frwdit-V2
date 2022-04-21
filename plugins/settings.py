@@ -51,7 +51,7 @@ async def settings_query(bot, query):
      buttons = []
      channels = await db.get_user_channels(query.from_user_id)
      async for channel in channels:
-        buttons.append([InlineKeyboardButton(f'{channel['title']}',
+        buttons.append([InlineKeyboardButton(f"{channel['title']}",
                          callback_data=f"settings#editchannels_{channel['chat_id']}")])
      buttons.append([InlineKeyboardButton('➕ Add Channel ➕', 
                       callback_data="settings#addchannel")])
