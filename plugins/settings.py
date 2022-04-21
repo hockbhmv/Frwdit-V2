@@ -43,7 +43,7 @@ async def settings_query(bot, query):
      bot = await bot_token(bot, query)
      if not bot:
         return
-     await query.message.edit_text(
+     await query.message.reply_text(
         "bot token successfully added to db",
         reply_markup=InlineKeyboardMarkup(buttons))
    
