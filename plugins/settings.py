@@ -1,7 +1,7 @@
 import asyncio 
 from database import db
 from pyrogram import Client, filters
-from .test import get_configs, update_configs 
+from .test import get_configs, update_configs, bot_token
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 @Client.on_message(filters.command('settings'))
@@ -37,7 +37,11 @@ async def settings_query(bot, query):
      await query.message.edit_text(
        "<b><u>My Bots</b></u>\n\nyou can manage your bots in here",
        reply_markup=InlineKeyboardMarkup(buttons))
-   
+  
+  elif type=="addbot":
+     await query.message.delete()
+     await bot_token(bot, query, True)
+      
   elif type=="channels":
      buttons = []
      data = await db.get_configs(query.from_user.id)
