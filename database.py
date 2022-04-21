@@ -105,6 +105,9 @@ class Database:
          return False
        return await self.chl.delete_many({"user_id": user_id, "chat_id": chat_id})
     
+    async def get_channel_details(self, user_id: int, chat_id: int):
+       return await self.chl.find_one("user_id": user_id, "chat_id": chat_id)
+       
     async def get_user_channels(self, user_id: int):
        return self.chl.find({"user_id": user_id})
      
