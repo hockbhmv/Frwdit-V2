@@ -40,8 +40,13 @@ async def settings_query(bot, query):
   
   elif type=="addbot":
      await query.message.delete()
-     await bot_token(bot, query, True)
-      
+     bot = await bot_token(bot, query, True)
+     if not bot:
+        return
+     await query.message.edit_text(
+        "bot token successfully added to db",
+        reply_markup=InlineKeyboardMarkup(buttons))
+   
   elif type=="channels":
      buttons = []
      data = await db.get_configs(query.from_user.id)
