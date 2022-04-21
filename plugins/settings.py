@@ -72,7 +72,7 @@ async def settings_query(bot, query):
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>📄 BOT DETAILS</b></u>\n\n<b>NAME -</b> {bot.first_name}\n<b>BOT ID -</b> {bot.id}\n<b>USERNAME -</b> @{bot.username}",
+        f"<b><u>📄 BOT DETAILS</b></u>\n\n<b>- NAME:</b> <code>{bot.first_name}</code>\n<b>- BOT ID:</b> <code>{bot.id}</code>\n<b>- USERNAME:</b> @{bot.username}",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removebot":
@@ -90,7 +90,7 @@ async def settings_query(bot, query):
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>TITLE -</b> <code>{chat.title}</code>\n<b>CHANNEL ID -</b> <code>{chat.id}</code>\n<b>USERNAME -</b> {username}",
+        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>- TITLE:</b> <code>{chat.title}</code>\n<b>- CHANNEL ID: </b> <code>{chat.id}</code>\n<b>- USERNAME:</b> {username}",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removechannel":
