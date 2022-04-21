@@ -75,7 +75,7 @@ async def settings_query(bot, query):
         chat_id = chat_ids.forward_from_chat.id
         title = chat_ids.forward_from_chat.title
         username = chat_ids.forward_from_chat.username
-        username = "@" + username if username else None
+        username = "@" + username if username else "private"
      chat = await db.add_channel(user_id, chat_id, title, username)
      await query.message.reply_text(
         "Successfully updated" if chat else "This channel already in added",
@@ -105,7 +105,7 @@ async def settings_query(bot, query):
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>- TITLE:</b> <code>{chat['title']}</code>\n<b>- CHANNEL ID: </b> <code>{chat['chat_id']}</code>\n<b>- USERNAME:</b> {chat['username']}",
+        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>- TITLE:</b> <code>{chat['title']}</code>\n<b>- CHANNEL ID: </b> <code>{chat['chat_id']}</code>\n<b>- USERNAME:</b>",# {chat['username']}",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type.startswith("removechannel"):
