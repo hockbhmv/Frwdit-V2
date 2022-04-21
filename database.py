@@ -90,7 +90,7 @@ class Database:
         return default
        
     async def in_channel(self, user_id: int, chat_id: int) -> bool:
-       channel = await self.chl.find_one({"user_id": user_id, "chat_id": chat_id})
+       channel = await self.chl.find_one({"user_id": int(user_id), "chat_id": int(chat_id)})
        return bool(channel)
     
     async def add_channel(self, user_id: int, chat_id: int, title, username):
@@ -103,12 +103,12 @@ class Database:
        channel = await self.in_channel(user_id, chat_id )
        if not channel:
          return False
-       return await self.chl.delete_many({"user_id": user_id, "chat_id": chat_id})
+       return await self.chl.delete_many({"user_id": int(user_id), "chat_id": int(chat_id)})
     
     async def get_channel_details(self, user_id: int, chat_id: int):
-       return await self.chl.find_one({"user_id": user_id, "chat_id": chat_id})
+       return await self.chl.find_one({"user_id": int(user_id), "chat_id": int(chat_id)})
        
     async def get_user_channels(self, user_id: int):
-       return self.chl.find({"user_id": user_id})
+       return self.chl.find({"user_id": int(user_id)})
      
 db = Database(Config.DATABASE_URI, "forward-bot")
