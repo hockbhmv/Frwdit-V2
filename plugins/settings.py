@@ -75,8 +75,7 @@ async def settings_query(bot, query):
      else:
         chat_id = chat_ids.forward_from_chat.id
      await update_configs(query.from_user.id, "channels", chat_id)
-     await bot.delete_messages([chat_ids, chat_ids.reply_to_message])
-     await query.message.edit_text(
+     await query.message.reply_text(
         "Successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
   
