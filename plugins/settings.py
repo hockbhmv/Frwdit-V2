@@ -64,7 +64,7 @@ async def settings_query(bot, query):
    
   elif type=="addchannel":  
      await query.message.delete()
-     chat_ids = await bot.ask(chat_id=query.message.chat.id, text="<b><u>SET TO CHANNELS</b></u>\nForward a message from To channel or enter To channel id\n/cancel - <code>cancel this process</code>")
+     chat_ids = await bot.ask(chat_id=query.message.chat.id, text="<b><u>SET TO CHANNELS</b></u>\nForward a message from To channel\n/cancel - <code>cancel this process</code>")
      if chat_ids.text=="/cancel":
         return await chat_ids.reply_text(
                   "process canceled",
@@ -78,7 +78,7 @@ async def settings_query(bot, query):
         username = "@" + username if username else "private"
      chat = await db.add_channel(user_id, chat_id, title, username)
      await query.message.reply_text(
-        "Successfully updated" if chat else "This channel already in added",
+        "Successfully updated" if chat else "This channel already added",
         reply_markup=InlineKeyboardMarkup(buttons))
   
   elif type.startswith("editbot"): 
@@ -105,7 +105,7 @@ async def settings_query(bot, query):
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>- TITLE:</b> <code>{chat['title']}</code>\n<b>- CHANNEL ID: </b> <code>{chat['chat_id']}</code>\n<b>- USERNAME:</b>",# {chat['username']}",
+        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>- TITLE:</b> <code>{chat['title']}</code>\n<b>- CHANNEL ID: </b> <code>{chat['chat_id']}</code>\n<b>- USERNAME:</b> {chat['username']}",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type.startswith("removechannel"):
