@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 @Client.on_message(filters.private & filters.command('add'))
-async def token(bot, m):
+async def bot_token(bot, m):
   msg = await bot.ask(chat_id=m.from_user.id, text="1) create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me")
   if not msg.forward_date:
      return await msg.reply_text("This is not a forward message")
