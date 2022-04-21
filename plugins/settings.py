@@ -195,7 +195,7 @@ def main_buttons():
        ]]
   return InlineKeyboardMarkup(buttons)
        
-def filters_buttons(user_id):
+async def filters_buttons(user_id):
   filters = await get_configs(user_id)
   buttons = [[
        InlineKeyboardButton('🏷️ Forward tag',
