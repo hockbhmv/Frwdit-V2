@@ -89,7 +89,7 @@ class Database:
             return user.get('configs', default)
         return default
        
-    async def in_channel(self, user_id: int, chat: int) -> bool:
+    async def in_channel(self, user_id: int, chat_id: int) -> bool:
        channel = await self.chl.find_one({"user_id": user_id, "chat_id": chat_id})
        return bool(channel)
     
