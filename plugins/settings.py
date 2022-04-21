@@ -200,43 +200,43 @@ def filters_buttons(user_id):
   buttons = [[
        InlineKeyboardButton('🏷️ Forward tag',
                     callback_data=f'settings#updatefilter-forward_tag-{filters['forward_tag']}'),
-       InlineKeyboardButton('✔️' if filters['forward_tag'] else ❌,
+       InlineKeyboardButton('✔️' if filters['forward_tag'] else '❌',
                     callback_data=f'settings#updatefilter-forward_tag-{filters['forward_tag']}')
        ],
        [
        InlineKeyboardButton('🖍️ Texts',
                     callback_data=f'settings#updatefilter-texts-{filters['texts']}'),
-       InlineKeyboardButton('✔️' if filters['texts'] else ❌,
+       InlineKeyboardButton('✔️' if filters['texts'] else '❌',
                     callback_data=f'settings#updatefilter-Texts-{filters['texts']}')
        ],
        [
        InlineKeyboardButton('📁 Documents',
                     callback_data=f'settings#updatefilter-documents-{filters['documents']}'),
-       InlineKeyboardButton('✔️' if filters['documents'] else ❌,
+       InlineKeyboardButton('✔️' if filters['documents'] else '❌',
                     callback_data=f'settings#updatefilter-documents-{filters['documents']}')
        ],
        [
        InlineKeyboardButton(🎞️'Videos',
                     callback_data=f'settings#updatefilter-videos-{filters['videos']}'),
-       InlineKeyboardButton('✔️' if filters['videos'] else ❌,
+       InlineKeyboardButton('✔️' if filters['videos'] else '❌',
                     callback_data=f'settings#updatefilter-videos-{filters['videos']}')
        ],
        [
        InlineKeyboardButton('📷 Photos',
                     callback_data=f'settings#updatefilter-photos-{filters['photos']}'),
-       InlineKeyboardButton('✔️' if filters['photos'] else ❌,
+       InlineKeyboardButton('✔️' if filters['photos'] else '❌',
                     callback_data=f'settings#updatefilter-photos-{filters['photos']}')
        ],
        [
        InlineKeyboardButton('🎧 Audios',
                     callback_data=f'settings#updatefilter-audios-{filters['audios']}'),
-       InlineKeyboardButton('✔️' if filters['audios'] else ❌,
+       InlineKeyboardButton('✔️' if filters['audios'] else '❌',
                     callback_data=f'settings#updatefilter-audios-{filters['audios']}')
        ],
        [
        InlineKeyboardButton('🎭 Animations',
                     callback_data=f'settings#updatefilter-animations-{filters['animations']}'),
-       InlineKeyboardButton('✔️' if filters['animations'] else ❌,
+       InlineKeyboardButton('✔️' if filters['animations'] else '❌',
                     callback_data=f'settings#updatefilter-animations-{filters['animations']}')
        ]]
   return InlineKeyboardMarkup(buttons) 
