@@ -126,7 +126,7 @@ async def settings_query(bot, query):
   elif type=="seecaption":   
      data = await get_configs(query.from_user.id)
      buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
-                  callback_data="settings#editcaption")
+                  callback_data="settings#addcaption")
                ],[
                InlineKeyboardButton('back', 
                  callback_data="settings#caption")]]
@@ -140,9 +140,9 @@ async def settings_query(bot, query):
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
                               
-  elif type==("addcaption" or "editcaption"):
+  elif type=="addcaption":
      await query.message.delete()
-     caption = await bot.ask(query.message.chat.id, text="Send your custom caption\n/cancel - <code> cancel this process")
+     caption = await bot.ask(query.message.chat.id, text="Send your custom caption\n/cancel - <code>cancel this process</code>")
      if caption.text=="/cancel":
         return await caption.reply_text(
                   "process canceled !",
