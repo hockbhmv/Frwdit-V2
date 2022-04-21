@@ -44,6 +44,7 @@ async def token(bot, m):
 @Client.on_message(filters.private & filters.command('reset'))
 async def forward_tag(bot, m):
    default = await db.get_configs("01")
+   Config.CONFIGS[m.from_user.id] = default
    await db.update_configs(m.from_user.id, default)
    await m.reply("successfully settings reseted ✔️")
     
