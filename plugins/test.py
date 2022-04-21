@@ -15,31 +15,35 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 @Client.on_message(filters.private & filters.command('add'))
-async def bot_token(bot, m, query=False):
+async def bot_token(bot, m):
   msg = await bot.ask(chat_id=m.from_user.id, text="1) create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me")
   if not msg.forward_date:
-     return await msg.reply_text("This is not a forward message")
+     await msg.reply_text("This is not a forward message")
+     return False
   if str(msg.forward_from.id) != "93372553":
-     return await msg.reply_text("This message was not forward from bot father")
+     await msg.reply_text("This message was not forward from bot father")
+     return False
   token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
   if not token and token == []:
-     return await msg.reply_text("There is no bot token in that message")
+     await msg.reply_text("There is no bot token in that message")
+     return False
   try:
     client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=token[0])
     await client.start()
     bot_id = (await client.get_me()).username
   except (AccessTokenExpired, AccessTokenInvalid):
-    return await msg.reply_text("The given bot token is invalid")
+    await msg.reply_text("The given bot token is invalid")
+    return False
   except Exception as e:
-    return await msg.reply_text(f"Bot Error:- {e}")
+    await msg.reply_text(f"Bot Error:- {e}")
+    return False
   await update_configs(m.from_user.id, "bot_token", token[0])
   await update_configs(m.from_user.id, "bot_id", bot_id)
-  await msg.reply_text(f"bot token successfully added to db")
   try:
     await client.stop()
   except:
     pass
-  return
+  return True
 
 @Client.on_message(filters.private & filters.command('reset'))
 async def forward_tag(bot, m):
