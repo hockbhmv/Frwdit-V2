@@ -49,12 +49,10 @@ async def settings_query(bot, query):
    
   elif type=="channels":
      buttons = []
-     data = await db.get_configs(query.from_user.id)
-     channels = data['channels']
-     if channels is not None:
-        chat = await bot.get_chat(channels) 
-        buttons.append([InlineKeyboardButton(f'- {chat.title}',
-                         callback_data=f"settings#editchannels_{chat.id}")])
+     channels = await db.get_user_channels(query.from_user_id)
+     async for channel in channels:
+        buttons.append([InlineKeyboardButton(f'{channel['title']}',
+                         callback_data=f"settings#editchannels_{channel['chat_id']}")])
      buttons.append([InlineKeyboardButton('➕ Add Channel ➕', 
                       callback_data="settings#addchannel")])
      buttons.append([InlineKeyboardButton('back', 
@@ -70,13 +68,16 @@ async def settings_query(bot, query):
         return await chat_ids.reply_text(
                   "process canceled",
                   reply_markup=InlineKeyboardMarkup(buttons))
-     elif not chat_ids.forward_from_chat:
-        chat_id = int(chat_ids)
+     elif not chat_ids.forward_date:
+        return await chat_ids.reply("This is not a forward message")
      else:
         chat_id = chat_ids.forward_from_chat.id
-     await update_configs(query.from_user.id, "channels", chat_id)
+        title = chat_ids.forward_from_chat.title
+        username = chat_ids.forward_from_chat.username
+        username = "@" + username if username else None
+     chat = await db.add_channel(query.from_user.id, chat_id, title, username)
      await query.message.reply_text(
-        "Successfully updated",
+        "Successfully updated" if chat else "This channel already in added",
         reply_markup=InlineKeyboardMarkup(buttons))
   
   elif type.startswith("editbot"): 
@@ -98,17 +99,17 @@ async def settings_query(bot, query):
                                              
   elif type.startswith("editchannels"): 
      chat_id = type.split('_')[1]
-     chat = await bot.get_chat(chat_id)
-     username = "@" + chat.username if chat.username else "None"
-     buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removechannel")
+     chat = await db.get_channel_details(query.from_user.id, chat_id)
+     buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removechannel_{chat_id}")
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>- TITLE:</b> <code>{chat.title}</code>\n<b>- CHANNEL ID: </b> <code>{chat.id}</code>\n<b>- USERNAME:</b> {username}",
+        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>- TITLE:</b> <code>{chat['title']}</code>\n<b>- CHANNEL ID: </b> <code>{chat['chat_id']}</code>\n<b>- USERNAME:</b> {chat['username']}",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
-  elif type=="removechannel":
-     await update_configs(query.from_user.id, "channels", None)
+  elif type.startswith("removechannel"):
+     chat_id = type.split('_')[1]
+     await db.remove_channel(query.from_user.id, chat_id)
      await query.message.edit_text(
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
