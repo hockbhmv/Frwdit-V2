@@ -213,7 +213,7 @@ def filters_buttons(user_id):
        InlineKeyboardButton('✔️' if filters['documents'] else '❌',
                     callback_data=f'settings#updatefilter-documents-{filters["documents"]}')
        ],[
-       InlineKeyboardButton(🎞️'Videos',
+       InlineKeyboardButton('🎞️ Videos',
                     callback_data=f'settings#updatefilter-videos-{filters["videos"]}'),
        InlineKeyboardButton('✔️' if filters['videos'] else '❌',
                     callback_data=f'settings#updatefilter-videos-{filters["videos"]}')
