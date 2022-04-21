@@ -8,7 +8,7 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
         self.db = self._client[database_name]
         self.col = self.db.users
-        
+        self.chl = self.db.channels
 
     def new_user(self, id, name):
         return dict(
@@ -88,5 +88,24 @@ class Database:
         if user:
             return user.get('configs', default)
         return default
-      
+       
+    async def in_channel(self, user: int, chat: int) -> bool:
+       channel = await self.chl.find_one({"user_id": user_id, "chat_id": chat_id})
+       return bool(channel)
+    
+    async def add_channel(self, user_id: int, chat_id: int, title, username):
+       channel = await self.in_channel(user_id, chat_id)
+       if channel:
+         return False
+       return await self.chl.insert_one({"user_id": user_id, "chat_id": chat_id, "title": title, "username": username})
+    
+    async def remove_channel(self, user_id: int, chat_id: int):
+       channel = await self.in_channel(user_id, chat_id )
+       if not channel:
+         return False
+       return await self.chl.delete_many({"user_id": user_id, "chat_id": chat_id})
+    
+    async def get_user_channels(self, user_id: int):
+       return self.chl.find({"user_id": user_id})
+     
 db = Database(Config.DATABASE_URI, "forward-bot")
