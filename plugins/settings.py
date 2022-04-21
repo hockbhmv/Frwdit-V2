@@ -125,7 +125,7 @@ async def settings_query(bot, query):
      buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
                   callback_data="settings#editcaption")]]
      await query.message.edit_text(
-        f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{caption}</code>"
+        f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{caption}</code>",
         reply_markup=InlineKeyboardMarkup(buttons))
     
   elif type=="deletecaption":
