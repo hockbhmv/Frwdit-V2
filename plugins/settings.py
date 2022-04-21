@@ -13,6 +13,7 @@ async def settings(client, message):
     
 @Client.on_callback_query(filters.regex(r'^settings'))
 async def settings_query(bot, query):
+  user_id = query.from_user.id
   i, type = query.data.split("#")
   buttons = [[InlineKeyboardButton('back', callback_data="settings#main")]]
   
@@ -23,7 +24,7 @@ async def settings_query(bot, query):
        
   elif type=="bots":
      buttons = [] 
-     data = await db.get_configs(query.from_user.id)
+     data = await db.get_configs(user_id)
      bot_id = data['bot_id']
      if bot_id is not None:
         c_bot = await bot.get_users(bot_id) 
@@ -49,7 +50,7 @@ async def settings_query(bot, query):
    
   elif type=="channels":
      buttons = []
-     channels = await db.get_user_channels(query.from_user_id)
+     channels = await db.get_user_channels(user_id)
      async for channel in channels:
         buttons.append([InlineKeyboardButton(f"{channel['title']}",
                          callback_data=f"settings#editchannels_{channel['chat_id']}")])
@@ -75,7 +76,7 @@ async def settings_query(bot, query):
         title = chat_ids.forward_from_chat.title
         username = chat_ids.forward_from_chat.username
         username = "@" + username if username else None
-     chat = await db.add_channel(query.from_user.id, chat_id, title, username)
+     chat = await db.add_channel(user_id, chat_id, title, username)
      await query.message.reply_text(
         "Successfully updated" if chat else "This channel already in added",
         reply_markup=InlineKeyboardMarkup(buttons))
@@ -91,15 +92,15 @@ async def settings_query(bot, query):
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removebot":
-     await update_configs(query.from_user.id, "bot_id", None)
-     await update_configs(query.from_user.id, "bot_token", None)
+     await update_configs(user_id, "bot_id", None)
+     await update_configs(user_id, "bot_token", None)
      await query.message.edit_text(
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type.startswith("editchannels"): 
      chat_id = type.split('_')[1]
-     chat = await db.get_channel_details(query.from_user.id, chat_id)
+     chat = await db.get_channel_details(user_id, chat_id)
      buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removechannel_{chat_id}")
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
@@ -109,14 +110,14 @@ async def settings_query(bot, query):
                                              
   elif type.startswith("removechannel"):
      chat_id = type.split('_')[1]
-     await db.remove_channel(query.from_user.id, chat_id)
+     await db.remove_channel(user_id, chat_id)
      await query.message.edit_text(
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
                                
   elif type=="caption":
      buttons = []
-     data = await get_configs(query.from_user.id)
+     data = await get_configs(user_id)
      caption = data['caption']
      if caption is None:
         buttons.append([InlineKeyboardButton('➕ Add Caption ➕', 
@@ -133,7 +134,7 @@ async def settings_query(bot, query):
         reply_markup=InlineKeyboardMarkup(buttons))
                                
   elif type=="seecaption":   
-     data = await get_configs(query.from_user.id)
+     data = await get_configs(user_id)
      buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
                   callback_data="settings#addcaption")
                ],[
@@ -144,7 +145,7 @@ async def settings_query(bot, query):
         reply_markup=InlineKeyboardMarkup(buttons))
     
   elif type=="deletecaption":
-     await update_configs(query.from_user.id, 'caption', None)
+     await update_configs(user_id, 'caption', None)
      await query.message.edit_text(
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
@@ -156,7 +157,7 @@ async def settings_query(bot, query):
         return await caption.reply_text(
                   "process canceled !",
                   reply_markup=InlineKeyboardMarkup(buttons))
-     await update_configs(query.from_user.id, "caption", caption.text)
+     await update_configs(user_id, "caption", caption.text)
      await caption.reply_text(
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
@@ -164,17 +165,17 @@ async def settings_query(bot, query):
   elif type=="filters":
      await query.message.edit_text(
         "<b><u>CUSTOM FILTERS</b></u>\n\nconfigure the type of messages which you want forward",
-        reply_markup=await filters_buttons(query.from_user.id))
+        reply_markup=await filters_buttons(user_id))
   
   elif type.startswith("updatefilter"):
      i, key, value = type.split('-')
      if value=="True":
-        await update_configs(query.from_user.id, key, False)
+        await update_configs(user_id, key, False)
      else:
-        await update_configs(query.from_user.id, key, True)
+        await update_configs(user_id, key, True)
      await query.message.edit_text(
         "<b><u>CUSTOM FILTERS</b></u>\n\nconfigure the type of messages which you want forward",
-        reply_markup=await filters_buttons(query.from_user.id))
+        reply_markup=await filters_buttons(user_id))
         
 def main_buttons():
   buttons = [[
