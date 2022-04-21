@@ -76,7 +76,13 @@ class Database:
             'bot_token': None,
             'channels': None,
             'caption': None,
-            'forward_tag': False  
+            'texts': False,
+            'audios': False,
+            'videos': False,
+            'photos': False,
+            'documents': False,
+            'animations': False,
+            'forward_tag': False 
         }
         user = await self.col.find_one({'id':int(id)})
         if user:
