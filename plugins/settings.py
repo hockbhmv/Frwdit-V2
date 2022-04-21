@@ -117,15 +117,21 @@ async def settings_query(bot, query):
                       callback_data="settings#seecaption")])
         buttons.append([InlineKeyboardButton('🗑️ Delete Caption', 
                       callback_data="settings#deletecaption")])
+     buttons.append([InlineKeyboardButton('back', 
+                      callback_data="settings#main")])
      await query.message.edit_text(
         "<b><u>CUSTOM CAPTION</b></u>\n\nyou can set a custom caption to videos and documents. normal use its default caption\n\n<b><u>AVAILABLE FILLINGS:</b></u>\n- <code>{filename}</code> : Filename\n- <code>{size}</code> : File size\n- <code>{caption}</code> : default caption",
         reply_markup=InlineKeyboardMarkup(buttons))
                                
   elif type=="seecaption":   
+     data = await get_configs(query.from_user.id)
      buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
-                  callback_data="settings#editcaption")]]
+                  callback_data="settings#editcaption")
+               ],[
+               InlineKeyboardButton('back', 
+                 callback_data="settings#caption")]]
      await query.message.edit_text(
-        f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{caption}</code>",
+        f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{data['caption']}</code>",
         reply_markup=InlineKeyboardMarkup(buttons))
     
   elif type=="deletecaption":
