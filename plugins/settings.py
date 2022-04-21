@@ -66,12 +66,12 @@ async def settings_query(bot, query):
   elif type=="addchannel":  
      await query.message.delete()
      chat_ids = await bot.ask(chat_id=query.message.chat.id, text="<b><u>SET TO CHANNELS</b></u>\nForward a message from To channel or enter To channel id\n/cancel - <code>cancel this process</code>")
-     if not chat_ids.forward_from_chat:
-        chat_id = int(chat_id)
-     elif chat_ids.text=="/cancel":
+     if chat_ids.text=="/cancel":
         return await chat_ids.reply_text(
                   "process canceled",
                   reply_markup=InlineKeyboardMarkup(buttons))
+     elif not chat_ids.forward_from_chat:
+        chat_id = int(chat_ids)
      else:
         chat_id = chat_ids.forward_from_chat.id
      await update_configs(query.from_user.id, "channels", chat_id)
@@ -161,6 +161,21 @@ async def settings_query(bot, query):
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
    
+  elif type=="filters":
+     await query.message.edit_text(
+        "<b><u>CUSTOM FILTERS</b></u>\n\nconfigure the type of messages which you want forward",
+        reply_markup=await filters_buttons(query.from_user.id))
+  
+  elif type.startswith("updatefilter"):
+     i, key, value = type.split('-')
+     if value=="True":
+        await update_configs(query.from_user.id, key, False)
+     else:
+        await update_configs(query.from_user.id, key, True)
+     await query.message.edit_text(
+        "<b><u>CUSTOM FILTERS</b></u>\n\nconfigure the type of messages which you want forward",
+        reply_markup=await filters_buttons(query.from_user.id))
+        
 def main_buttons():
   buttons = [[
        InlineKeyboardButton('BOTS 🤖',
@@ -180,3 +195,48 @@ def main_buttons():
        ]]
   return InlineKeyboardMarkup(buttons)
        
+def filters_buttons(user_id):
+  filters = await get_configs(user_id)
+  buttons = [[
+       InlineKeyboardButton('🏷️ Forward tag',
+                    callback_data=f'settings#updatefilter-forward_tag-{filters['forward_tag']}'),
+       InlineKeyboardButton('✔️' if filters['forward_tag'] else ❌,
+                    callback_data=f'settings#updatefilter-forward_tag-{filters['forward_tag']}')
+       ],
+       [
+       InlineKeyboardButton('🖍️ Texts',
+                    callback_data=f'settings#updatefilter-texts-{filters['texts']}'),
+       InlineKeyboardButton('✔️' if filters['texts'] else ❌,
+                    callback_data=f'settings#updatefilter-Texts-{filters['texts']}')
+       ],
+       [
+       InlineKeyboardButton('📁 Documents',
+                    callback_data=f'settings#updatefilter-documents-{filters['documents']}'),
+       InlineKeyboardButton('✔️' if filters['documents'] else ❌,
+                    callback_data=f'settings#updatefilter-documents-{filters['documents']}')
+       ],
+       [
+       InlineKeyboardButton(🎞️'Videos',
+                    callback_data=f'settings#updatefilter-videos-{filters['videos']}'),
+       InlineKeyboardButton('✔️' if filters['videos'] else ❌,
+                    callback_data=f'settings#updatefilter-videos-{filters['videos']}')
+       ],
+       [
+       InlineKeyboardButton('📷 Photos',
+                    callback_data=f'settings#updatefilter-photos-{filters['photos']}'),
+       InlineKeyboardButton('✔️' if filters['photos'] else ❌,
+                    callback_data=f'settings#updatefilter-photos-{filters['photos']}')
+       ],
+       [
+       InlineKeyboardButton('🎧 Audios',
+                    callback_data=f'settings#updatefilter-audios-{filters['audios']}'),
+       InlineKeyboardButton('✔️' if filters['audios'] else ❌,
+                    callback_data=f'settings#updatefilter-audios-{filters['audios']}')
+       ],
+       [
+       InlineKeyboardButton('🎭 Animations',
+                    callback_data=f'settings#updatefilter-animations-{filters['animations']}'),
+       InlineKeyboardButton('✔️' if filters['animations'] else ❌,
+                    callback_data=f'settings#updatefilter-animations-{filters['animations']}')
+       ]]
+  return InlineKeyboardMarkup(buttons) 
