@@ -28,13 +28,13 @@ async def run(bot, message):
        btn_data[channel['title']] = channel['chat_id']
     if not buttons:
        return await message.reply_text("please set a to channel in /settings before forwarding")
-    toid = await bot.ask(message.chat.id, Translation.TO_MSG, reply_markup=ReplyKeyboardMarkup(buttons))
+    toid = await bot.ask(message.chat.id, Translation.TO_MSG, reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
     if toid.text.startswith('/'):
         await message.reply_text(Translation.CANCEL, reply_markup=ReplyKeyboardRemove())
         return
     toid = btn_data.get(toid.text)
     if not toid:
-       return await toid.reply_text("wrong channel choosen", repy_markup=ReplyKeyboardRemove())
+       return await message.reply_text("wrong channel choosen", repy_markup=ReplyKeyboardRemove())
     fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
     if fromid.text.startswith('/'):
         await message.reply(Translation.CANCEL)
