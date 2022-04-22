@@ -72,7 +72,7 @@ async def pub_(bot, message):
                     if filter:
                        filtered+=1
                        continue 
-                    file_name = file_name(message)
+                    file_name = filename(message)
                     if not configs['forward_tag']:
                        MSG.append({"msg_id": message.message_id, "file_name": file_name})
                     else:
@@ -171,7 +171,7 @@ def check_filters(data, msg):
       return True 
    return False 
 
-def file_name(msg, file_name=None):
+def filename(msg, file_name=None):
    if msg.video:
      file_name = msg.video.file_name
    elif msg.document:
