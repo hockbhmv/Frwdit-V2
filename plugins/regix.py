@@ -15,7 +15,7 @@ IS_CANCELLED = False
 lock = {}
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-TEXT = '<b><u>FORWARD STATUS</b></u>\n{}\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>\n<b>🔘 percentage:</b> <code>{}</code> %'
+TEXT = '<b><u>FORWARD STATUS</b></u>\n{}\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Filtered messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>\n<b>🔘 percentage:</b> <code>{}</code> %'
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
@@ -48,6 +48,7 @@ async def pub_(bot, message):
               pling=0
               fetched = 0
               deleted = 0 
+              filtered = 0
               FORWARD = FORWARD.get(user)
               if not FORWARD:
                  return await message.answer("your are clicking on my old button")
@@ -59,10 +60,17 @@ async def pub_(bot, message):
                        IS_CANCELLED = False 
                        await client.send_message(user, text="Forwarding cancelled")
                        await client.stop()
-                       break
+                       break 
+                    pling += 1
+                    if pling %10 == 0: 
+                       await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Fetching", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                     if message.empty or message.service:
                        deleted+=1
                        continue 
+                    filter = check_filters(configs, message)
+                    if filter:
+                       filtered+=1
+                       continue
                     if message.video:
                        file_name = message.video.file_name
                     elif message.document:
@@ -71,9 +79,6 @@ async def pub_(bot, message):
                        file_name = message.audio.file_name
                     else:
                        file_name = None 
-                    pling += 1
-                    if pling %10 == 0: 
-                       await edit(m, TEXT.format('', fetched, deleted, total_files, skip, "Fetching", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                     if not configs['forward_tag']:
                        MSG.append({"msg_id": message.message_id, "file_name": file_name})
                     else:
@@ -88,9 +93,9 @@ async def pub_(bot, message):
                              message_ids=MSG 
                           )
                         except FloodWait as e:
-                          await edit(m, TEXT.format('', fetched, deleted, total_files, skip, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                          await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                           await asyncio.sleep(e.x)
-                          await edit(m, TEXT.format('', fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                          await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                           await client.forward_messages(
                              chat_id=FORWARD['TO'],
                              from_chat_id=FORWARD['FROM'],
@@ -106,7 +111,7 @@ async def pub_(bot, message):
                             break
                           pling += 1
                           if pling % 10 == 0: 
-                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                           try:
                             await client.copy_message(
                                chat_id=FORWARD['TO'],
@@ -118,9 +123,9 @@ async def pub_(bot, message):
                             total_files += 1
                             await asyncio.sleep(1.7)
                           except FloodWait as e:
-                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                             await asyncio.sleep(e.x)
-                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                            await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
                             await client.copy_message(
                                chat_id=FORWARD['TO'],
                                from_chat_id=FORWARD['FROM'],
@@ -162,6 +167,21 @@ async def edit(msg, text, button):
    except MessageNotModified:
      pass 
    return
+
+def check_filters(data, msg):
+   if not data['texts'] and msg.text:
+      return True
+   elif not data['photos'] and msg.photo:
+      return True
+   elif not data['videos'] and msg.video:
+      return True 
+   elif not data['documents'] and msg.document:
+      return True 
+   elif not data['audios'] and (msg.audio, msg.voice):
+      return True
+   elif not data['animations'] and (msg.animation, msg.sticker):
+      return True 
+   return False 
 
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, update):
