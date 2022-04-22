@@ -78,8 +78,6 @@ async def run(bot, message):
         text=Translation.DOUBLE_CHECK.format(fromid.text),
         reply_markup=reply_markup
     )
-    if re.match('-100\d+', toid):
-       toid = int(toid)
     FORWARD[user_id] = {
         'TO': toid,
         'FROM': chat_id,
