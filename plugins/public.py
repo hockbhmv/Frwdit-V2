@@ -32,9 +32,9 @@ async def run(bot, message):
         return
     toid = btn_data.get(toid.text)
     if not toid:
-       return await message.reply_text("wrong channel choosen", reply_markup=ReplyKeyboardRemove())
+       return await message.reply_text("wrong channel choosen !", reply_markup=ReplyKeyboardRemove())
     fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
-    if fromid.text.startswith('/'):
+    if fromid.text and fromid.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return 
     if fromid.text:
@@ -78,10 +78,10 @@ async def run(bot, message):
         text=Translation.DOUBLE_CHECK.format(fromid.text),
         reply_markup=reply_markup
     )
-    if re.match('-100\d+', toid.text):
-       toid.text = int(toid.text)
+    if re.match('-100\d+', toid):
+       toid = int(toid)
     FORWARD[user_id] = {
-        'TO': toid.text,
+        'TO': toid,
         'FROM': chat_id,
         'SKIP': skipno.text,
         'LIMIT': last_msg_id
