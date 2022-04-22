@@ -159,7 +159,7 @@ async def pub_(bot, message):
                     InlineKeyboardButton('📡 Update Channel', url='https://t.me/venombotupdates')
                 ]]
                 reply_markup = InlineKeyboardMarkup(buttons)
-                await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, deleted, total_files, skip, "completed", "{:.0f}".format(float(deleted + total_files + skip)*100/float(total))), reply_markup)
+                await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, deleted, total_files, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                    
 async def edit(msg, text, button):
    try:
@@ -177,9 +177,9 @@ def check_filters(data, msg):
       return True 
    elif not data['documents'] and msg.document:
       return True 
-   elif not data['audios'] and (msg.audio, msg.voice):
+   elif not data['audios'] and (msg.audio or msg.voice):
       return True
-   elif not data['animations'] and (msg.animation, msg.sticker):
+   elif not data['animations'] and (msg.animation or msg.sticker):
       return True 
    return False 
 
