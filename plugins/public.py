@@ -1,12 +1,13 @@
 import re
 import asyncio 
-from config import Config
+from database import db
+from config import Config 
 from translation import Translation
 from pyrogram import Client, filters 
-from pyrogram.errors import FloodWait
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.errors import FloodWait 
 from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
- 
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+
 FORWARD = {}
 FILTER = Config.FILTER_TYPE
 files_count = 0
@@ -15,12 +16,26 @@ files_count = 0
 
 @Client.on_message(filters.private & filters.command(["run"]))
 async def run(bot, message):
+    buttons = []
+    btn_data = {}
     user_id = message.from_user.id
-    toid = await bot.ask(message.chat.id, Translation.TO_MSG)
+    channels = await db.get_user_channels(user_id)
+    async for channel in channels:
+       if not buttons:
+          buttons.append([KeyboardButton(f"{channel['title']}")])
+       else:
+          buttons[-1].append(KeyboardButton(f"{channel['title']}"))
+       btn_data[channel['title']] = channel['chat_id']
+    else:
+       return await message.reply_text("please set a to channel in /settings before forwarding")
+    toid = await bot.ask(message.chat.id, Translation.TO_MSG, reply_markup=ReplyKeyboardMarkup(buttons))
     if toid.text.startswith('/'):
-        await message.reply(Translation.CANCEL)
+        await message.reply_text(Translation.CANCEL, reply_markup=ReplyKeyboardRemove())
         return
-    fromid = await bot.ask(message.chat.id, Translation.FROM_MSG)
+    toid = btn_data.get(toid.text)
+    if not toid:
+       return await toid.reply_text("wrong channel choosen", repy_markup=ReplyKeyboardRemove())
+    fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
     if fromid.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return 
