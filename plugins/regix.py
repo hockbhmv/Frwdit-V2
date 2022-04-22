@@ -1,31 +1,33 @@
 import os
 import sys
 import asyncio 
-import logging 
+import logging
 from database import db 
-from config import Config
+from config import Config 
+from plugins.public import FORWARD
 from translation import Translation
 from pyrogram import Client, filters 
 from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
 
-FILTER = Config.FILTER_TYPE
-IS_CANCELLED = False
 lock = {}
+IS_CANCELLED = False
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = '<b><u>FORWARD STATUS</b></u>\n{}\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Filtered messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>\n<b>🔘 percentage:</b> <code>{}</code> %'
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
-    global files_count, IS_CANCELLED
-    await message.answer()
+    global IS_CANCELLED
     user = message.from_user.id
-    await message.message.delete()
-    from plugins.public import FORWARD
+    FORWARD = FORWARD.get(user)
+    if not FORWARD:
+        await message.answer("your are clicking on my old button")
+        return await message.message.delete()
     if lock.get(user) and str(lock.get(user))=="True":
         return await message.answer("__please wait until previous task complete__", show_alert=True)
+    #await message.answer("verifying your data's, please wait.", show_alert=True)
     configs = await db.get_configs(user)
     bot_token = configs["bot_token"]
     if not bot_token:
@@ -37,6 +39,12 @@ async def pub_(bot, message):
       return await message.message.reply_text("The given bot token is invalid")
     except Exception as e:
       return await message.message.reply_text(f"Bot Error:- {e}")
+    try:
+      k = await client.send_message(FORWARD['TO'], "Testing")
+      await k.delete()
+    except:
+      return await message.answer("Please Make Your Bot Admin In Target Channel With Full Permissions", show_alert=True)
+    await message.message.delete()
     test = await client.send_message(user, text="Forwarding started")
     if test:
         m = await message.message.reply_text("<i>processing</i>")
@@ -49,9 +57,6 @@ async def pub_(bot, message):
               fetched = 0
               deleted = 0 
               filtered = 0
-              FORWARD = FORWARD.get(user)
-              if not FORWARD:
-                 return await message.answer("your are clicking on my old button")
               skip = int(FORWARD['SKIP'])
               total = int(FORWARD['LIMIT'])
               reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
