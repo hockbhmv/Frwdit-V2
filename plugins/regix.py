@@ -146,7 +146,7 @@ async def copy(bot, chat, msg):
       chat_id=chat['TO'],
       from_chat_id=chat['FROM'],
       parse_mode="md",       
-      caption=Translation.CAPTION.format(msgs.get("file_name")),
+      caption=Translation.CAPTION.format(msg.get("file_name")),
       message_id=msg.get("msg_id"))
 
 async def edit(msg, text, button):
