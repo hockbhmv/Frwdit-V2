@@ -26,7 +26,7 @@ async def run(bot, message):
        else:
           buttons[-1].append(KeyboardButton(f"{channel['title']}"))
        btn_data[channel['title']] = channel['chat_id']
-    else:
+    if not buttons:
        return await message.reply_text("please set a to channel in /settings before forwarding")
     toid = await bot.ask(message.chat.id, Translation.TO_MSG, reply_markup=ReplyKeyboardMarkup(buttons))
     if toid.text.startswith('/'):
