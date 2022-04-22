@@ -71,15 +71,8 @@ async def pub_(bot, message):
                     filter = check_filters(configs, message)
                     if filter:
                        filtered+=1
-                       continue
-                    if message.video:
-                       file_name = message.video.file_name
-                    elif message.document:
-                       file_name = message.document.file_name
-                    elif message.audio:
-                       file_name = message.audio.file_name
-                    else:
-                       file_name = None 
+                       continue 
+                    file_name = file_name(message)
                     if not configs['forward_tag']:
                        MSG.append({"msg_id": message.message_id, "file_name": file_name})
                     else:
@@ -113,26 +106,13 @@ async def pub_(bot, message):
                           if pling % 10 == 0: 
                             await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           try:
-                            await client.copy_message(
-                               chat_id=FORWARD['TO'],
-                               from_chat_id=FORWARD['FROM'],
-                               parse_mode="md",       
-                               caption=Translation.CAPTION.format(msgs.get("file_name")),
-                               message_id= msgs.get("msg_id")
-                            )
-                            total_files += 1
+                            await copy(client, FORWARD, msgs)
                             await asyncio.sleep(1.7)
                           except FloodWait as e:
                             await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                             await asyncio.sleep(e.x)
                             await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
-                            await client.copy_message(
-                               chat_id=FORWARD['TO'],
-                               from_chat_id=FORWARD['FROM'],
-                               parse_mode="md",       
-                               caption=Translation.CAPTION.format(msgs.get("file_name")),
-                               message_id=msgs.get("msg_id")
-                            )
+                            await copy(client, FORWARD, msgs)
                             total_files += 1
                             await asyncio.sleep(1.7)
                           except Exception as e:
@@ -160,7 +140,15 @@ async def pub_(bot, message):
                 ]]
                 reply_markup = InlineKeyboardMarkup(buttons)
                 await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, deleted, total_files, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
-                   
+
+async def copy(bot, chat, msg):
+   await bot.copy_message(
+      chat_id=chat['TO'],
+      from_chat_id=chat['FROM'],
+      parse_mode="md",       
+      caption=Translation.CAPTION.format(msgs.get("file_name")),
+      message_id=msg.get("msg_id"))
+
 async def edit(msg, text, button):
    try:
      await msg.edit_text(text=text, reply_markup=button)
@@ -183,6 +171,15 @@ def check_filters(data, msg):
       return True 
    return False 
 
+def file_name(msg, file_name=None):
+   if msg.video:
+     file_name = msg.video.file_name
+   elif msg.document:
+     file_name = msg.document.file_name
+   elif msg.audio:
+     file_name = msg.audio.file_name
+   return file_name
+                            
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, update):
     global IS_CANCELLED
