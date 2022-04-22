@@ -77,24 +77,16 @@ async def pub_(bot, message):
                        MSG.append({"msg_id": message.message_id, "file_name": file_name})
                     else:
                        MSG.append(message.message_id)
-                    if len(MSG) >= 200:
+                    if len(MSG) >= 100:
                       if configs['forward_tag']:
                         try:
-                          await client.forward_messages(
-                             chat_id=FORWARD['TO'],
-                             from_chat_id=FORWARD['FROM'],
-                             message_ids=MSG 
-                          )
+                          await forward(client, FORWARD, MSG)
                         except FloodWait as e:
                           await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           await asyncio.sleep(e.x)
                           await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
-                          await client.forward_messages(
-                             chat_id=FORWARD['TO'],
-                             from_chat_id=FORWARD['FROM'],
-                             message_ids=MSG 
-                          )
-                        total_files+=200
+                          await forward(client, FORWARD, MSG)
+                        total_files+=100
                       else:
                         for msgs in MSG:
                           if IS_CANCELLED:
@@ -108,6 +100,7 @@ async def pub_(bot, message):
                           try:
                             await copy(client, FORWARD, msgs)
                             await asyncio.sleep(1.7)
+                            total_files += 1
                           except FloodWait as e:
                             await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                             await asyncio.sleep(e.x)
@@ -149,6 +142,12 @@ async def copy(bot, chat, msg):
       caption=Translation.CAPTION.format(msg.get("file_name")),
       message_id=msg.get("msg_id"))
 
+async def forward(bot, chat, msg):
+   await bot.forward_messages(
+      chat_id=chat['TO'],
+      from_chat_id=chat['FROM'],
+      message_ids=msg)
+                          
 async def edit(msg, text, button):
    try:
      await msg.edit_text(text=text, reply_markup=button)
