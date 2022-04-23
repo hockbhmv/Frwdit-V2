@@ -26,9 +26,10 @@ buttons = [[
 async def pub_(bot, message):
     global IS_CANCELLED, FORWARD
     user = message.from_user.id
+    id = message.data.split('_')[1]
     if lock.get(user) and str(lock.get(user))=="True":
         return await message.answer("__please wait until previous task complete__", show_alert=True)
-    FORWARD = FORWARD.get(user)
+    FORWARD = FORWARD.get(f"{user}-{id}")
     if not FORWARD:
         await message.answer("your are clicking on my old button")
         return await message.message.delete()
@@ -68,7 +69,7 @@ async def pub_(bot, message):
               async for message in client.iter_messages(chat_id=FORWARD['FROM'], limit=total, offset=skip):
                     if IS_CANCELLED:
                        IS_CANCELLED = False 
-                       await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                       await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                        await client.send_message(user, text="Forwarding cancelled")
                        await client.stop()
                        return 
@@ -102,7 +103,7 @@ async def pub_(bot, message):
                         for msgs in MSG:
                           if IS_CANCELLED:
                             IS_CANCELLED = False 
-                            await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                            await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                             await client.send_message(user, text="Forwarding cancelled")
                             await client.stop()
                             return
