@@ -3,16 +3,13 @@ import sys
 import asyncio 
 import logging
 from database import db 
-from config import Config 
-from plugins.public import FORWARD
+from config import Config, temp
 from translation import Translation
 from pyrogram import Client, filters 
 from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
-
-lock = {}
-IS_CANCELLED = False
+ 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = '<b><u>FORWARD STATUS</b></u>\n{}\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Filtered messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>\n<b>🔘 percentage:</b> <code>{}</code> %'
@@ -24,13 +21,12 @@ buttons = [[
 
 @Client.on_callback_query(filters.regex(r'^start_public'))
 async def pub_(bot, message):
-    global IS_CANCELLED
-    from plugins.public import FORWARD
     user = message.from_user.id
+    temp.CANCEL[user] = True
     forward_id = message.data.split('_')[1]
-    if lock.get(user) and str(lock.get(user))=="True":
+    if temp.lock.get(user) and str(temp.lock.get(user))=="True":
         return await message.answer("__please wait until previous task complete__", show_alert=True)
-    details = FORWARD.get(forward_id)
+    details = temp.FORWARD.get(forward_id)
     if not details:
         await message.answer("your are clicking on my old button")
         return await message.message.delete()
@@ -56,7 +52,7 @@ async def pub_(bot, message):
     if test:
         m = await message.message.reply_text("<i>processing</i>")
         total_files=0
-        lock[user] = locked = True
+        temp.lock[user] = locked = True
         if locked:
             try:
               MSG = []
@@ -68,8 +64,8 @@ async def pub_(bot, message):
               total = int(details['LIMIT'])
               reply_markup = [[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip):
-                    if IS_CANCELLED:
-                       IS_CANCELLED = False 
+                    if temp.CANCEL.get(user)==True:
+                       temp.CANCEL[user] = False
                        await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                        await client.send_message(user, text="Forwarding cancelled")
                        await client.stop()
@@ -102,8 +98,8 @@ async def pub_(bot, message):
                         total_files+=100
                       else:
                         for msgs in MSG:
-                          if IS_CANCELLED:
-                            IS_CANCELLED = False 
+                          if temp.CANCEL.get(user)==True:
+                            temp.CANCEL[user] = False
                             await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                             await client.send_message(user, text="Forwarding cancelled")
                             await client.stop()
@@ -128,14 +124,14 @@ async def pub_(bot, message):
                       MSG = []
             except Exception as e:
                 print(e) 
-                lock[user] = False
+                temp.lock[user] = False
                 await m.edit_text(f'Error: {e}')
                 try:
                   await client.stop()
                 except:
                   pass
             else:
-                lock[user] = False
+                temp.lock[user] = False
                 try:
                   await client.stop()
                 except:
@@ -189,9 +185,9 @@ def filename(msg, file_name=None):
                             
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, m):
-    global IS_CANCELLED
-    IS_CANCELLED = True 
-    lock[m.from_user.id] = False
+    user_id = m.from_user.id 
+    temp.lock[user_id] = False
+    temp.CANCEL[user_id] = True 
     
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
