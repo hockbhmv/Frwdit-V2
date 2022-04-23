@@ -67,8 +67,8 @@ async def run(bot, message):
         return
     forward_id = f"{user_id}-{skipno.message_id}"
     buttons = [[
-        InlineKeyboardButton('Yes', callback_data=f'start_public_{forward_id}'),
-        InlineKeyboardButton('No', callback_data='close_btn')
+        InlineKeyboardButton('Yes', callback_data=f"start_public_{forward_id}"),
+        InlineKeyboardButton('No', callback_data="close_btn")
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await message.reply_text(
