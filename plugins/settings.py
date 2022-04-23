@@ -92,8 +92,8 @@ async def settings_query(bot, query):
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removebot":
-     await update_configs(user_id, "bot_id", None)
-     await update_configs(user_id, "bot_token", None)
+     await update_configs(user_id, 'bot_id', None)
+     await update_configs(user_id, 'bot_token', None)
      await query.message.edit_text(
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
@@ -157,7 +157,7 @@ async def settings_query(bot, query):
         return await caption.reply_text(
                   "process canceled !",
                   reply_markup=InlineKeyboardMarkup(buttons))
-     await update_configs(user_id, "caption", caption.text)
+     await update_configs(user_id, 'caption', caption.text)
      await caption.reply_text(
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
