@@ -13,7 +13,7 @@ class Config:
     SESSION = os.environ.get("SESSION")
     
 class temp(object): 
-    COUNT = {}
+    lock = {}
     CANCEL = {}
     CONFIGS = {}
     FORWARD = {}
