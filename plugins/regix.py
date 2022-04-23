@@ -140,7 +140,7 @@ async def copy(bot, chat, msg):
    await bot.copy_message(
       chat_id=chat['TO'],
       from_chat_id=chat['FROM'],
-      parse_mode="md",       
+      parse_mode="combined",       
       caption=msg.get("caption"),
       message_id=msg.get("msg_id"))
 
