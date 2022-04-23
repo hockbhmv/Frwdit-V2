@@ -19,7 +19,7 @@ TEXT = '<b><u>FORWARD STATUS</b></u>\n{}\n<b>🔘 Feched messages count:</b> <co
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
-    global IS_CANCELLED
+    global IS_CANCELLED, FORWARD
     user = message.from_user.id
     FORWARD = FORWARD.get(user)
     if not FORWARD:
