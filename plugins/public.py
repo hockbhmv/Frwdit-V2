@@ -74,8 +74,9 @@ async def run(bot, message):
     if not count:
        count = 0
     COUNT[user_id] = count + 1
+    forward_id = f"{user_id}-{count}"
     buttons = [[
-        InlineKeyboardButton('Yes', callback_data=f'start_public_{count}'),
+        InlineKeyboardButton('Yes', callback_data=f'start_public_{forward_id}'),
         InlineKeyboardButton('No', callback_data='close_btn')
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
@@ -83,7 +84,7 @@ async def run(bot, message):
         text=Translation.DOUBLE_CHECK.format(fromid.text),
         reply_markup=reply_markup
     )
-    FORWARD[f"{user_id}-{count}"] = {
+    FORWARD[forward_id] = {
         'TO': toid,
         'FROM': chat_id,
         'SKIP': skipno.text,
