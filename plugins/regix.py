@@ -23,11 +23,10 @@ buttons = [[
 async def pub_(bot, message):
     user = message.from_user.id
     temp.CANCEL[user] = True
-    forward_id = message.data.split("_")[1]
+    forward_id = message.data.split("_")[2]
     if temp.lock.get(user) and str(temp.lock.get(user))=="True":
         return await message.answer("__please wait until previous task complete__", show_alert=True)
-    details = temp.FORWARD.get(f"{forward_id}")
-    await message.message.reply(forward_id)
+    details = temp.FORWARD.get(forward_id)
     if not details:
         await message.answer("your are clicking on my old button", show_alert=True)
         return await message.message.delete()
