@@ -73,6 +73,7 @@ async def run(bot, message):
     reply_markup = InlineKeyboardMarkup(buttons)
     await message.reply_text(
         text=Translation.DOUBLE_CHECK.format(fromid.text),
+        disable_web_page_preview=True,
         reply_markup=reply_markup
     )
     temp.FORWARD[forward_id] = {
