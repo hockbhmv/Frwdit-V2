@@ -177,7 +177,7 @@ def custom_caption(msg, get):
      return ""
   if (msg.video or msg.document or msg.audio):
      media = getattr(msg, msg.media)
-     filename = getattr(media, 'file_name', '')
+     file_name = getattr(media, 'file_name', '')
      file_size = getattr(media, 'file_size', '')
      caption = getattr(media, 'caption', '')
      return get['caption'].format(filename=file_name, size=file_size, caption=caption)
