@@ -20,10 +20,6 @@ async def run(bot, message):
     buttons = []
     btn_data = {}
     user_id = message.from_user.id
-    count = COUNT.get(user_id)
-    if not count:
-       count = 0
-    COUNT[user_id] = count + 1
     channels = await db.get_user_channels(user_id)
     async for channel in channels:
        buttons.append([KeyboardButton(f"{channel['title']}")])
@@ -74,6 +70,10 @@ async def run(bot, message):
     if skipno.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return
+    count = COUNT.get(user_id)
+    if not count:
+       count = 0
+    COUNT[user_id] = count + 1
     buttons = [[
         InlineKeyboardButton('Yes', callback_data=f'start_public_{count}'),
         InlineKeyboardButton('No', callback_data='close_btn')
