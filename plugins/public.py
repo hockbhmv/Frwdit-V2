@@ -83,7 +83,7 @@ async def run(bot, message):
         text=Translation.DOUBLE_CHECK.format(fromid.text),
         reply_markup=reply_markup
     )
-    FORWARD[user_id] = {
+    FORWARD[f"{user_id}-{count}"] = {
         'TO': toid,
         'FROM': chat_id,
         'SKIP': skipno.text,
