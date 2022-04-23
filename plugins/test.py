@@ -4,7 +4,7 @@ import sys
 import asyncio 
 import logging 
 from database import db 
-from config import Config
+from config import temp
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
@@ -48,19 +48,20 @@ async def bot_token(bot, m):
 @Client.on_message(filters.private & filters.command('reset'))
 async def forward_tag(bot, m):
    default = await db.get_configs("01")
-   Config.CONFIGS[m.from_user.id] = default
+   temp.CONFIGS[m.from_user.id] = default
    await db.update_configs(m.from_user.id, default)
    await m.reply("successfully settings reseted ✔️")
     
 async def get_configs(user_id):
-  configs = Config.CONFIGS.get(user_id)
+  configs = temp.CONFIGS.get(user_id)
   if not configs:
      configs = await db.get_configs(user_id)
-     Config.CONFIGS[user_id] = configs 
+     temp.CONFIGS[user_id] = configs 
   return configs
                           
 async def update_configs(user_id, key, value):
   current = await get_configs(user_id)
   current[key] = value 
+  temp.CONFIGS[user_id] = value
   await db.update_configs(user_id, current)
         
