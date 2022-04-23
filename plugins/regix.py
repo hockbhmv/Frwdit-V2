@@ -26,11 +26,11 @@ buttons = [[
 async def pub_(bot, message):
     global IS_CANCELLED, FORWARD
     user = message.from_user.id
-    id = message.data.split('_')[1]
+    forward_id = message.data.split('_')[1]
     if lock.get(user) and str(lock.get(user))=="True":
         return await message.answer("__please wait until previous task complete__", show_alert=True)
-    FORWARD = FORWARD.get(f"{user}-{id}")
-    if not FORWARD:
+    details = FORWARD.get(forward_id)
+    if not details:
         await message.answer("your are clicking on my old button")
         return await message.message.delete()
     #await message.answer("verifying your data's, please wait.", show_alert=True)
@@ -46,7 +46,7 @@ async def pub_(bot, message):
     except Exception as e:
       return await message.message.reply_text(f"Bot Error:- {e}")
     try:
-      k = await client.send_message(FORWARD['TO'], "Testing")
+      k = await client.send_message(details['TO'], "Testing")
       await k.delete()
     except:
       return await message.answer("Please Make Your Bot Admin In Target Channel With Full Permissions", show_alert=True)
@@ -63,10 +63,10 @@ async def pub_(bot, message):
               fetched = 0
               deleted = 0 
               filtered = 0
-              skip = int(FORWARD['SKIP'])
-              total = int(FORWARD['LIMIT'])
+              skip = int(details['SKIP'])
+              total = int(details['LIMIT'])
               reply_markup = [[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
-              async for message in client.iter_messages(chat_id=FORWARD['FROM'], limit=total, offset=skip):
+              async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip):
                     if IS_CANCELLED:
                        IS_CANCELLED = False 
                        await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
@@ -92,12 +92,12 @@ async def pub_(bot, message):
                     if len(MSG) >= 100:
                       if configs['forward_tag']:
                         try:
-                          await forward(client, FORWARD, MSG)
+                          await forward(client, details, MSG)
                         except FloodWait as e:
                           await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           await asyncio.sleep(e.x)
                           await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
-                          await forward(client, FORWARD, MSG)
+                          await forward(client, details, MSG)
                         total_files+=100
                       else:
                         for msgs in MSG:
@@ -111,14 +111,14 @@ async def pub_(bot, message):
                           if pling % 10 == 0: 
                             await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           try:
-                            await copy(client, FORWARD, msgs)
+                            await copy(client, details, msgs)
                             await asyncio.sleep(1.7)
                             total_files += 1
                           except FloodWait as e:
                             await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                             await asyncio.sleep(e.x)
                             await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
-                            await copy(client, FORWARD, msgs)
+                            await copy(client, details, msgs)
                             total_files += 1
                             await asyncio.sleep(1.7)
                           except Exception as e:
