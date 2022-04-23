@@ -37,8 +37,8 @@ async def bot_token(bot, m):
   except Exception as e:
     await msg.reply_text(f"Bot Error:- {e}")
     return False
-  await update_configs(m.from_user.id, "bot_token", token[0])
-  await update_configs(m.from_user.id, "bot_id", bot_id)
+  await update_configs(m.from_user.id, 'bot_token', token[0])
+  await update_configs(m.from_user.id, 'bot_id', bot_id)
   try:
     await client.stop()
   except:
