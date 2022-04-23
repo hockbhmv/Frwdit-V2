@@ -22,7 +22,7 @@ buttons = [[
 @Client.on_callback_query(filters.regex(r'^start_public'))
 async def pub_(bot, message):
     user = message.from_user.id
-    temp.CANCEL[user] = True
+    temp.CANCEL[user] = False
     forward_id = message.data.split("_")[2]
     if temp.lock.get(user) and str(temp.lock.get(user))=="True":
         return await message.answer("__please wait until previous task complete__", show_alert=True)
@@ -65,7 +65,6 @@ async def pub_(bot, message):
               reply_markup = [[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip):
                     if temp.CANCEL.get(user)==True:
-                       temp.CANCEL[user] = False
                        await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                        await client.send_message(user, text="Forwarding cancelled")
                        await client.stop()
@@ -99,7 +98,6 @@ async def pub_(bot, message):
                       else:
                         for msgs in MSG:
                           if temp.CANCEL.get(user)==True:
-                            temp.CANCEL[user] = False
                             await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                             await client.send_message(user, text="Forwarding cancelled")
                             await client.stop()
