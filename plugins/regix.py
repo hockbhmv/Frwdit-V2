@@ -173,7 +173,8 @@ def check_filters(data, msg):
    return False 
 
 def custom_caption(msg, get):
-  if not (msg.media or get['caption']):
+  if not (msg.media 
+     and get['caption']):
      return ""
   if (msg.video or msg.document or msg.audio):
      media = getattr(msg, msg.media)
