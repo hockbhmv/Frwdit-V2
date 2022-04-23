@@ -1,18 +1,13 @@
 import re
 import asyncio 
 from database import db
-from config import Config 
+from config import temp 
 from translation import Translation
 from pyrogram import Client, filters 
 from pyrogram.errors import FloodWait 
 from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
-
-COUNT = {}
-FORWARD = {}
-FILTER = Config.FILTER_TYPE
-files_count = 0
-
+ 
 #===================Run Function===================#
 
 @Client.on_message(filters.private & filters.command(["run"]))
@@ -70,11 +65,7 @@ async def run(bot, message):
     if skipno.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return
-    count = COUNT.get(user_id)
-    if not count:
-       count = 0
-    COUNT[user_id] = count + 1
-    forward_id = f"{user_id}-{count}"
+    forward_id = f"{user_id}-{skipno.message_id}"
     buttons = [[
         InlineKeyboardButton('Yes', callback_data=f'start_public_{forward_id}'),
         InlineKeyboardButton('No', callback_data='close_btn')
@@ -84,7 +75,7 @@ async def run(bot, message):
         text=Translation.DOUBLE_CHECK.format(fromid.text),
         reply_markup=reply_markup
     )
-    FORWARD[forward_id] = {
+    temp.FORWARD[forward_id] = {
         'TO': toid,
         'FROM': chat_id,
         'SKIP': skipno.text,
