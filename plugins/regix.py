@@ -80,9 +80,9 @@ async def pub_(bot, message):
                     if filter:
                        filtered+=1
                        continue 
-                    file_name = filename(message)
                     if not configs['forward_tag']:
-                       MSG.append({"msg_id": message.message_id, "file_name": file_name})
+                       caption = custom_caption(message, details)
+                       MSG.append({"msg_id": message.message_id, "caption": caption})
                     else:
                        MSG.append(message.message_id)
                     if len(MSG) >= 100:
@@ -141,7 +141,7 @@ async def copy(bot, chat, msg):
       chat_id=chat['TO'],
       from_chat_id=chat['FROM'],
       parse_mode="md",       
-      caption=Translation.CAPTION.format(msg.get("file_name")),
+      caption=msg.get("caption"),
       message_id=msg.get("msg_id"))
 
 async def forward(bot, chat, msg):
@@ -172,15 +172,18 @@ def check_filters(data, msg):
       return True 
    return False 
 
-def filename(msg, file_name=None):
-   if msg.video:
-     file_name = msg.video.file_name
-   elif msg.document:
-     file_name = msg.document.file_name
-   elif msg.audio:
-     file_name = msg.audio.file_name
-   return file_name
-                            
+def custom_caption(msg, get):
+  if not (msg.media or get['caption']):
+     return ""
+  if (msg.video or msg.document or msg.audio):
+     media = getattr(msg, msg.media)
+     filename = getattr(media, 'file_name', '')
+     file_size = getattr(media, 'file_size', '')
+     caption = getattr(media, 'caption', '')
+     return get['caption'].format(filename=file_name, size=file_size, caption=caption)
+  else:
+     return ""
+   
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, m):
     user_id = m.from_user.id 
