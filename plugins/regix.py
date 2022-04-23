@@ -180,10 +180,19 @@ def custom_caption(msg, get):
      file_name = getattr(media, 'file_name', '')
      file_size = getattr(media, 'file_size', '')
      caption = getattr(media, 'caption', '')
-     return get['caption'].format(filename=file_name, size=file_size, caption=caption)
+     return get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
   else:
      return ""
-   
+
+def get_size(size):
+  units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB"]
+  size = float(size)
+  i = 0
+  while size >= 1024.0 and i < len(units):
+     i += 1
+     size /= 1024.0
+  return "%.2f %s" % (size, units[i]) 
+ 
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, m):
     user_id = m.from_user.id 
