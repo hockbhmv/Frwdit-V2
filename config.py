@@ -2,9 +2,6 @@ import os
 import logging
 
 class Config:
-    
-    CONFIGS = {}
-    BANNED_USERS = []
     API_ID = int(os.environ.get("API_ID", 12345))
     API_HASH = os.environ.get("API_HASH")
     BOT_TOKEN = os.environ.get("BOT_TOKEN", "") 
@@ -14,6 +11,13 @@ class Config:
     FILTER_TYPE = os.environ.get("FILTER_TYPE", "document")
     OWNER_ID = os.environ.get("OWNER_ID", 12345)
     SESSION = os.environ.get("SESSION")
+    
+class temp(object): 
+    COUNT = {}
+    CANCEL = {}
+    CONFIGS = {}
+    FORWARD = {}
+    BANNED_USERS = []
     
 def LOGGER(name: str) -> logging.Logger:
     return logging.getLogger(name)
