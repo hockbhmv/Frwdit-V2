@@ -53,15 +53,15 @@ async def forward_tag(bot, m):
    await m.reply("successfully settings reseted ✔️")
     
 async def get_configs(user_id):
-  configs = temp.CONFIGS.get(user_id)
-  if not configs:
-     configs = await db.get_configs(user_id)
-     temp.CONFIGS[user_id] = configs 
+  #configs = temp.CONFIGS.get(user_id)
+  #if not configs:
+  configs = await db.get_configs(user_id)
+  #temp.CONFIGS[user_id] = configs 
   return configs
                           
 async def update_configs(user_id, key, value):
   current = await db.get_configs(user_id)
   current[key] = value 
-  temp.CONFIGS[user_id] = value
+ # temp.CONFIGS[user_id] = value
   await db.update_configs(user_id, current)
         
