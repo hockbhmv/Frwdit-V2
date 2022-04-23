@@ -8,6 +8,7 @@ from pyrogram.errors import FloodWait
 from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 
+COUNT = {}
 FORWARD = {}
 FILTER = Config.FILTER_TYPE
 files_count = 0
@@ -19,6 +20,10 @@ async def run(bot, message):
     buttons = []
     btn_data = {}
     user_id = message.from_user.id
+    count = int(COUNT.get(user_id))
+    if not count:
+       count = 0
+    COUNT[user_id] = count + 1
     channels = await db.get_user_channels(user_id)
     async for channel in channels:
        buttons.append([KeyboardButton(f"{channel['title']}")])
@@ -70,7 +75,7 @@ async def run(bot, message):
         await message.reply(Translation.CANCEL)
         return
     buttons = [[
-        InlineKeyboardButton('Yes', callback_data='start_public'),
+        InlineKeyboardButton('Yes', callback_data=f'start_public_{count}'),
         InlineKeyboardButton('No', callback_data='close_btn')
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
