@@ -26,9 +26,10 @@ async def pub_(bot, message):
     forward_id = message.data.split("_")[1]
     if temp.lock.get(user) and str(temp.lock.get(user))=="True":
         return await message.answer("__please wait until previous task complete__", show_alert=True)
-    details = temp.FORWARD.get(forward_id)
+    details = temp.FORWARD.get(f"{forward_id}")
+    await message.reply(forward_id)
     if not details:
-        await message.answer("your are clicking on my old button")
+        await message.answer("your are clicking on my old button", show_alert=True)
         return await message.message.delete()
     #await message.answer("verifying your data's, please wait.", show_alert=True)
     configs = await db.get_configs(user)
