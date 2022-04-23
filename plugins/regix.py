@@ -22,7 +22,7 @@ buttons = [[
           InlineKeyboardButton('📡 Update Channel', url='https://t.me/venombotupdates')
           ]]
 
-@Client.on_callback_query(filters.regex(r'^start_public$'))
+@Client.on_callback_query(filters.regex(r'^start_public'))
 async def pub_(bot, message):
     global IS_CANCELLED, FORWARD
     user = message.from_user.id
