@@ -47,7 +47,7 @@ async def pub_(bot, message):
       await k.delete()
     except:
       bot_uname = (await client.get_me()).username
-      return await m.edit(f"Please Make Your [Bot](t.me/{bot_uname}) Admin In Target Channel With Full Permissions")
+      return await m.edit(f"Please Make Your [Bot](t.me/{bot_uname}) Admin In Target Channel With Full Permissions", parse_mode="combined")
     test = await client.send_message(user, text="Forwarding started")
     if test:
         await m.edit("<i>processing</i>") 
