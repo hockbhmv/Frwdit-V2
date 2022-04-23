@@ -16,17 +16,22 @@ IS_CANCELLED = False
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = '<b><u>FORWARD STATUS</b></u>\n{}\n<b>🔘 Feched messages count:</b> <code>{}</code>\n<b>🔘 Deleted messages:</b> <code>{}</code>\n<b>🔘 Succefully forwarded file count:</b> <code>{}</code> files</code>\n<b>🔘 Skipped messages:</b> <code>{}</code>\n<b>🔘 Filtered messages:</b> <code>{}</code>\n<b>🔘 Status:</b> <code>{}</code>\n<b>🔘 percentage:</b> <code>{}</code> %'
+buttons = [[
+          InlineKeyboardButton('📜 Support Group', url='https://t.me/venombotsupport')
+          ],[
+          InlineKeyboardButton('📡 Update Channel', url='https://t.me/venombotupdates')
+          ]]
 
 @Client.on_callback_query(filters.regex(r'^start_public$'))
 async def pub_(bot, message):
     global IS_CANCELLED, FORWARD
     user = message.from_user.id
+    if lock.get(user) and str(lock.get(user))=="True":
+        return await message.answer("__please wait until previous task complete__", show_alert=True)
     FORWARD = FORWARD.get(user)
     if not FORWARD:
         await message.answer("your are clicking on my old button")
         return await message.message.delete()
-    if lock.get(user) and str(lock.get(user))=="True":
-        return await message.answer("__please wait until previous task complete__", show_alert=True)
     #await message.answer("verifying your data's, please wait.", show_alert=True)
     configs = await db.get_configs(user)
     bot_token = configs["bot_token"]
@@ -59,13 +64,14 @@ async def pub_(bot, message):
               filtered = 0
               skip = int(FORWARD['SKIP'])
               total = int(FORWARD['LIMIT'])
-              reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]])
+              reply_markup = [[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
               async for message in client.iter_messages(chat_id=FORWARD['FROM'], limit=total, offset=skip):
                     if IS_CANCELLED:
                        IS_CANCELLED = False 
+                       await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                        await client.send_message(user, text="Forwarding cancelled")
                        await client.stop()
-                       break 
+                       return 
                     pling += 1
                     if pling %10 == 0: 
                        await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Fetching", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
@@ -96,9 +102,10 @@ async def pub_(bot, message):
                         for msgs in MSG:
                           if IS_CANCELLED:
                             IS_CANCELLED = False 
+                            await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, total_files, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                             await client.send_message(user, text="Forwarding cancelled")
                             await client.stop()
-                            break
+                            return
                           pling += 1
                           if pling % 10 == 0: 
                             await edit(m, TEXT.format('', fetched, deleted, total_files, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
@@ -131,12 +138,6 @@ async def pub_(bot, message):
                   await client.stop()
                 except:
                   pass
-                buttons = [[
-                    InlineKeyboardButton('📜 Support Group', url='https://t.me/venombotsupport')
-                    ],[
-                    InlineKeyboardButton('📡 Update Channel', url='https://t.me/venombotupdates')
-                ]]
-                reply_markup = InlineKeyboardMarkup(buttons)
                 await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, deleted, total_files, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
 
 async def copy(bot, chat, msg):
@@ -155,7 +156,7 @@ async def forward(bot, chat, msg):
                           
 async def edit(msg, text, button):
    try:
-     await msg.edit_text(text=text, reply_markup=button)
+     await msg.edit_text(text=text, reply_markup=InlineKeyboardMarkup(button))
    except MessageNotModified:
      pass 
    return
@@ -185,9 +186,10 @@ def filename(msg, file_name=None):
    return file_name
                             
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
-async def terminate_frwding(bot, update):
+async def terminate_frwding(bot, m):
     global IS_CANCELLED
-    IS_CANCELLED = True
+    IS_CANCELLED = True 
+    lock[m.from_user.id] = False
     
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
