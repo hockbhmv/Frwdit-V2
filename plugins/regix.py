@@ -24,7 +24,8 @@ buttons = [[
 
 @Client.on_callback_query(filters.regex(r'^start_public'))
 async def pub_(bot, message):
-    global IS_CANCELLED, FORWARD
+    global IS_CANCELLED
+    from plugins.public import FORWARD
     user = message.from_user.id
     forward_id = message.data.split('_')[1]
     if lock.get(user) and str(lock.get(user))=="True":
