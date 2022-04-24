@@ -34,12 +34,12 @@ async def pub_(bot, message):
     configs = await db.get_configs(user)
     bot_token = configs["bot_token"]
     if not bot_token:
-        return await m.edit("Please add your bot using /settings !")
+        return await m.edit("You didn't added any bot. Please add your bot using /settings !")
     try:
       client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=bot_token)
       await client.start()
     except (AccessTokenExpired, AccessTokenInvalid):
-      return await m.edit("The given bot token is invalid")
+      return await m.edit("The given bot token is invalid. please change it !")
     except Exception as e:
       return await m.edit(f"Bot Error:- {e}")
     try:
@@ -65,13 +65,13 @@ async def pub_(bot, message):
               reply_markup = [[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip):
                     if temp.CANCEL.get(user)==True:
-                       await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, skip, total_files, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
+                       await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, total_files, deleted, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                        await client.send_message(user, text="Forwarding cancelled")
                        await client.stop()
                        return 
                     pling += 1
                     if pling %10 == 0: 
-                       await edit(m, TEXT.format('', fetched, deleted, skip, total_files, filtered, "Fetching", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                       await edit(m, TEXT.format('', fetched, total_files, deleted, skip, filtered, "Fetching", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                     fetched+=1 
                     if message.empty or message.service:
                        deleted+=1
@@ -90,30 +90,30 @@ async def pub_(bot, message):
                         try:
                           await forward(client, details, MSG)
                         except FloodWait as e:
-                          await edit(m, TEXT.format('', fetched, deleted, skip, total_files, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                          await edit(m, TEXT.format('', fetched, total_files, deleted, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           await asyncio.sleep(e.x)
-                          await edit(m, TEXT.format('', fetched, deleted, skip, total_files, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                          await edit(m, TEXT.format('', fetched, total_files, deleted, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           await forward(client, details, MSG)
                         total_files+=100 
                         await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
                           if temp.CANCEL.get(user)==True:
-                            await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, deleted, skip, total_files, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
+                            await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, total_files, deleted, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                             await client.send_message(user, text="Forwarding cancelled")
                             await client.stop()
                             return
                           pling += 1
                           if pling % 10 == 0: 
-                            await edit(m, TEXT.format('', fetched, deleted, skip, total_files, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                            await edit(m, TEXT.format('', fetched, total_files, deleted, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           try:
                             await copy(client, details, msgs)
                             await asyncio.sleep(1.7)
                             total_files += 1
                           except FloodWait as e:
-                            await edit(m, TEXT.format('', fetched, deleted, skip, total_files, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                            await edit(m, TEXT.format('', fetched, total_files, deleted, skip, filtered, f"Sleeping {e.x} s", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                             await asyncio.sleep(e.x)
-                            await edit(m, TEXT.format('', fetched, deleted, skip, total_files, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                            await edit(m, TEXT.format('', fetched, total_files, deleted, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                             await copy(client, details, msgs)
                             total_files += 1
                             await asyncio.sleep(1.7)
@@ -135,7 +135,7 @@ async def pub_(bot, message):
                   await client.stop()
                 except:
                   pass
-                await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, deleted, skip, total_files, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+                await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, total_files, deleted, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
 
 async def copy(bot, chat, msg):
    await bot.copy_message(
