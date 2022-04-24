@@ -25,18 +25,18 @@ async def pub_(bot, message):
     temp.CANCEL[user] = False
     forward_id = message.data.split("_")[2]
     if temp.lock.get(user) and str(temp.lock.get(user))=="True":
-        return await message.answer("please wait until previous task complete", show_alert=True)
+      return await message.answer("please wait until previous task complete", show_alert=True)
     details = temp.FORWARD.get(forward_id)
     if not details:
-        await message.answer("your are clicking on my old button", show_alert=True)
-        return await message.message.delete()
+      await message.answer("your are clicking on my old button", show_alert=True)
+      return await message.message.delete()
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
+    _bot = await db.get_bot(user)
+    if not _bot:
+      return await m.edit("You didn't added any bot. Please add your bot using /settings !")
     configs = await db.get_configs(user)
-    bot_token = configs["bot_token"]
-    if not bot_token:
-        return await m.edit("You didn't added any bot. Please add your bot using /settings !")
     try:
-      client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=bot_token)
+      client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=_bot.token)
       await client.start()
     except (AccessTokenExpired, AccessTokenInvalid):
       return await m.edit("The given bot token is invalid. please change it !")
@@ -46,8 +46,7 @@ async def pub_(bot, message):
       k = await client.send_message(details['TO'], "Testing")
       await k.delete()
     except:
-      bot_uname = (await client.get_me()).username
-      return await m.edit(f"Please Make Your [Bot](t.me/{bot_uname}) Admin In Target Channel With Full Permissions", parse_mode="combined")
+      return await m.edit(f"Please Make Your [Bot](t.me/{_bot.username}) Admin In Target Channel With Full Permissions", parse_mode="combined")
     test = await client.send_message(user, text="Forwarding started")
     if test:
         await m.edit("<i>processing</i>") 
