@@ -34,6 +34,15 @@ More details /help</i>"""
   CANCEL = "<b>Process Cancelled Succefully\nEnter /run Again</b>"
   USERNAME = "<b>Send Username with @</b>\n<code>eg: @Username</code>\n<b>Enter /run Again</b>"
   INVALID_CHANNELID = "<b>Send channel id with -100</b>\n<code>eg: -100xxxxxxxxxx</code>\n<b>Enter /run Again</b>"
+  TEXT = """<b><u>FORWARD STATUS</b></u>
+{}
+<b>⚫️ Feched messages:</b> <code>{}</code>
+<b>⚫️ Succefully forwarded:</b> <code>{}</code>
+<b>⚫️ Deleted messages:</b> <code>{}</code>
+<b>⚫️ Skipped messages:</b> <code>{}</code>
+<b>⚫️ Filtered messages:</b> <code>{}</code>
+<b>⚫️ Current status:</b> <code>{}</code>
+<b>⚫️ Percentage:</b> <code>{}</code> %"""
   DOUBLE_CHECK = """<b><u>DOUBLE CHECKING ⚠️</b></u>
 <code>Before forwarding the file Click the Yes button only after checking the following</code>
 
