@@ -175,7 +175,7 @@ def check_filters(data, msg):
 def custom_caption(msg, get):
   if not (msg.media 
      and get['caption']):
-     return ""
+     return None
   if (msg.video or msg.document or msg.audio):
      media = getattr(msg, msg.media)
      file_name = getattr(media, 'file_name', '')
@@ -183,7 +183,7 @@ def custom_caption(msg, get):
      caption = getattr(media, 'caption', '')
      return get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
   else:
-     return ""
+     return None
 
 def get_size(size):
   units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB"]
