@@ -46,12 +46,12 @@ More details /help</i>"""
   DOUBLE_CHECK = """<b><u>DOUBLE CHECKING ⚠️</b></u>
 <code>Before forwarding the messages Click the Yes button only after checking the following</code>
 
-<b>★ YOUR BOT:</b> {}
-<b>★ FROM CHANNEL:</b> {}
-<b>★ TO CHANNEL:</b> {}
-<b>★ SKIP MESSAGES:</b> <code>{}</code>
+<b>★ YOUR BOT:</b> [{botname}](t.me/{botuname})
+<b>★ FROM CHANNEL:</b> {from_chat}
+<b>★ TO CHANNEL:</b> {to_chat}
+<b>★ SKIP MESSAGES:</b> <code>{skip}</code>
 
-<i>° Your [bot](t.me/{}) must be admin in <b>To</b> channel {}</i>
+<i>° Your [botname](t.me/{botuname}) must be admin in <b>To</b> channel {to_chat}</i>
 <i>° If the From channel is private your bot must be admin in there also</b></i>
 
 <b>If the above is checked then the yes button can be clicked</b>"""
