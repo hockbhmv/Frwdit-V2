@@ -73,7 +73,7 @@ async def run(bot, message):
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await message.reply_text(
-        text=Translation.DOUBLE_CHECK.format(bot['name'], bot['username'], chat.title, _toid.text, skipno.text, bot['username']),
+        text=Translation.DOUBLE_CHECK.format(botname=bot['name'], botuname=bot['username'], from_chat=chat.title, to_chat=_toid.text, skip=skipno.text),
         parse_mode="combined",
         disable_web_page_preview=True,
         reply_markup=reply_markup
