@@ -10,7 +10,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
  
 #===================Run Function===================#
 
-@Client.on_message(filters.private & filters.command(["run"]))
+@Client.on_message(filters.private & filters.command(["forward"]))
 async def run(bot, message):
     buttons = []
     btn_data = {}
@@ -48,7 +48,7 @@ async def run(bot, message):
     else:
         return 
     try:
-        await bot.get_chat(chat_id)
+        chat = await bot.get_chat(chat_id)
     except ChannelInvalid:
         return await message.reply('This may be a private channel / group. Make me an admin over there to forward messages.')
     except (UsernameInvalid, UsernameNotModified):
@@ -65,6 +65,7 @@ async def run(bot, message):
     if skipno.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return
+    bot = await db.get_bot(user_id)
     forward_id = f"{user_id}-{skipno.message_id}"
     buttons = [[
         InlineKeyboardButton('Yes', callback_data=f"start_public_{forward_id}"),
@@ -72,7 +73,8 @@ async def run(bot, message):
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await message.reply_text(
-        text=Translation.DOUBLE_CHECK.format(fromid.text),
+        text=Translation.DOUBLE_CHECK.format(f"[{bot['name']}](t.me/{bot['username']})", chat.title, toid.text, skipno.text, bot['username']),
+        parse_mode="combined",
         disable_web_page_preview=True,
         reply_markup=reply_markup
     )
