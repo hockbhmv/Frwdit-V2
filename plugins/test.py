@@ -41,7 +41,7 @@ async def bot_token(bot, m):
     'id': _bot.id,
     'name': _bot.first_name,
     'token': bot_token[0],
-    'username': _bot.username,
+    'username': _bot.username
   }
   await update_configs(m.from_user.id, 'bot', details)
   try:
