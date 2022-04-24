@@ -22,8 +22,8 @@ async def run(bot, message):
     if not buttons:
        return await message.reply_text("please set a to channel in /settings before forwarding")
     buttons.append([KeyboardButton("cancel")])
-    bot = await db.get_bot(user_id)
-    _toid = await bot.ask(message.chat.id, Translation.TO_MSG.format(bot['username']), reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
+    _bot = await db.get_bot(user_id)
+    _toid = await bot.ask(message.chat.id, Translation.TO_MSG.format(_bot['username']), reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
     if _toid.text.startswith(('/', 'cancel')):
         await message.reply_text(Translation.CANCEL, reply_markup=ReplyKeyboardRemove())
         return
@@ -73,7 +73,7 @@ async def run(bot, message):
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await message.reply_text(
-        text=Translation.DOUBLE_CHECK.format(botname=bot['name'], botuname=bot['username'], from_chat=chat.title, to_chat=_toid.text, skip=skipno.text),
+        text=Translation.DOUBLE_CHECK.format(botname=_bot['name'], botuname=_bot['username'], from_chat=chat.title, to_chat=_toid.text, skip=skipno.text),
         parse_mode="combined",
         disable_web_page_preview=True,
         reply_markup=reply_markup
