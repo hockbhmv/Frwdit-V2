@@ -23,22 +23,27 @@ async def bot_token(bot, m):
   if str(msg.forward_from.id) != "93372553":
      await msg.reply_text("This message was not forward from bot father")
      return False
-  token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
+  bot_token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
   if not token and token == []:
      await msg.reply_text("There is no bot token in that message")
      return False
   try:
-    client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=token[0])
+    client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=bot_token[0])
     await client.start()
-    bot_id = (await client.get_me()).username
+    _bot = await client.get_me()
   except (AccessTokenExpired, AccessTokenInvalid):
     await msg.reply_text("The given bot token is invalid")
     return False
   except Exception as e:
     await msg.reply_text(f"Bot Error:- {e}")
     return False
-  await update_configs(m.from_user.id, 'bot_token', token[0])
-  await update_configs(m.from_user.id, 'bot_id', bot_id)
+  details = {
+    'id': _bot.id,
+    'name': _bot.first_name,
+    'token': bot_token[0],
+    'username': _bot.username,
+  }
+  await update_configs(m.from_user.id, 'bot', details)
   try:
     await client.stop()
   except:
