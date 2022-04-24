@@ -72,16 +72,14 @@ class Database:
          
     async def get_configs(self, id):
         default = {
-            'bot_id': None,
-            'bot_token': None,
-            'channels': None,
+            'bot': None,
             'caption': None,
-            'texts': False,
-            'audios': False,
-            'videos': False,
-            'photos': False,
-            'documents': False,
-            'animations': False,
+            'texts': True,
+            'audios': True,
+            'videos': True,
+            'photos': True,
+            'documents': True,
+            'animations': True,
             'forward_tag': False 
         }
         user = await self.col.find_one({'id':int(id)})
