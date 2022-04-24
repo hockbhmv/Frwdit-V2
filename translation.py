@@ -36,13 +36,13 @@ More details /help</i>"""
   INVALID_CHANNELID = "<b>Send channel id with -100</b>\n<code>eg: -100xxxxxxxxxx</code>\n<b>Enter /run Again</b>"
   TEXT = """<b><u>FORWARD STATUS</b></u>
 {}
-<b>⚫️ Feched messages:</b> <code>{}</code>
-<b>⚫️ Succefully forwarded:</b> <code>{}</code>
-<b>⚫️ Deleted messages:</b> <code>{}</code>
-<b>⚫️ Skipped messages:</b> <code>{}</code>
-<b>⚫️ Filtered messages:</b> <code>{}</code>
-<b>⚫️ Current status:</b> <code>{}</code>
-<b>⚫️ Percentage:</b> <code>{}</code> %"""
+<b>🔲 Feched messages:</b> <code>{}</code>\n
+<b>🔲 Succefully forwarded:</b> <code>{}</code>\n
+<b>🔲 Deleted messages:</b> <code>{}</code>\n
+<b>🔲 Skipped messages:</b> <code>{}</code>\n
+<b>🔲 Filtered messages:</b> <code>{}</code>\n
+<b>🔲 Current status:</b> <code>{}</code>\n
+<b>🔲 Percentage:</b> <code>{}</code> %"""
   DOUBLE_CHECK = """<b><u>DOUBLE CHECKING ⚠️</b></u>
 <code>Before forwarding the file Click the Yes button only after checking the following</code>
 
