@@ -22,11 +22,11 @@ async def run(bot, message):
     if not buttons:
        return await message.reply_text("please set a to channel in /settings before forwarding")
     buttons.append([KeyboardButton("cancel")])
-    toid = await bot.ask(message.chat.id, Translation.TO_MSG, reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
-    if toid.text.startswith(('/', 'cancel')):
+    _toid = await bot.ask(message.chat.id, Translation.TO_MSG, reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
+    if _toid.text.startswith(('/', 'cancel')):
         await message.reply_text(Translation.CANCEL, reply_markup=ReplyKeyboardRemove())
         return
-    toid = btn_data.get(toid.text)
+    toid = btn_data.get(_toid.text)
     if not toid:
        return await message.reply_text("wrong channel choosen !", reply_markup=ReplyKeyboardRemove())
     fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
@@ -73,7 +73,7 @@ async def run(bot, message):
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await message.reply_text(
-        text=Translation.DOUBLE_CHECK.format(f"[{bot['name']}](t.me/{bot['username']})", chat.title, toid.text, f"skipno.text", bot['username']),
+        text=Translation.DOUBLE_CHECK.format(f"[{bot['name']}](t.me/{bot['username']})", chat.title, _toid.text, skipno.text, bot['username']),
         parse_mode="combined",
         disable_web_page_preview=True,
         reply_markup=reply_markup
