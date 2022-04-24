@@ -25,7 +25,7 @@ async def pub_(bot, message):
     temp.CANCEL[user] = False
     forward_id = message.data.split("_")[2]
     if temp.lock.get(user) and str(temp.lock.get(user))=="True":
-        return await message.answer("__please wait until previous task complete__", show_alert=True)
+        return await message.answer("please wait until previous task complete", show_alert=True)
     details = temp.FORWARD.get(forward_id)
     if not details:
         await message.answer("your are clicking on my old button", show_alert=True)
@@ -94,7 +94,8 @@ async def pub_(bot, message):
                           await asyncio.sleep(e.x)
                           await edit(m, TEXT.format('', fetched, deleted, skip, total_files, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           await forward(client, details, MSG)
-                        total_files+=100
+                        total_files+=100 
+                        await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
                           if temp.CANCEL.get(user)==True:
@@ -180,7 +181,7 @@ def custom_caption(msg, get):
      media = getattr(msg, msg.media)
      file_name = getattr(media, 'file_name', '')
      file_size = getattr(media, 'file_size', '')
-     caption = getattr(media, 'caption', '')
+     caption = getattr(media, 'caption', file_name)
      return get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
   else:
      return None
