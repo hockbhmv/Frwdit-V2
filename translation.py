@@ -6,7 +6,6 @@ class Translation(object):
 <i>I'm Simple Auto file Forward Bot V2
 This Bot forward all files to One Public channel to Your Personal channel
 More details /help</i>"""
-  CAPTION = "`{}`\n\n" + str(Config.CAPTION)
   HELP_TXT = """<b>Follow These Steps!!
 • User Join From channel Must(No need Admin permission)
 • Then give admin permission in your personal telegram channel
@@ -30,8 +29,7 @@ More details /help</i>"""
   FROM_MSG = "<b><u>SET FROM CHANNEL</b></u>\n\n<b>Forward the last message of From channel OR Send the last message link of From channel.</b>\n<code>Note: Your bot must be admin in From channel if the channel is private</code>\n/cancel <code>- Cancel this process</code>"
   TO_MSG = "<b><u>CHOOSE TO CHANNEL</b></u>\n\n<b>Choose your **To channel** from the given list.</b>\n<b>`Note: </b>`[{}](t.me/{}) `must be admin in there before forwarding`\n/cancel <code>- Cancel this process</code>"
   SKIP_MSG = "<b><u>SET MESSAGE SKIPING NUMBER</b></u>\n<b>Skip the message as much as you enter the number and the rest of the message will be forwarded\nDefault Skip Number =</b> <code>0</code>\n<code>eg: You enter 0 = 0 file skiped\n You enter 5 = 5 file skiped</code>\n/cancel <code>- Cancel this process</code>"
-  LIMIT_MSG = "<b><u>SET FILE FORWARD LIMIT</u></b>\n<b>Heroku Daily Limit</b> : <code>23000</code>\n<b>Default Limit</b> : <code>0</code>"
-  CANCEL = "<b>Process Cancelled Succefully\nEnter /run Again</b>"
+  CANCEL = "<b>Process Cancelled Succefully !</b>"
   USERNAME = "<b>Send Username with @</b>\n<code>eg: @Username</code>\n<b>Enter /run Again</b>"
   INVALID_CHANNELID = "<b>Send channel id with -100</b>\n<code>eg: -100xxxxxxxxxx</code>\n<b>Enter /run Again</b>"
   TEXT = """<b><u>FORWARD STATUS</b></u>
@@ -47,7 +45,7 @@ More details /help</i>"""
 <code>Before forwarding the messages Click the Yes button only after checking the following</code>
 
 <b>★ YOUR BOT:</b> [{botname}](t.me/{botuname})
-<b>★ FROM CHANNEL:</b> {from_chat}
+<b>★ FROM CHANNEL:</b> `{from_chat}`
 <b>★ TO CHANNEL:</b> `{to_chat}`
 <b>★ SKIP MESSAGES:</b> `{skip}`
 
