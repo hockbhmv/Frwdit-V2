@@ -26,7 +26,7 @@ async def settings_query(bot, query):
      buttons = [] 
      _bot = await db.get_bot(user_id)
      if _bot is not None:
-        buttons.append([InlineKeyboardButton(f'{_bot.name}',
+        buttons.append([InlineKeyboardButton(f'{_bot['name']}',
                          callback_data=f"settings#editbot")])
      else:
         buttons.append([InlineKeyboardButton('➕ Add bot ➕', 
@@ -85,12 +85,11 @@ async def settings_query(bot, query):
                ],
                [InlineKeyboardButton('back', callback_data="settings#channels")]]
      await query.message.edit_text(
-        f"<b><u>📄 BOT DETAILS</b></u>\n\n<b>- NAME:</b> <code>{bot.name}</code>\n<b>- BOT ID:</b> <code>{bot.id}</code>\n<b>- USERNAME:</b> @{bot.username}",
+        f"<b><u>📄 BOT DETAILS</b></u>\n\n<b>- NAME:</b> <code>{bot['name']}</code>\n<b>- BOT ID:</b> <code>{bot['id']}</code>\n<b>- USERNAME:</b> @{bot['username']}",
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removebot":
-     await update_configs(user_id, 'bot_id', None)
-     await update_configs(user_id, 'bot_token', None)
+     await update_configs(user_id, 'bot', None)
      await query.message.edit_text(
         "successfully updated",
         reply_markup=InlineKeyboardMarkup(buttons))
