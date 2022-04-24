@@ -28,7 +28,7 @@ More details /help</i>"""
 <b>Server :</b> <code>Heroku</code>
 <b>Build :</b> <code>V2.0</code>"""
   FROM_MSG = "<b><u>SET FROM CHANNEL</b></u>\n\n<b>Forward the last message of From channel OR Send the last message link of From channel.</b>\n<code>Note: Your bot must be admin in From channel if the channel is private</code>\n/cancel <code>- Cancel this process</code>"
-  TO_MSG = "<b><u>CHOOSE TO CHANNEL</b></u>\n\n<b>Choose your **To channel** from the given list.</b>\n<b>Note:- </b>[{}](t.me/{}) must be admin in there before forwarding\n/cancel <code>- Cancel this process</code>"
+  TO_MSG = "<b><u>CHOOSE TO CHANNEL</b></u>\n\n<b>Choose your **To channel** from the given list.</b>\n<b>`Note: </b>`[{}](t.me/{}) `must be admin in there before forwarding`\n/cancel <code>- Cancel this process</code>"
   SKIP_MSG = "<b><u>SET MESSAGE SKIPING NUMBER</b></u>\n<b>Skip the message as much as you enter the number and the rest of the message will be forwarded\nDefault Skip Number =</b> <code>0</code>\n<code>eg: You enter 0 = 0 file skiped\n You enter 5 = 5 file skiped</code>\n/cancel <code>- Cancel this process</code>"
   LIMIT_MSG = "<b><u>SET FILE FORWARD LIMIT</u></b>\n<b>Heroku Daily Limit</b> : <code>23000</code>\n<b>Default Limit</b> : <code>0</code>"
   CANCEL = "<b>Process Cancelled Succefully\nEnter /run Again</b>"
@@ -48,10 +48,10 @@ More details /help</i>"""
 
 <b>★ YOUR BOT:</b> [{botname}](t.me/{botuname})
 <b>★ FROM CHANNEL:</b> {from_chat}
-<b>★ TO CHANNEL:</b> {to_chat}
-<b>★ SKIP MESSAGES:</b> <code>{skip}</code>
+<b>★ TO CHANNEL:</b> `{to_chat}`
+<b>★ SKIP MESSAGES:</b> `{skip}`
 
-<i>° [{botname}](t.me/{botuname}) must be admin in **To Channel** (`{to_chat}`)</i>
+<i>° [{botname}](t.me/{botuname}) must be admin in **To Channel**</i> (`{to_chat}`)
 <i>° If the **From Channel** is private your bot must be admin in there also</b></i>
 
 <b>If the above is checked then the yes button can be clicked</b>"""
