@@ -33,22 +33,22 @@ async def pub_(bot, message):
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
     _bot = await db.get_bot(user)
     if not _bot:
-      return await m.edit("You didn't added any bot. Please add your bot using /settings !")
+      return await m.edit("<b>You didn't added any bot. Please add a bot using /settings !</b>")
     configs = await db.get_configs(user)
     try:
       client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=_bot['token'])
       await client.start()
     except (AccessTokenExpired, AccessTokenInvalid):
-      return await m.edit("The given bot token is invalid. please change it !")
+      return await m.edit("<b>The given bot token is expired or invalid. please change it !</b>")
     except Exception as e:
-      return await m.edit(f"Bot Error:- {e}")
+      return await m.edit(f"<b>Bot Error:-</b>\n\n<code>{e}</code>")
     try:
       k = await client.send_message(details['TO'], "Testing")
       await k.delete()
     except:
-      return await m.edit(f"Please Make Your [Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions", parse_mode="combined")
+      return await m.edit(f"**Please Make Your [Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", parse_mode="combined")
     temp.forwardings += 1
-    test = await client.send_message(user, text="Forwarding started")
+    test = await client.send_message(user, text="<b>🧡 Forwarding Started</b>")
     if test:
         await m.edit("<i>processing</i>") 
         total_files=0
