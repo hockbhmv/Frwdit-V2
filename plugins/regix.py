@@ -87,7 +87,7 @@ async def pub_(bot, message):
                     else:
                        MSG.append(message.message_id)
                     completed = total - fetched
-                    if ((len(MSG) >= 100 or completed < 100):
+                    if ((len(MSG) >= 100 or completed <= 100):
                       if configs['forward_tag']:
                         try:
                           await forward(client, details, MSG)
