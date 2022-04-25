@@ -83,7 +83,7 @@ async def status(bot, query):
     buttons = [[InlineKeyboardButton('back', callback_data='help')]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await query.message.edit_text(
-        text=Translation.STATUS_TXT.format(users_count, bots_count, temp.forwadings),
+        text=Translation.STATUS_TXT.format(users_count, bots_count, temp.forwardings),
         reply_markup=reply_markup,
         disable_web_page_preview=True,
         parse_mode="combined"
