@@ -83,7 +83,7 @@ async def pub_(bot, message):
                        continue 
                     if not configs['forward_tag']:
                        caption = custom_caption(message, configs)
-                       MSG.append({"msg_id": message.message_id, "msg_type": message.media, "caption": caption})
+                       MSG.append({"msg_id": message.message_id, "media": media(message), "caption": caption})
                     else:
                        MSG.append(message.message_id)
                     notcompleted = len(MSG)
@@ -145,8 +145,7 @@ async def pub_(bot, message):
             await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, total_files, deleted, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
 
 async def copy(bot, chat, msg):
-   type = msg.get("msg_type")
-   if type in ["video", "audio", "photo", "document"]:
+   if msg.get("media"):
      await bot.send_cached_media(
         chat_id=chat['TO'],
         file_id=msg.get("msg_id"),
@@ -208,6 +207,15 @@ def get_size(size):
      i += 1
      size /= 1024.0
   return "%.2f %s" % (size, units[i]) 
+
+def media(msg):
+  media = msg.media
+  if media in ["video", "audio", "photo", "document"]:
+     media = getattr(msg, media, None)
+     if not media:
+       return None 
+     return media.file_id
+  return None 
  
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, m):
