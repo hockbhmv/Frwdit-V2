@@ -3,21 +3,32 @@ from config import Config
 
 class Translation(object):
   START_TXT = """<b>Hai {}!!</b>
-<i>I'm Simple Auto file Forward Bot V2
-This Bot forward all files to One Public channel to Your Personal channel
-More details /help</i>"""
-  HELP_TXT = """<b>Follow These Steps!!
-• User Join From channel Must(No need Admin permission)
-• Then give admin permission in your personal telegram channel
-• Then use /run command in your bot</b>
+<i>I'm a Advanced Auto Forward Bot
+I can forward all message from one channel to another channel</i>
+**Click help button to know More about me**"""
+  HELP_TXT = """<b><u>🔆 HELP</b></u>
 
-<b><u>Available Command</b></u>
+<u>**📚 Available commands:**</u>
+**>** __/start - check I'm alive__ 
+**>** __/forward - forward messages__
+**>** __/settings - configure your settings__
+**>** __/reset - reset your settings__
 
-* /start - <i>Bot Alive</i>
-* /help - <i>more help</i>
-* /run - <i>start forward</i>
-* /about - <i>About Me</i>
-* /restart - <i>Server Restart</i>"""
+<b><u>⭕️ Before Forwarding:</b></u>
+**•** __add a bot__
+**•** __add atleast one to channel__ `(your bot must be admin in there)`
+**•** __You can add above mentioned by using /settings__
+**•** __if the **From Channel** is private your bot must need admin permission in there also__
+**•** __Then use /forward to forward messages__
+
+<b><u>💢 Features:</b></u>
+**-** __Forward message from public channel to your channel without admin permission. if the channel is private need admin permission__
+**-** __custom caption__
+**-** __support restricted channels__
+**-** __skip duplicate files__`(comming soon)`
+**-** __filter type of messages__
+
+"""
   ABOUT_TXT = """<b><u>My Info</b></u>
 
 <b>Name :</b> <code>Auto Forward Bot</code>
