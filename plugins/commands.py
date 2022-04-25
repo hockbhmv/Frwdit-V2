@@ -46,7 +46,7 @@ async def restart(client, message):
 async def helpcb(bot, query):
     buttons = [[
             InlineKeyboardButton('About', callback_data='about'),
-            InlineKeyboardButton('Status', callback_data='status')
+            InlineKeyboardButton('Status', callback_data='status'),
             InlineKeyboardButton('back', callback_data='back')
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
