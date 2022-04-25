@@ -78,12 +78,11 @@ async def about(bot, query):
 
 @Client.on_callback_query(filters.regex(r'^status'))
 async def status(bot, query):
-    bots_count = await db.total_bot_count()
-    users_count = await db.total_users_count()
+    users_count, bots_count = await db.total_users_bots_count()
     buttons = [[InlineKeyboardButton('back', callback_data='help')]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await query.message.edit_text(
-        text=Translation.STATUS_TXT.format(users_count, bots_count, temp.forwardings),
+        text=Translation.STATUS_TXT.format(users_count, users_count-bots_count, temp.forwardings),
         reply_markup=reply_markup,
         disable_web_page_preview=True,
         parse_mode="combined"
