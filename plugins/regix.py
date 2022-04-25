@@ -86,9 +86,11 @@ async def pub_(bot, message):
                        MSG.append({"msg_id": message.message_id, "caption": caption})
                     else:
                        MSG.append(message.message_id)
+                    notcompleted = (len(MSG)
                     completed = total - fetched
-                    if ((len(MSG) >= 100 
-                         and completed <= 100):
+                    if notcompleted >= 100 
+                       and completed <= 100
+                    ):
                       if configs['forward_tag']:
                         try:
                           await forward(client, details, MSG)
@@ -97,7 +99,7 @@ async def pub_(bot, message):
                           await asyncio.sleep(e.x)
                           await edit(m, TEXT.format('', fetched, total_files, deleted, skip, filtered, "Forwarding", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
                           await forward(client, details, MSG)
-                        total_files+=100 
+                        total_files+=notcompleted 
                         await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
