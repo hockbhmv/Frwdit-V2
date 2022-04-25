@@ -142,7 +142,7 @@ async def pub_(bot, message):
               await client.stop()
             except:
               pass
-            await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, total_files, deleted, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+            await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, total_files, deleted, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
 
 async def copy(bot, chat, msg):
    await bot.copy_message(
@@ -207,6 +207,7 @@ async def terminate_frwding(bot, m):
     user_id = m.from_user.id 
     temp.lock[user_id] = False
     temp.CANCEL[user_id] = True 
+    await m.answer("Forwarding cancelled !")
     
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
