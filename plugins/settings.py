@@ -57,7 +57,7 @@ async def settings_query(bot, query):
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
      await query.message.edit_text( 
-       "<b><u>My Channels</b></u>\n\n<b>you can manage your channels in here</b>\nYour bot must be admin there before forwarding",
+       "<b><u>My Channels</b></u>\n\n<b>you can manage your channels in here</b>",
        reply_markup=InlineKeyboardMarkup(buttons))
    
   elif type=="addchannel":  
@@ -126,7 +126,7 @@ async def settings_query(bot, query):
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
      await query.message.edit_text(
-        "<b><u>CUSTOM CAPTION</b></u>\n\n<b>You can set a custom caption to videos and documents. Normaly use its default caption\n\n<b><u>AVAILABLE FILLINGS:</b></u>\n- <code>{filename}</code> : Filename\n- <code>{size}</code> : File size\n- <code>{caption}</code> : default caption",
+        "<b><u>CUSTOM CAPTION</b></u>\n\n<b>You can set a custom caption to videos and documents. Normaly use its default caption</b>\n\n<b><u>AVAILABLE FILLINGS:</b></u>\n- <code>{filename}</code> : Filename\n- <code>{size}</code> : File size\n- <code>{caption}</code> : default caption",
         reply_markup=InlineKeyboardMarkup(buttons))
                                
   elif type=="seecaption":   
