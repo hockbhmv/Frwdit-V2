@@ -17,6 +17,7 @@ class temp(object):
     CANCEL = {}
     CONFIGS = {}
     FORWARD = {}
+    forwardings = 0
     BANNED_USERS = []
     
 def LOGGER(name: str) -> logging.Logger:
