@@ -28,15 +28,11 @@ class Database:
         user = await self.col.find_one({'id':int(id)})
         return bool(user)
     
-    async def total_users_count(self):
+    async def total_users_bots_count(self):
+        bcount = await self.col.count_documents({'configs.bot': None})
         count = await self.col.count_documents({})
-        return count
+        return count, bcount
     
-    async def total_bot_count(self):
-        bcount = await self.col.count_documents({'bot': None})
-        count = await self.col.count_documents({})
-        return count-bcount
-      
     async def remove_ban(self, id):
         ban_status = dict(
             is_banned=False,
