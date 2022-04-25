@@ -47,6 +47,7 @@ async def pub_(bot, message):
       await k.delete()
     except:
       return await m.edit(f"Please Make Your [Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions", parse_mode="combined")
+    temp.forwardings += 1
     test = await client.send_message(user, text="Forwarding started")
     if test:
         await m.edit("<i>processing</i>") 
@@ -66,6 +67,7 @@ async def pub_(bot, message):
                     if temp.CANCEL.get(user)==True:
                        await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, total_files, deleted, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                        await client.send_message(user, text="Forwarding cancelled")
+                       temp.forwardings -= 1
                        await client.stop()
                        return 
                     pling += 1
@@ -100,6 +102,7 @@ async def pub_(bot, message):
                           if temp.CANCEL.get(user)==True:
                             await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, total_files, deleted, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
                             await client.send_message(user, text="Forwarding cancelled")
+                            temp.forwardings -= 1
                             await client.stop()
                             return
                           pling += 1
@@ -122,6 +125,7 @@ async def pub_(bot, message):
                       MSG = []
             except Exception as e:
                 print(e) 
+                temp.forwardings -= 1
                 temp.lock[user] = False
                 await m.edit_text(f'Error: {e}')
                 try:
@@ -129,6 +133,7 @@ async def pub_(bot, message):
                 except:
                   pass
             else:
+                temp.forwardings -= 1
                 temp.lock[user] = False
                 try:
                   await client.stop()
