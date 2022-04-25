@@ -83,7 +83,7 @@ async def pub_(bot, message):
                        continue 
                     if not configs['forward_tag']:
                        caption = custom_caption(message, configs)
-                       MSG.append({"msg_id": message.message_id, "caption": caption})
+                       MSG.append({"msg_id": message.message_id, "msg_type": message.media, "caption": caption})
                     else:
                        MSG.append(message.message_id)
                     notcompleted = len(MSG)
@@ -145,12 +145,19 @@ async def pub_(bot, message):
             await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, total_files, deleted, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
 
 async def copy(bot, chat, msg):
-   await bot.copy_message(
-      chat_id=chat['TO'],
-      from_chat_id=chat['FROM'],
-      parse_mode="combined",       
-      caption=msg.get("caption"),
-      message_id=msg.get("msg_id"))
+   type = msg.get("msg_type")
+   if type in ["video", "audio", "photo", "document"]:
+     await bot.send_cached_media(
+        chat_id=chat['TO'],
+        file_id=msg.get("msg_id"),
+        caption=msg.get("caption"))
+   else:
+     await bot.copy_message(
+        chat_id=chat['TO'],
+        from_chat_id=chat['FROM'],
+        parse_mode="combined",       
+        caption=msg.get("caption"),
+        message_id=msg.get("msg_id"))
 
 async def forward(bot, chat, msg):
    await bot.forward_messages(
