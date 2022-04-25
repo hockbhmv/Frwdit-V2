@@ -230,6 +230,11 @@ async def filters_buttons(user_id):
        InlineKeyboardButton('✔️' if filters['animations'] else '❌',
                     callback_data=f'settings#updatefilter-animations-{filters["animations"]}')
        ],[
+       InlineKeyboardButton('▶️ Skip duplicate files',
+                    callback_data='commingsoon'),
+       InlineKeyboardButton('comming soon',
+                    callback_data='commingsoon')
+       ],[
        InlineKeyboardButton('back',
                     callback_data="settings#main")
        ]]
