@@ -2,7 +2,7 @@ import os
 import sys
 import asyncio 
 from database import db
-from config import Config
+from config import Config, temp
 from translation import Translation
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument
@@ -47,6 +47,7 @@ async def helpcb(bot, query):
     buttons = [[
             InlineKeyboardButton('About', callback_data='about'),
             InlineKeyboardButton('Status', callback_data='status'),
+            ],[
             InlineKeyboardButton('back', callback_data='back')
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
@@ -77,10 +78,12 @@ async def about(bot, query):
 
 @Client.on_callback_query(filters.regex(r'^status'))
 async def status(bot, query):
+    bots_count = await db.total_bot_count()
+    users_count = await db.total_users_count()
     buttons = [[InlineKeyboardButton('back', callback_data='help')]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await query.message.edit_text(
-        text=Translation.STATUS_TXT,
+        text=Translation.STATUS_TXT.format(users_count, bots_count, temp.forwadings),
         reply_markup=reply_markup,
         disable_web_page_preview=True,
         parse_mode="combined"
