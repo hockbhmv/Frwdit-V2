@@ -86,7 +86,8 @@ async def pub_(bot, message):
                        MSG.append({"msg_id": message.message_id, "caption": caption})
                     else:
                        MSG.append(message.message_id)
-                    if len(MSG) >= 100:
+                    completed = total - fetched
+                    if ((len(MSG) >= 100 or completed < 100):
                       if configs['forward_tag']:
                         try:
                           await forward(client, details, MSG)
@@ -132,14 +133,13 @@ async def pub_(bot, message):
                   await client.stop()
                 except:
                   pass
-            else:
-                temp.forwardings -= 1
-                temp.lock[user] = False
-                try:
-                  await client.stop()
-                except:
-                  pass
-                await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, total_files, deleted, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
+            temp.forwardings -= 1
+            temp.lock[user] = False
+            try:
+              await client.stop()
+            except:
+              pass
+            await edit(m, TEXT.format('\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', fetched, total_files, deleted, skip, filtered, "completed", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
 
 async def copy(bot, chat, msg):
    await bot.copy_message(
