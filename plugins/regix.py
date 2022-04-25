@@ -66,7 +66,7 @@ async def pub_(bot, message):
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip):
                     if temp.CANCEL.get(user)==True:
                        await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, total_files, deleted, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
-                       await client.send_message(user, text="Forwarding cancelled")
+                       await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
                        temp.forwardings -= 1
                        await client.stop()
                        return 
@@ -105,7 +105,7 @@ async def pub_(bot, message):
                         for msgs in MSG:
                           if temp.CANCEL.get(user)==True:
                             await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, total_files, deleted, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), buttons)
-                            await client.send_message(user, text="Forwarding cancelled")
+                            await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
                             temp.forwardings -= 1
                             await client.stop()
                             return
@@ -131,7 +131,7 @@ async def pub_(bot, message):
                 print(e) 
                 temp.forwardings -= 1
                 temp.lock[user] = False
-                await m.edit_text(f'Error: {e}')
+                await m.edit_text(f'<b>Error:</b>\n\n<code>{e}</code>)
                 try:
                   await client.stop()
                 except:
@@ -207,7 +207,7 @@ async def terminate_frwding(bot, m):
     user_id = m.from_user.id 
     temp.lock[user_id] = False
     temp.CANCEL[user_id] = True 
-    await m.answer("Forwarding cancelled !")
+    await m.answer("Forwarding cancelled !", show_alert=True)
     
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
