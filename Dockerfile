@@ -1,9 +1,12 @@
-FROM python:3.9
+FROM python:3.8-slim-buster
 
-WORKDIR /app
+RUN apt update && apt upgrade -y
+RUN apt install git -y
+COPY requirements.txt /requirements.txt
 
-COPY . /app/
-
-RUN pip install -r requirements.txt
-
-CMD python main.py
+RUN cd /
+RUN pip3 install -U pip && pip3 install -U -r requirements.txt
+RUN mkdir /Frwdit-V2 
+WORKDIR /Frwdit-V2 
+COPY start.sh /start.sh
+CMD ["/bin/bash", "/start.sh"] 

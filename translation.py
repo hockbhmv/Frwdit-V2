@@ -2,45 +2,76 @@ import os
 from config import Config
 
 class Translation(object):
-  START_TXT = """<b>Hai {}!!</b>
-<i>I'm Simple Auto file Forward Bot V2
-This Bot forward all files to One Public channel to Your Personal channel
-More details /help</i>"""
-  CAPTION = "`{}`\n\n" + str(Config.CAPTION)
-  HELP_TXT = """<b>Follow These Steps!!
-• User Join From channel Must(No need Admin permission)
-• Then give admin permission in your personal telegram channel
-• Then use /run command in your bot</b>
+  START_TXT = """<b>Hi {}</b>
+<i>I'm a Advanced Auto Forward Bot
+I can forward all message from one channel to another channel</i>
+**Click help button to know More about me**"""
+  HELP_TXT = """<b><u>🔆 HELP</b></u>
 
-<b><u>Available Command</b></u>
+<u>**📚 Available commands:**</u>
+**>** __/start - check I'm alive__ 
+**>** __/forward - forward messages__
+**>** __/settings - configure your settings__
+**>** __/reset - reset your settings__
 
-* /start - <i>Bot Alive</i>
-* /help - <i>more help</i>
-* /run - <i>start forward</i>
-* /about - <i>About Me</i>
-* /restart - <i>Server Restart</i>"""
-  ABOUT_TXT = """<b><u>My Info</b></u>
+<b><u>⚠️ Before Forwarding:</b></u>
+**•** __add a bot__
+**•** __add atleast one to channel__ `(your bot must be admin in there)`
+**•** __You can add above mentioned by using /settings__
+**•** __if the **From Channel** is private your bot must need admin permission in there also__
+**•** __Then use /forward to forward messages__
 
-<b>Name :</b> <code>Auto Forward Bot</code>
-<b>Credit :</b> <code>Dark Angel</code>
-<b>Language :</b> <code>Python3</code>
-<b>Lybrary :</b> <code>Pyrogram v1.2.9</code>
-<b>Server :</b> <code>Heroku</code>
-<b>Build :</b> <code>V2.0</code>"""
-  FROM_MSG = "<b><u>SET FROM CHANNEL USERNAME</b></u>\n<b>Enter From Channel Username</b>\n<code>eg: @username</code>\n/cancel <code>- Cancel this process</code>"
-  TO_MSG = "<b><u>SET TO CHANNEL ID</b></u>\n<b>Enter To Channel id</b>\n<code>eg: -100xxxxxxxxxx</code>\n/cancel <code>- Cancel this process</code>"
-  SKIP_MSG = "<b><u>SET FILE SKIPING NUMBER</b></u>\n<b>Skip the file as much as you enter the number and the rest of the file will be forwarded\nDefault Skip Number =</b> <code>0</code>\n<code>eg: You enter 0 = 0 file skiped\n You enter 5 = 5 file skiped</code>\n/cancel <code>- Cancel this process</code>"
-  LIMIT_MSG = "<b><u>SET FILE FORWARD LIMIT</u></b>\n<b>Heroku Daily Limit</b> : <code>23000</code>\n<b>Default Limit</b> : <code>0</code>"
-  CANCEL = "<b>Process Cancelled Succefully\nEnter /run Again</b>"
+<b><u>💢 Features:</b></u>
+**-** __Forward message from public channel to your channel without admin permission. if the channel is private need admin permission__
+**-** __custom caption__
+**-** __support restricted channels__
+**-** __skip duplicate files__`(comming soon)`
+**-** __filter type of messages__
+
+"""
+  ABOUT_TXT = """
+╔════❰ ғᴏʀᴡᴀʀᴅ ʙᴏᴛ ❱═❍⊱❁۪۪
+║╭━━━━━━━━━━━━━━━➣
+║┣⪼📃ʙᴏᴛ : [ғᴏʀᴡᴀʀᴅ ʙᴏᴛ](https://t.me/mdforwardbot)
+║┣⪼👦ᴄʀᴇᴀᴛᴏʀ : [ᴍᴅᴀᴅᴍɪɴ](https://t.me/mdadmin2)
+║┣⪼📡ʜᴏsᴛᴇᴅ ᴏɴ : ʜᴇʀᴏᴋᴜ
+║┣⪼🗣️ʟᴀɴɢᴜᴀɢᴇ : ᴘʏᴛʜᴏɴ3
+║┣⪼📚ʟɪʙʀᴀʀʏ : ᴘʏʀᴏɢʀᴀᴍ ᴀsʏɴᴄɪᴏ 2.0.0 
+║┣⪼🗒️ᴠᴇʀsɪᴏɴ : 0.0.1
+║╰━━━━━━━━━━━━━━━➣
+╚══════════════════❍⊱❁۪۪
+"""
+  STATUS_TXT = """
+**👱 Total users:** `{}`
+
+**🤖 Total bot:** `{}`
+
+**🔃 Forwardings:** `{}`
+"""
+  FROM_MSG = "<b><u>SET FROM CHANNEL</b></u>\n\n<b>Forward the last message of From channel OR Send the last message link of From channel.</b>\n<code>Note: Your bot must be admin in From channel if the channel is private</code>\n/cancel <code>- Cancel this process</code>"
+  TO_MSG = "<b><u>CHOOSE TO CHANNEL</b></u>\n\n<b>Choose your **To channel** from the given list.</b>\n<b>`Note: </b>`[{}](t.me/{}) `must be admin in there before forwarding`\n/cancel <code>- Cancel this process</code>"
+  SKIP_MSG = "<b><u>SET MESSAGE SKIPING NUMBER</b></u>\n<b>Skip the message as much as you enter the number and the rest of the message will be forwarded\nDefault Skip Number =</b> <code>0</code>\n<code>eg: You enter 0 = 0 file skiped\n You enter 5 = 5 file skiped</code>\n/cancel <code>- Cancel this process</code>"
+  CANCEL = "<b>Process Cancelled Succefully !</b>"
   USERNAME = "<b>Send Username with @</b>\n<code>eg: @Username</code>\n<b>Enter /run Again</b>"
   INVALID_CHANNELID = "<b>Send channel id with -100</b>\n<code>eg: -100xxxxxxxxxx</code>\n<b>Enter /run Again</b>"
+  TEXT = """<b><u>FORWARD STATUS</b></u>
+{}
+<b>🔲 Feched messages:</b> <code>{}</code>\n
+<b>🔲 Succefully forwarded:</b> <code>{}</code>\n
+<b>🔲 Deleted messages:</b> <code>{}</code>\n
+<b>🔲 Skipped messages:</b> <code>{}</code>\n
+<b>🔲 Filtered messages:</b> <code>{}</code>\n
+<b>🔲 Current status:</b> <code>{}</code>\n
+<b>🔲 Percentage:</b> <code>{}</code> %"""
   DOUBLE_CHECK = """<b><u>DOUBLE CHECKING ⚠️</b></u>
-<code>Before forwarding the file Click the Yes button only after checking the following</code>
+<code>Before forwarding the messages Click the Yes button only after checking the following</code>
 
-<i>° Must be a user join in From channel check that status</i>
-<i>User join this channel : <b>{}</b></i>
-<b><u>Note</u></b> : <i>Admin permission is not mandatory</i>
-<i>° Admin permission is mandatory for the bot on the To channel check that status</i>
-<b><u>Note</u></b> : <i>There is no requirement for a user to join the To channel</i>
+<b>★ YOUR BOT:</b> [{botname}](t.me/{botuname})
+<b>★ FROM CHANNEL:</b> `{from_chat}`
+<b>★ TO CHANNEL:</b> `{to_chat}`
+<b>★ SKIP MESSAGES:</b> `{skip}`
+
+<i>° [{botname}](t.me/{botuname}) must be admin in **To Channel**</i> (`{to_chat}`)
+<i>° If the **From Channel** is private your bot must be admin in there also</b></i>
 
 <b>If the above is checked then the yes button can be clicked</b>"""

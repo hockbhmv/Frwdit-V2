@@ -1,58 +1,86 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# (c) @DarkzzAngel
-
-import asyncio
 import re
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.errors import FloodWait
-from config import Config
+import asyncio 
+from database import db
+from config import temp 
 from translation import Translation
-
-FILTER = Config.FILTER_TYPE
-files_count = 0
-
+from pyrogram import Client, filters 
+from pyrogram.errors import FloodWait 
+from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+ 
 #===================Run Function===================#
 
-@Client.on_message(filters.private & filters.command(["run"]))
+@Client.on_message(filters.private & filters.command(["forward"]))
 async def run(bot, message):
-    global SKIP
-    global FROM
-    global TO
-    global LIMIT
-    if str(message.from_user.id) not in Config.OWNER_ID:
+    buttons = []
+    btn_data = {}
+    user_id = message.from_user.id
+    channels = await db.get_user_channels(user_id)
+    async for channel in channels:
+       buttons.append([KeyboardButton(f"{channel['title']}")])
+       btn_data[channel['title']] = channel['chat_id']
+    if not buttons:
+       return await message.reply_text("please set a to channel in /settings before forwarding")
+    buttons.append([KeyboardButton("cancel")])
+    _bot = await db.get_bot(user_id)
+    _toid = await bot.ask(message.chat.id, Translation.TO_MSG.format(_bot['name'], _bot['username']), parse_mode="combined", reply_markup=ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True))
+    if _toid.text.startswith(('/', 'cancel')):
+        await message.reply_text(Translation.CANCEL, reply_markup=ReplyKeyboardRemove())
         return
-    fromid = await bot.ask(message.chat.id, Translation.FROM_MSG)
-    if fromid.text.startswith('/'):
+    toid = btn_data.get(_toid.text)
+    if not toid:
+       return await message.reply_text("wrong channel choosen !", reply_markup=ReplyKeyboardRemove())
+    fromid = await bot.ask(message.chat.id, Translation.FROM_MSG, reply_markup=ReplyKeyboardRemove())
+    if fromid.text and fromid.text.startswith('/'):
         await message.reply(Translation.CANCEL)
-        return
-    elif not fromid.text.startswith('@'):
-        return await message.reply(Translation.USERNAME)
-    toid = await bot.ask(message.chat.id, Translation.TO_MSG)
-    if toid.text.startswith('/'):
-        await message.reply(Translation.CANCEL)
-        return
+        return 
+    if fromid.text:
+        regex = re.compile("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
+        match = regex.match(fromid.text)
+        if not match:
+            return await message.reply('Invalid link')
+        chat_id = match.group(4)
+        last_msg_id = int(match.group(5))
+        if chat_id.isnumeric():
+            chat_id  = int(("-100" + chat_id))
+    elif fromid.forward_from_chat.type == 'channel':
+        last_msg_id = fromid.forward_from_message_id
+        chat_id = fromid.forward_from_chat.username or fromid.forward_from_chat.id
+    else:
+        return 
+    try:
+        chat = await bot.get_chat(chat_id)
+    except ChannelInvalid:
+        return await message.reply('This may be a private channel / group. Make me an admin over there to forward messages.')
+    except (UsernameInvalid, UsernameNotModified):
+        return await message.reply('Invalid Link specified.')
+    except Exception as e:
+        return await message.reply(f'Errors - {e}')
+    try:
+        k = await bot.get_messages(chat_id, last_msg_id)
+    except:
+        return await message.reply('This may be a private channel / group. Make me an admin over there')
+    if k.empty:
+        return await message.reply('This may be group and iam not a admin of the group.')
     skipno = await bot.ask(message.chat.id, Translation.SKIP_MSG)
     if skipno.text.startswith('/'):
         await message.reply(Translation.CANCEL)
         return
-    limitno = await bot.ask(message.chat.id, Translation.LIMIT_MSG)
-    if limitno.text.startswith('/'):
-        await message.reply(Translation.CANCEL)
-        return
+    forward_id = f"{user_id}-{skipno.message_id}"
     buttons = [[
-        InlineKeyboardButton('Yes', callback_data='start_public'),
-        InlineKeyboardButton('No', callback_data='close_btn')
+        InlineKeyboardButton('Yes', callback_data=f"start_public_{forward_id}"),
+        InlineKeyboardButton('No', callback_data="close_btn")
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await message.reply_text(
-        text=Translation.DOUBLE_CHECK.format(fromid.text),
+        text=Translation.DOUBLE_CHECK.format(botname=_bot['name'], botuname=_bot['username'], from_chat=chat.title, to_chat=_toid.text, skip=skipno.text),
+        parse_mode="combined",
+        disable_web_page_preview=True,
         reply_markup=reply_markup
     )
-    SKIP = skipno.text
-    FROM = fromid.text
-    TO = toid.text
-    LIMIT = limitno.text
-    if re.match('-100\d+', TO):
-        TO = int(TO)
+    temp.FORWARD[forward_id] = {
+        'TO': toid,
+        'FROM': chat_id,
+        'SKIP': skipno.text,
+        'LIMIT': last_msg_id
+    }
