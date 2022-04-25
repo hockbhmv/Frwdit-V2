@@ -70,7 +70,7 @@ async def about(bot, query):
     reply_markup = InlineKeyboardMarkup(buttons)
     await query.message.edit_text(
         text=Translation.ABOUT_TXT,
-        reply_markup=reply_markup
+        reply_markup=reply_markup,
         disable_web_page_preview=True,
         parse_mode="combined"
     )
@@ -81,7 +81,7 @@ async def status(bot, query):
     reply_markup = InlineKeyboardMarkup(buttons)
     await query.message.edit_text(
         text=Translation.STATUS_TXT,
-        reply_markup=reply_markup
+        reply_markup=reply_markup,
         disable_web_page_preview=True,
         parse_mode="combined"
     )
