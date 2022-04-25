@@ -131,7 +131,7 @@ async def pub_(bot, message):
                 print(e) 
                 temp.forwardings -= 1
                 temp.lock[user] = False
-                await m.edit_text(f'<b>Error:</b>\n\n<code>{e}</code>)
+                await m.edit_text(f'<b>Error:</b>\n\n<code>{e}</code>')
                 try:
                   await client.stop()
                 except:
