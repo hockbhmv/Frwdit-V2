@@ -2,7 +2,7 @@ import os
 from config import Config
 
 class Translation(object):
-  START_TXT = """<b>Hai {}!!</b>
+  START_TXT = """<b>Hi {}</b>
 <i>I'm a Advanced Auto Forward Bot
 I can forward all message from one channel to another channel</i>
 **Click help button to know More about me**"""
@@ -30,7 +30,7 @@ I can forward all message from one channel to another channel</i>
 
 """
   ABOUT_TXT = """
-╔════❰ ᴍᴅ ғᴏʀᴡᴀʀᴅ ʙᴏᴛ ❱═❍⊱❁۪۪
+╔════❰ ғᴏʀᴡᴀʀᴅ ʙᴏᴛ ❱═❍⊱❁۪۪
 ║╭━━━━━━━━━━━━━━━➣
 ║┣⪼📃ʙᴏᴛ : [ғᴏʀᴡᴀʀᴅ ʙᴏᴛ](https://t.me/mdforwardbot)
 ║┣⪼👦ᴄʀᴇᴀᴛᴏʀ : [ᴍᴅᴀᴅᴍɪɴ](https://t.me/mdadmin2)
@@ -42,9 +42,11 @@ I can forward all message from one channel to another channel</i>
 ╚══════════════════❍⊱❁۪۪
 """
   STATUS_TXT = """
-Total users: 0
-Total bot: 0
-forwardings: 0
+👱 Total users: {}
+
+🤖 Total bot: {}
+
+🔃 Forwardings: {}
 """
   FROM_MSG = "<b><u>SET FROM CHANNEL</b></u>\n\n<b>Forward the last message of From channel OR Send the last message link of From channel.</b>\n<code>Note: Your bot must be admin in From channel if the channel is private</code>\n/cancel <code>- Cancel this process</code>"
   TO_MSG = "<b><u>CHOOSE TO CHANNEL</b></u>\n\n<b>Choose your **To channel** from the given list.</b>\n<b>`Note: </b>`[{}](t.me/{}) `must be admin in there before forwarding`\n/cancel <code>- Cancel this process</code>"
