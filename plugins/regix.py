@@ -148,7 +148,7 @@ async def copy(bot, chat, msg):
    if msg.get("media"):
      await bot.send_cached_media(
         chat_id=chat['TO'],
-        file_id=msg.get("msg_id"),
+        file_id=msg.get("media"),
         caption=msg.get("caption"))
    else:
      await bot.copy_message(
