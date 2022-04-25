@@ -89,7 +89,7 @@ async def pub_(bot, message):
                     notcompleted = len(MSG)
                     completed = total - fetched
                     if ( notcompleted >= 100 
-                         and completed <= 100
+                         or completed <= 100
                     ):
                       if configs['forward_tag']:
                         try:
