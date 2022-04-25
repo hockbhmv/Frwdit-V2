@@ -86,10 +86,10 @@ async def pub_(bot, message):
                        MSG.append({"msg_id": message.message_id, "caption": caption})
                     else:
                        MSG.append(message.message_id)
-                    notcompleted = (len(MSG)
+                    notcompleted = len(MSG)
                     completed = total - fetched
-                    if notcompleted >= 100 
-                       and completed <= 100
+                    if ( notcompleted >= 100 
+                         and completed <= 100
                     ):
                       if configs['forward_tag']:
                         try:
