@@ -34,7 +34,7 @@ async def settings_query(bot, query):
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
      await query.message.edit_text(
-       "<b><u>My Bots</b></u>\n\nyou can manage your bots in here",
+       "<b><u>My Bots</b></u>\n\n<b>You can manage your bots in here</b>",
        reply_markup=InlineKeyboardMarkup(buttons))
   
   elif type=="addbot":
@@ -57,7 +57,7 @@ async def settings_query(bot, query):
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
      await query.message.edit_text( 
-       "<b><u>My Channels</b></u>\n\nyou can manage your channels in here",
+       "<b><u>My Channels</b></u>\n\n<b>you can manage your channels in here</b>\nYour bot must be admin there before forwarding",
        reply_markup=InlineKeyboardMarkup(buttons))
    
   elif type=="addchannel":  
@@ -83,7 +83,7 @@ async def settings_query(bot, query):
      bot = await db.get_bot(user_id)
      buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removebot")
                ],
-               [InlineKeyboardButton('back', callback_data="settings#channels")]]
+               [InlineKeyboardButton('back', callback_data="settings#bots")]]
      await query.message.edit_text(
         f"<b><u>📄 BOT DETAILS</b></u>\n\n<b>- NAME:</b> <code>{bot['name']}</code>\n<b>- BOT ID:</b> <code>{bot['id']}</code>\n<b>- USERNAME:</b> @{bot['username']}",
         reply_markup=InlineKeyboardMarkup(buttons))
@@ -126,7 +126,7 @@ async def settings_query(bot, query):
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
      await query.message.edit_text(
-        "<b><u>CUSTOM CAPTION</b></u>\n\nyou can set a custom caption to videos and documents. normal use its default caption\n\n<b><u>AVAILABLE FILLINGS:</b></u>\n- <code>{filename}</code> : Filename\n- <code>{size}</code> : File size\n- <code>{caption}</code> : default caption",
+        "<b><u>CUSTOM CAPTION</b></u>\n\n<b>You can set a custom caption to videos and documents. Normaly use its default caption\n\n<b><u>AVAILABLE FILLINGS:</b></u>\n- <code>{filename}</code> : Filename\n- <code>{size}</code> : File size\n- <code>{caption}</code> : default caption",
         reply_markup=InlineKeyboardMarkup(buttons))
                                
   elif type=="seecaption":   
