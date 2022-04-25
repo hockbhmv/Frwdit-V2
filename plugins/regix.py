@@ -71,9 +71,9 @@ async def pub_(bot, message):
                        await client.stop()
                        return 
                     pling += 1
+                    fetched += 1
                     if pling %10 == 0: 
                        await edit(m, TEXT.format('', fetched, total_files, deleted, skip, filtered, "Fetching", "{:.0f}".format(float(deleted + total_files + filtered + skip)*100/float(total))), reply_markup)
-                    fetched+=1 
                     if message.empty or message.service:
                        deleted+=1
                        continue 
