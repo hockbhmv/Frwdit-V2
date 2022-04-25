@@ -29,14 +29,23 @@ I can forward all message from one channel to another channel</i>
 **-** __filter type of messages__
 
 """
-  ABOUT_TXT = """<b><u>My Info</b></u>
-
-<b>Name :</b> <code>Auto Forward Bot</code>
-<b>Credit :</b> <code>Dark Angel</code>
-<b>Language :</b> <code>Python3</code>
-<b>Lybrary :</b> <code>Pyrogram v1.2.9</code>
-<b>Server :</b> <code>Heroku</code>
-<b>Build :</b> <code>V2.0</code>"""
+  ABOUT_TXT = """
+╔════❰ ᴍᴅ ғᴏʀᴡᴀʀᴅ ʙᴏᴛ ❱═❍⊱❁۪۪
+║╭━━━━━━━━━━━━━━━➣
+║┣⪼📃ʙᴏᴛ : [ғᴏʀᴡᴀʀᴅ ʙᴏᴛ](https://t.me/mdforwardbot)
+║┣⪼👦ᴄʀᴇᴀᴛᴏʀ : [ᴍᴅᴀᴅᴍɪɴ](https://t.me/mdadmin2)
+║┣⪼📡ʜᴏsᴛᴇᴅ ᴏɴ : ʜᴇʀᴏᴋᴜ
+║┣⪼🗣️ʟᴀɴɢᴜᴀɢᴇ : ᴘʏᴛʜᴏɴ3
+║┣⪼📚ʟɪʙʀᴀʀʏ : ᴘʏʀᴏɢʀᴀᴍ ᴀsʏɴᴄɪᴏ 2.0.0 
+║┣⪼🗒️ᴠᴇʀsɪᴏɴ : 0.0.1
+║╰━━━━━━━━━━━━━━━➣
+╚══════════════════❍⊱❁۪۪
+"""
+  STATUS_TXT = """
+Total users: 0
+Total bot: 0
+forwardings: 0
+"""
   FROM_MSG = "<b><u>SET FROM CHANNEL</b></u>\n\n<b>Forward the last message of From channel OR Send the last message link of From channel.</b>\n<code>Note: Your bot must be admin in From channel if the channel is private</code>\n/cancel <code>- Cancel this process</code>"
   TO_MSG = "<b><u>CHOOSE TO CHANNEL</b></u>\n\n<b>Choose your **To channel** from the given list.</b>\n<b>`Note: </b>`[{}](t.me/{}) `must be admin in there before forwarding`\n/cancel <code>- Cancel this process</code>"
   SKIP_MSG = "<b><u>SET MESSAGE SKIPING NUMBER</b></u>\n<b>Skip the message as much as you enter the number and the rest of the message will be forwarded\nDefault Skip Number =</b> <code>0</code>\n<code>eg: You enter 0 = 0 file skiped\n You enter 5 = 5 file skiped</code>\n/cancel <code>- Cancel this process</code>"
