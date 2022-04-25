@@ -29,38 +29,6 @@ async def start(client, message):
                 message.from_user.first_name),
         parse_mode="combined")
 
-#===================Help Function===================#
-
-@Client.on_message(filters.private & filters.command(['help']))
-async def help(client, message):
-    buttons = [[
-        InlineKeyboardButton('SouceCode 💡', url='https://github.com/Jijinr/Frwdit-V2'),
-        InlineKeyboardButton('close 🔐', callback_data='close_btn')
-    ]]
-    reply_markup = InlineKeyboardMarkup(buttons)
-    await client.send_message(
-        chat_id=message.chat.id,
-        reply_markup=reply_markup,
-        text=Translation.HELP_TXT,
-        parse_mode="html")
-
-#=================About Function==================#
-
-@Client.on_message(filters.private & filters.command(['about']))
-async def about(client, message):
-    buttons = [[
-        InlineKeyboardButton('💡 SouceCode', url='https://github.com/Jijinr/Frwdit-V2'),
-        InlineKeyboardButton('close 🔐', callback_data='close_btn')
-    ]]
-    reply_markup = InlineKeyboardMarkup(buttons)
-    await client.send_message(
-        chat_id=message.chat.id,
-        reply_markup=reply_markup,
-        text=Translation.ABOUT_TXT,
-        disable_web_page_preview=True,
-        parse_mode="html"
-    )
-
 #==================Restart Function==================#
 
 @Client.on_message(filters.private & filters.command(['restart']))
@@ -76,7 +44,11 @@ async def restart(client, message):
 
 @Client.on_callback_query(filters.regex(r'^help'))
 async def helpcb(bot, query):
-    buttons = [[InlineKeyboardButton('back', callback_data='back')]]
+    buttons = [[
+            InlineKeyboardButton('About', callback_data='about'),
+            InlineKeyboardButton('Status', callback_data='status')
+            InlineKeyboardButton('back', callback_data='back')
+    ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await query.message.edit_text(
         text=Translation.HELP_TXT,
@@ -89,5 +61,27 @@ async def back(bot, query):
     await query.message.edit_text(
        reply_markup=reply_markup,
        text=Translation.START_TXT.format(
-                message.from_user.first_name),
+                query.from_user.first_name),
        parse_mode="combined")
+
+@Client.on_callback_query(filters.regex(r'^about'))
+async def about(bot, query):
+    buttons = [[InlineKeyboardButton('back', callback_data='help')]]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    await query.message.edit_text(
+        text=Translation.ABOUT_TXT,
+        reply_markup=reply_markup
+        disable_web_page_preview=True,
+        parse_mode="combined"
+    )
+
+@Client.on_callback_query(filters.regex(r'^status'))
+async def status(bot, query):
+    buttons = [[InlineKeyboardButton('back', callback_data='help')]]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    await query.message.edit_text(
+        text=Translation.STATUS_TXT,
+        reply_markup=reply_markup
+        disable_web_page_preview=True,
+        parse_mode="combined"
+    )
