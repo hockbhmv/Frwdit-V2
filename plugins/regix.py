@@ -82,8 +82,8 @@ async def pub_(bot, message):
                        filtered+=1
                        continue 
                     if not configs['forward_tag']:
-                       caption = custom_caption(message, configs)
-                       MSG.append({"msg_id": message.message_id, "media": media(message), "caption": caption})
+                       media, caption = media(message)
+                       MSG.append({"msg_id": message.message_id, "media": media, "caption": caption})
                     else:
                        MSG.append(message.message_id)
                     notcompleted = len(MSG)
@@ -146,11 +146,10 @@ async def pub_(bot, message):
 
 async def copy(bot, chat, msg):
    if msg.get("media"):
-     caption = msg.get("caption")
      await bot.send_cached_media(
         chat_id=chat['TO'],
-        file_id=msg.get("media"))#,
-        #caption="" if caption is None else caption)
+        file_id=msg.get("media"),
+        caption=msg.get("caption"))
    else:
      await bot.copy_message(
         chat_id=chat['TO'],
@@ -186,20 +185,7 @@ def check_filters(data, msg):
    elif not data['animations'] and (msg.animation or msg.sticker):
       return True 
    return False 
-
-def custom_caption(msg, get):
-  if not (msg.media 
-     and get['caption']):
-     return None
-  if (msg.video or msg.document or msg.audio):
-     media = getattr(msg, msg.media)
-     file_name = getattr(media, 'file_name', '')
-     file_size = getattr(media, 'file_size', '')
-     caption = getattr(media, 'caption', file_name)
-     return get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
-  else:
-     return None
-
+ 
 def get_size(size):
   units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB"]
   size = float(size)
@@ -209,14 +195,23 @@ def get_size(size):
      size /= 1024.0
   return "%.2f %s" % (size, units[i]) 
 
-def media(msg):
+def media(msg, get):
   media = msg.media
-  if media in ["video", "audio", "photo", "document"]:
+  if media in ["video", "audio", "document"]:
      media = getattr(msg, media, None)
+     file_name = getattr(media, 'file_name', '')
+     file_size = getattr(media, 'file_size', '')
+     caption = getattr(media, 'caption', None)
      if not media:
-       return None 
-     return media.file_id
-  return None 
+       return None, None
+     if not get['caption']:
+       caption = caption 
+     else:
+       caption = get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
+     if caption is None:
+       return None, None
+     return media.file_id, caption
+  return None, None
  
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, m):
