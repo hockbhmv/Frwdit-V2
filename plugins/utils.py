@@ -8,13 +8,12 @@ from config import temp
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
-from pyrogram.errors import FloodWait
-from config import Config
+from pyrogram.errors import FloodWait, UserNotParticipant
+from config import Config, temp
 from translation import Translation
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-@Client.on_message(filters.private & filters.command('add'))
 async def bot_token(bot, m):
   msg = await bot.ask(chat_id=m.from_user.id, text="1) create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me")
   if not msg.forward_date:
@@ -50,23 +49,29 @@ async def bot_token(bot, m):
     pass
   return True
 
-@Client.on_message(filters.private & filters.command('reset'))
-async def forward_tag(bot, m):
-   default = await db.get_configs("01")
-   temp.CONFIGS[m.from_user.id] = default
-   await db.update_configs(m.from_user.id, default)
-   await m.reply("successfully settings reseted ✔️")
-    
 async def get_configs(user_id):
-  #configs = temp.CONFIGS.get(user_id)
-  #if not configs:
-  configs = await db.get_configs(user_id)
-  #temp.CONFIGS[user_id] = configs 
+  configs = temp.CONFIGS.get(user_id)
+  if not configs:
+    configs = await db.get_configs(user_id)
+    temp.CONFIGS[user_id] = configs 
   return configs
                           
 async def update_configs(user_id, key, value):
-  current = await db.get_configs(user_id)
+  current = await get_configs(user_id)
   current[key] = value 
- # temp.CONFIGS[user_id] = value
+  temp.CONFIGS[user_id] = current
   await db.update_configs(user_id, current)
         
+async def is_subscribed(bot, msg):
+  if not Config.AUTH_CHANNEL:
+     return True
+  try:
+     user = await bot.get_chat_member(Config.AUTH_CHANNEL, msg.from_user.id)
+  except UserNotParticipant:
+     pass
+  except Exception as e:
+     logger.exception(e)
+  else:
+     if user.status != 'kicked':
+        return True 
+  return False
