@@ -1,16 +1,23 @@
 import asyncio 
-from database import db
-from pyrogram import Client, filters
-from .test import get_configs, update_configs, bot_token
+from config import temp
+from database import db 
+from .utils import get_configs, update_configs, bot_token
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-@Client.on_message(filters.command('settings'))
+@Client.on_message(filters.command('settings') & filters.private )
 async def settings(client, message):
    await message.reply_text(
      "change your settings as your wish",
      reply_markup=main_buttons()
      )
-    
+   
+@Client.on_message(filters.command('reset') & filters.private)
+async def reset(bot, m):
+   default = await db.get_configs("01")
+   temp.CONFIGS[m.from_user.id] = default
+   await db.update_configs(m.from_user.id, default)
+   await m.reply("successfully settings reseted ✔️")
+   
 @Client.on_callback_query(filters.regex(r'^settings'))
 async def settings_query(bot, query):
   user_id = query.from_user.id
