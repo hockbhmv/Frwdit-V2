@@ -82,7 +82,7 @@ async def pub_(bot, message):
                        filtered+=1
                        continue 
                     if not configs['forward_tag']:
-                       media, caption = media(message)
+                       media, caption = media(message, configs)
                        MSG.append({"msg_id": message.message_id, "media": media, "caption": caption})
                     else:
                        MSG.append(message.message_id)
