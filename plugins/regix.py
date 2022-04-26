@@ -135,7 +135,8 @@ async def pub_(bot, message):
                 try:
                   await client.stop()
                 except:
-                  pass
+                  pass 
+                return
             temp.forwardings -= 1
             temp.lock[user] = False
             try:
