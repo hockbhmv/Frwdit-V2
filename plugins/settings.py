@@ -1,6 +1,7 @@
 import asyncio 
 from config import temp
 from database import db 
+from pyrogram import Client, filters
 from .utils import get_configs, update_configs, bot_token
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
