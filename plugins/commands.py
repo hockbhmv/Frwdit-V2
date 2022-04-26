@@ -12,8 +12,8 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMedi
 main_buttons = [[
         InlineKeyboardButton('❗️Help', callback_data='help') 
         ],[
-        InlineKeyboardButton('📜 Support Group', url='https://t.me/venombotupdates'),
-        InlineKeyboardButton('📢 Update Channel ', url='https://t.me/venombotsupport')
+        InlineKeyboardButton('📜 Support Group', url='https://t.me/venombotsupport'),
+        InlineKeyboardButton('📢 Update Channel ', url='https://t.me/venombotupdates')
 ]]
 
 #===================Start Function===================#
