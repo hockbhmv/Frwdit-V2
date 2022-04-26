@@ -2,9 +2,11 @@ import os
 import sys
 import asyncio 
 from database import db
-from config import Config, temp
+from config import Config, temp 
+from .utils import is_subscribed
 from translation import Translation
-from pyrogram import Client, filters
+from pyrogram import Client, filters 
+from pyrogram.errors import ChatAdminRequired
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument
 
 main_buttons = [[
@@ -21,6 +23,20 @@ async def start(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
       await db.add_user(user.id, user.first_name)
+    if not await is_subscribed(client, message):
+       try:
+          invite_link = await client.create_chat_invite_link(int(Config.AUTH_CHANNEL))
+       except ChatAdminRequired:
+          print("Make sure Bot is admin in Forcesub channel")
+          return 
+       button = [[InlineKeyboardButton(
+                    "🤖 Join Updates Channel", url=invite_link.invite_link)]]
+       await client.send_message(
+            chat_id=message.from_user.id,
+            text="**Please Join My Updates Channel to use this Bot!**",
+            reply_markup=InlineKeyboardMarkup(button),
+            parse_mode="md") 
+       return
     reply_markup = InlineKeyboardMarkup(main_buttons)
     await client.send_message(
         chat_id=message.chat.id,
