@@ -9,5 +9,5 @@ else
 fi
 cd /$DIR
 pip3 install -U -r requirements.txt
-echo "Starting Bot .... with $WORKER.py "
-python3 $WORKER.py
+echo "Starting Bot .... with $WORKER"
+python3 $WORKER
