@@ -8,33 +8,31 @@ from config import temp
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
-from pyrogram.errors import FloodWait 
-from pyropatch import listen
+from pyrogram.errors import FloodWait
 from config import Config
 from translation import Translation
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-class CLIENT():
-  
+class CLIENT(): 
   def __init__(self, bot_token):
       bot = Client(":memory:", Config.API_ID, Config.API_HASH, bot_token=bot_token)
     
 @Client.on_message(filters.private & filters.command('add'))
 async def bot_token(bot, m):
-  msg = await bot.ask_message(chat_id=m.from_user.id, text="1) create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me")
+  msg = await bot.ask(chat_id=m.from_user.id, text="1) create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me")
   if not msg.forward_date:
      await msg.reply_text("This is not a forward message")
      return False
   if str(msg.forward_from.id) != "93372553":
      await msg.reply_text("This message was not forward from bot father")
      return False
-  token = await m.get_bot_token()
+  token = m.get_bot_token
   if not token:
      await msg.reply_text("There is no bot token in that message")
      return False
   try:
-     _client = await bot.start_clone_bot(CLIENT(token).bot)
+     _client = await bot.start_clone_bot(CLIENT(token).bot, True)
   except Exception as e:
     await msg.reply_text(f"Bot Error:- {e}")
     return False
