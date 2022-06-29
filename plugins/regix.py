@@ -3,6 +3,7 @@ import sys
 import asyncio 
 import logging
 from database import db 
+from .test import CLIENT 
 from config import Config, temp
 from translation import Translation
 from pyrogram import Client, filters 
@@ -36,12 +37,9 @@ async def pub_(bot, message):
       return await m.edit("<b>You didn't added any bot. Please add a bot using /settings !</b>")
     configs = await db.get_configs(user)
     try:
-      client = Client(f":memory:", Config.API_ID, Config.API_HASH, bot_token=_bot['token'])
-      await client.start()
-    except (AccessTokenExpired, AccessTokenInvalid):
+      await bot.start_clone_bot(CLIENT(_bot['token']).bot)
+    except Exception as e:  
       return await m.edit("<b>The given bot token is expired or invalid. please change it !</b>")
-    except Exception as e:
-      return await m.edit(f"<b>Bot Error:-</b>\n\n<code>{e}</code>")
     try:
       k = await client.send_message(details['TO'], "Testing")
       await k.delete()
