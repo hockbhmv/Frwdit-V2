@@ -28,7 +28,8 @@ async def bot_token(bot, m):
   if str(msg.forward_from.id) != "93372553":
      await msg.reply_text("This message was not forward from bot father")
      return False
-  token = msg.get_bot_token()
+  bot_token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
+  token = bot_token[0] if bot_token else None
   if not token:
      await msg.reply_text("There is no bot token in that message")
      return False
