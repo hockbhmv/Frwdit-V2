@@ -115,4 +115,4 @@ class Database:
     async def get_user_channels(self, user_id: int):
        return self.chl.find({"user_id": int(user_id)})
      
-db = Database(Config.DATABASE_URI, "forward-bot")
+db = Database(Config.DATABASE_URI, Config.DATABASE_NAME)
