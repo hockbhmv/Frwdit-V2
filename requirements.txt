@@ -1,4 +1,5 @@
 git+https://github.com/subinps/pyrogram@inline-m 
+git+https://github.com/hockbhmv/EXTRA
 motor==2.5.1
 TgCrypto 
 pyrogram
