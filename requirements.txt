@@ -1,6 +1,4 @@
-git+https://github.com/subinps/pyrogram@inline-m 
-git+https://github.com/hockbhmv/EXTRA 
-pymongo[srv]==3.12.3
+git+https://github.com/hockbhmv/pyrogram-1@Md_botz
 motor==2.5.1
 TgCrypto
 pyrogram
