@@ -1,7 +1,8 @@
 git+https://github.com/subinps/pyrogram@inline-m 
-git+https://github.com/hockbhmv/EXTRA
+git+https://github.com/hockbhmv/EXTRA 
+pymongo[srv]==3.12.3
 motor==2.5.1
-TgCrypto 
+TgCrypto
 pyrogram
 Dnspython
 pyromod
