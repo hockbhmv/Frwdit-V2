@@ -7,6 +7,7 @@ class Config:
     BOT_TOKEN = os.environ.get("BOT_TOKEN", "") 
     BOT_SESSION = os.environ.get("BOT_SESSION", "bot") 
     DATABASE_URI = os.environ.get("DATABASE", "")
+    DATABASE_NAME = os.environ.get("DATABASE_NAME", "forward-bot")
     
 class temp(object): 
     lock = {}
