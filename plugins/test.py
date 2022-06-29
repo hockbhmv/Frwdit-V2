@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 class CLIENT():
-  def __init__(self, bot_token)
+  
+  def __init__(self, bot_token):
       bot = Client(":memory:", Config.API_ID, Config.API_HASH, bot_token=bot_token)
     
 @Client.on_message(filters.private & filters.command('add'))
