@@ -193,7 +193,7 @@ async def edit(msg, text, button, start, current, total):
         elapsed_time = TimeFormatter(milliseconds=elapsed_time)
         estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
 
-        progress = "{0}{1}".format(
+        progress = "▣{0}{1}".format(
             ''.join(["▣" for i in range(math.floor(percentage / 5))]),
             ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
         estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
@@ -276,7 +276,7 @@ async def terminate_frwding(bot, m):
 @Client.on_callback_query(filters.regex(r'^fwrdstatus'))
 async def status(bot, msg):
     _, speed, est_time, percentage = msg.data.split("#")
-    progress = "{0}{1}".format(
+    progress = "▣{0}{1}".format(
             ''.join(["▣" for i in range(math.floor(percentage / 5))]),
             ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
     return await msg.answer(PROGRESS.format(progress, speed, est_time), show_alert=True)
