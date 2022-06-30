@@ -172,7 +172,13 @@ async def forward(bot, chat, msg):
       chat_id=chat['TO'],
       from_chat_id=chat['FROM'],
       message_ids=msg)
-                          
+   
+PROGRESS = """
+{0}
+⚡️Speed: {1}
+⏳️ETA: {2}
+"""
+
 async def edit(msg, text, button, start, current, total):
    if not button:
         now = time.time()
@@ -191,9 +197,7 @@ async def edit(msg, text, button, start, current, total):
             ''.join(["⦿" for i in range(math.floor(percentage / 5))]),
             ''.join(["⭗" for i in range(20 - math.floor(percentage / 5))]))
             
-        tmp = progress 
-        tmp += "**⚡️Speed**: {}/s".format(get_size(speed))
-        tmp += "**⏳️ETA**: {}".format(estimated_total_time if estimated_total_time != '' else "0 s")
+        tmp = PROGRESS.format(progress, get_size(speed), estimated_total_time if estimated_total_time != '' else "0 s")
         button =  [[
                 InlineKeyboardButton(tmp, 'khing')
                 ],[
