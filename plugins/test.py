@@ -34,9 +34,9 @@ async def bot_token(bot, m):
      await msg.reply_text("<b>There is no bot token in that message</b>")
      return False
   try:
-     _client = await bot.start_clone_bot(CLIENT(token).bot, True)
+     _client = await bot.start_clone_bot(CLIENT(bot_token).bot, True)
   except Exception as e:
-    await msg.reply_text(f"<b>BOT ERROR:-</b> `{e}`")
+    await msg.reply_text(f"<b>BOT ERROR:</b> `{e}`")
     return False
   _bot = _client.details
   details = {
