@@ -193,13 +193,13 @@ def custom_caption(msg, get):
   if not (msg.media 
      and get['caption']):
      return None
-  if (msg.video or msg.document or msg.audio):
+  if (msg.video or msg.document or msg.audio or msg.photo):
      media = getattr(msg, msg.media)
      file_id, file_ref = unpack_new_file_id(media.file_id)
      file_name = getattr(media, 'file_name', '')
      file_size = getattr(media, 'file_size', '')
      caption = getattr(media, 'caption', file_name)
-     return f"{file_id}\n{file_ref}" + get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
+     return get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
   else:
      return None
 
