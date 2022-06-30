@@ -165,7 +165,7 @@ async def forward(bot, chat, msg):
 async def edit(msg, text, button):
    try:
      await msg.edit_text(text=text, reply_markup=InlineKeyboardMarkup(button))
-   except MessageNotModified:
+   except (MessageNotModified, FloodWait):
      pass 
    return
 
