@@ -276,10 +276,7 @@ async def terminate_frwding(bot, m):
 @Client.on_callback_query(filters.regex(r'^fwrdstatus'))
 async def status(bot, msg):
     _, speed, est_time, percentage = msg.data.split("#")
-    progress = "▣{0}{1}".format(
-            ''.join(["▣" for i in range(math.floor(percentage / 5))]),
-            ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
-    return await msg.answer(PROGRESS.format(progress, speed, est_time), show_alert=True)
+    return await msg.answer(PROGRESS.format(percentage, speed, est_time), show_alert=True)
                      
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
