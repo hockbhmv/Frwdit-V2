@@ -195,7 +195,7 @@ async def edit(msg, text, button, start, current, total):
         tmp += "**⚡️Speed**: {}/s".format(get_size(speed))
         tmp += "**⏳️ETA**: {}".format(estimated_total_time if estimated_total_time != '' else "0 s")
         button =  [[
-                InlineKeyboardButton(temp, 'khing')
+                InlineKeyboardButton(tmp, 'khing')
                 ],[
                 InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
    try:
