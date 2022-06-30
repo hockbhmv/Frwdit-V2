@@ -175,9 +175,9 @@ async def forward(bot, chat, msg):
                           
 async def edit(msg, text, button, start, current, total):
    if not button:
-     now = time.time()
-     diff = now - start
-     if round(diff % 10.00) == 0 or current == total:
+        now = time.time()
+        diff = now - start
+  #   if round(diff % 10.00) == 0 or current == total:
         percentage = current * 100 / total
         speed = current / diff
         elapsed_time = round(diff) * 1000
