@@ -198,7 +198,7 @@ async def edit(msg, text, button, start, current, total):
             ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
         estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
         button =  [[
-                InlineKeyboardButton(progress, f'status#{get_size(speed)}#{estimated_total_time}#{percentage}')
+                InlineKeyboardButton(progress, f'fwrdstatus#{get_size(speed)}#{estimated_total_time}#{percentage}')
                 ],[
                 InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
    try:
@@ -273,13 +273,13 @@ async def terminate_frwding(bot, m):
     temp.CANCEL[user_id] = True 
     await m.answer("Forwarding cancelled !", show_alert=True)
           
-@Client.on_callback_query(filters.regex(r'^status'))
+@Client.on_callback_query(filters.regex(r'^fwrdstatus'))
 async def status(bot, msg):
     _, speed, est_time, percentage = msg.data.split("#")
     progress = "{0}{1}".format(
             ''.join(["▣" for i in range(math.floor(percentage / 5))]),
             ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
-    return await msg.answer(PROGRESS.format(progress, speed, est_time))
+    return await msg.answer(PROGRESS.format(progress, speed, est_time), show_alert=True)
                      
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
