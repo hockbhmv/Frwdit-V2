@@ -198,7 +198,7 @@ async def edit(msg, text, button, start, current, total):
             ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
         estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
         button =  [[
-                InlineKeyboardButton(progress, f'fwrdstatus#{humanbytes(speed)}#{estimated_total_time}#{percentage}')
+                InlineKeyboardButton(progress, f'fwrdstatus#{speed}#{estimated_total_time}#{percentage}')
                 ],[
                 InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
    try:
@@ -287,7 +287,7 @@ async def terminate_frwding(bot, m):
 @Client.on_callback_query(filters.regex(r'^fwrdstatus'))
 async def status(bot, msg):
     _, speed, est_time, percentage = msg.data.split("#")
-    return await msg.answer(PROGRESS.format("{:.0f}".format(percentage), speed, est_time), show_alert=True)
+    return await msg.answer(PROGRESS.format("{:.0f}".format(percentage), humanbytes(speed), est_time), show_alert=True)
                      
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
