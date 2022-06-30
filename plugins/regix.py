@@ -198,7 +198,7 @@ async def edit(msg, text, button, start, current, total):
             ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
         estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
         button =  [[
-                InlineKeyboardButton(progress, f'fwrdstatus#{get_size(speed)}#{estimated_total_time}#{percentage}')
+                InlineKeyboardButton(progress, f'fwrdstatus#{humanbytes(speed)}#{estimated_total_time}#{percentage}')
                 ],[
                 InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
    try:
@@ -265,6 +265,17 @@ def TimeFormatter(milliseconds: int) -> str:
         ((str(seconds) + "s, ") if seconds else "") + \
         ((str(milliseconds) + "ms, ") if milliseconds else "")
     return tmp[:-2]
+
+def humanbytes(size):
+    if not size:
+        return ""
+    power = 2**10
+    n = 0
+    Dic_powerN = {0: ' ', 1: '<i>K</i>', 2: '<i>M</i>', 3: '<i>G</i>', 4: '<i>T</i>'}
+    while size > power:
+        size /= power
+        n += 1
+    return str(round(size, 2)) + " " + Dic_powerN[n] + '<i>B</i>'
 
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, m):
