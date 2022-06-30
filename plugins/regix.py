@@ -279,7 +279,7 @@ async def status(bot, msg):
     progress = "{0}{1}".format(
             ''.join(["▣" for i in range(math.floor(percentage / 5))]),
             ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
-    return await msg.answer(PROGRESS.format(progress, speed, est_time)
+    return await msg.answer(PROGRESS.format(progress, speed, est_time))
                      
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
