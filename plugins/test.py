@@ -29,7 +29,7 @@ async def bot_token(bot, m):
      await msg.reply_text("This message was not forward from bot father")
      return False
   bot_token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
-  token = bot_token[0] if bot_token else None
+  bot_token = bot_token[0] if bot_token else None
   if not token:
      await msg.reply_text("There is no bot token in that message")
      return False
