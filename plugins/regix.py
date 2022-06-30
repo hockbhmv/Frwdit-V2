@@ -62,7 +62,7 @@ async def pub_(bot, message):
               filtered = 0
               duplicate = 0
               reply_markup = [[InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
-              async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip, skip_duplicate_files=True):
+              async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip, skip_duplicate=True):
                     if temp.CANCEL.get(user)==True:
                        await edit(m, TEXT.format('\n♥️ FORWARDING CANCELLED\n', fetched, total_files, duplicate, deleted, skip, filtered, "cancelled", "{:.0f}".format(float(deleted + total_files + duplicate + filtered + skip)*100/float(total))), buttons)
                        await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
