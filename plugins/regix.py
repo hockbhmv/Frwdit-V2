@@ -9,8 +9,7 @@ from translation import Translation
 from pyrogram import Client, filters 
 from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
-from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, AccessTokenInvalid
- 
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = Translation.TEXT
@@ -37,7 +36,7 @@ async def pub_(bot, message):
       return await m.edit("<b>You didn't added any bot. Please add a bot using /settings !</b>")
     configs = await db.get_configs(user)
     try:
-      await bot.start_clone_bot(CLIENT(_bot['token']).bot)
+      client = await bot.start_clone_bot(CLIENT(_bot['token']).bot)
     except Exception as e:  
       return await m.edit(e)
     try:
