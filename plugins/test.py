@@ -30,13 +30,13 @@ async def bot_token(bot, m):
      return False
   bot_token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
   bot_token = bot_token[0] if bot_token else None
-  if not token:
-     await msg.reply_text("There is no bot token in that message")
+  if not bot_token:
+     await msg.reply_text("<b>There is no bot token in that message</b>")
      return False
   try:
      _client = await bot.start_clone_bot(CLIENT(token).bot, True)
   except Exception as e:
-    await msg.reply_text(f"Bot Error:- {e}")
+    await msg.reply_text(f"<b>BOT ERROR:-</b> `{e}`")
     return False
   _bot = _client.details
   details = {
