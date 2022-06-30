@@ -42,11 +42,11 @@ I can forward all message from one channel to another channel</i>
 ╚══════════════════❍⊱❁۪۪
 """
   STATUS_TXT = """
-**👱 Total users:** `{}`
+**👱 TOTAL USERS:** `{}`
 
-**🤖 Total bot:** `{}`
+**🤖 TOTAL BOT:** `{}`
 
-**🔃 Forwardings:** `{}`
+**🔃 FORWARDINGS:** `{}`
 """
   FROM_MSG = "<b><u>SET FROM CHANNEL</b></u>\n\n<b>Forward the last message of From channel OR Send the last message link of From channel.</b>\n<code>Note: Your bot must be admin in From channel if the channel is private</code>\n/cancel <code>- Cancel this process</code>"
   TO_MSG = "<b><u>CHOOSE TO CHANNEL</b></u>\n\n<b>Choose your **To channel** from the given list.</b>\n<b>`Note: </b>`[{}](t.me/{}) `must be admin in there before forwarding`\n/cancel <code>- Cancel this process</code>"
@@ -58,6 +58,7 @@ I can forward all message from one channel to another channel</i>
 {}
 <b>🔲 Feched messages:</b> <code>{}</code>\n
 <b>🔲 Succefully forwarded:</b> <code>{}</code>\n
+<b>🔲 Duplicate file skipped:</b> <code>{}</code>\n
 <b>🔲 Deleted messages:</b> <code>{}</code>\n
 <b>🔲 Skipped messages:</b> <code>{}</code>\n
 <b>🔲 Filtered messages:</b> <code>{}</code>\n
