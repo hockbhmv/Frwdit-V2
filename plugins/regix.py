@@ -7,6 +7,7 @@ from .test import CLIENT
 from config import Config, temp
 from translation import Translation
 from pyrogram import Client, filters 
+from pyrogram.file_id import unpack_new_file_id
 from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 
@@ -194,10 +195,11 @@ def custom_caption(msg, get):
      return None
   if (msg.video or msg.document or msg.audio):
      media = getattr(msg, msg.media)
+     file_id, file_ref = unpack_new_file_id(media.file_id)
      file_name = getattr(media, 'file_name', '')
      file_size = getattr(media, 'file_size', '')
      caption = getattr(media, 'caption', file_name)
-     return get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
+     return f"{file_id}\n{file_ref}" + get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
   else:
      return None
 
