@@ -174,7 +174,7 @@ async def forward(bot, chat, msg):
       message_ids=msg)
    
 PROGRESS = """
-{0}
+📈 Percentage: {0}
 ⚡️Speed: {1}
 ⏳️ETA: {2}
 """
@@ -276,7 +276,7 @@ async def terminate_frwding(bot, m):
 @Client.on_callback_query(filters.regex(r'^fwrdstatus'))
 async def status(bot, msg):
     _, speed, est_time, percentage = msg.data.split("#")
-    return await msg.answer(PROGRESS.format(percentage, speed, est_time), show_alert=True)
+    return await msg.answer(PROGRESS.format("{:.0f}".format(percentage), speed, est_time), show_alert=True)
                      
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
