@@ -39,7 +39,7 @@ async def pub_(bot, message):
     try:
       await bot.start_clone_bot(CLIENT(_bot['token']).bot)
     except Exception as e:  
-      return await m.edit("<b>The given bot token is expired or invalid. please change it !</b>")
+      return await m.edit(e)
     try:
       k = await client.send_message(details['TO'], "Testing")
       await k.delete()
