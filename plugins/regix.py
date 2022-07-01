@@ -66,7 +66,7 @@ async def pub_(bot, message):
               reply_markup = None
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip, skip_duplicate=True):
                     if temp.CANCEL.get(user)==True:
-                       await edit(m, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", forward_id)
+                       await edit(m, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", frwd_id)
                        await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
                        temp.forwardings -= 1
                        await client.stop()
@@ -102,7 +102,7 @@ async def pub_(bot, message):
                       else:
                         for msgs in MSG:
                           if temp.CANCEL.get(user)==True:
-                            await edit(m, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", forward_id)
+                            await edit(m, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", frwd_id)
                             await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
                             temp.forwardings -= 1
                             await client.stop()
@@ -134,7 +134,7 @@ async def pub_(bot, message):
               await client.stop()
             except:
               pass 
-            await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", forward_id)
+            await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", frwd_id)
 
 async def copy(bot, chat, msg, sts, frwd_id):
    try:                                  
