@@ -99,7 +99,7 @@ async def pub_(bot, message):
                          or completed <= 100
                     ):
                       if configs['forward_tag']:
-                        STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, filtered, total, start, reply_markup)
+                        STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, filtered, (total, start, reply_markup))
                         await forward(client, details, MSG, m, forward_id)
                         total_files+=notcompleted 
                         await asyncio.sleep(10)
@@ -181,7 +181,8 @@ PROGRESS = """
 
 async def edit(msg, title, status, forward_id):
    filters = STATUS.get(forward_id)
-   fetched, total_files, duplicate, deleted, skip, filtered, total, start, reply_markup = filters
+   fetched, total_files, duplicate, deleted, skip, filtered, __ = filters
+   total, start, reply_markup = __
    current = deleted + total_files + duplicate + filtered + skip                               
    percentages = "{:.0f}".format(float(current)*100/float(total))
    text = TEXT.format(title, fetched, total_files, duplicate, deleted, skip, filtered, percentages)
