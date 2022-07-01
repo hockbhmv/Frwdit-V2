@@ -174,12 +174,13 @@ PROGRESS = """
 ⏳️ETA: {2}
 """
 
-async def edit(msg, title, status, frwd_id, button=None):
-   total_files, skip, total, fetched, deleted, filtered, duplicate, start = get(frwd_id, full=True)
-   current = deleted + total_files + duplicate + filtered + skip                               
-   percentages = "{:.0f}".format(float(current)*100/float(total))
-   text = TEXT.format(title, fetched, total_files, duplicate, deleted, skip, filtered, percentages)
-   if not button:
+async def edit(msg, title, status, frwd_id, buttons=None):
+  # total_files, skip, total, fetched, deleted, filtered, duplicate, start = get(frwd_id, full=True)
+ #  current = deleted + total_files + duplicate + filtered + skip                               
+  # percentages = "{:.0f}".format(float(current)*100/float(total))
+ #  text = TEXT.format(title, fetched, total_files, duplicate, deleted, skip, filtered, percentages)
+   text = "hi"
+   if button:
         now = time.time()
         diff = now - start
         percentage = current * 100 / total
