@@ -55,15 +55,28 @@ I can forward all message from one channel to another channel</i>
   USERNAME = "<b>Send Username with @</b>\n<code>eg: @Username</code>\n<b>Enter /run Again</b>"
   INVALID_CHANNELID = "<b>Send channel id with -100</b>\n<code>eg: -100xxxxxxxxxx</code>\n<b>Enter /run Again</b>"
   TEXT = """<b><u>FORWARD STATUS</b></u>
-{}
-<b>🔲 Feched messages:</b> <code>{}</code>\n
-<b>🔲 Succefully forwarded:</b> <code>{}</code>\n
-<b>🔲 Duplicate file skipped:</b> <code>{}</code>\n
-<b>🔲 Deleted messages:</b> <code>{}</code>\n
-<b>🔲 Skipped messages:</b> <code>{}</code>\n
-<b>🔲 Filtered messages:</b> <code>{}</code>\n
-<b>🔲 Current status:</b> <code>{}</code>\n
-<b>🔲 Percentage:</b> <code>{}</code> %"""
+╔════❰ ғᴏʀᴡᴀʀᴅ sᴛᴀᴛᴜs  ❱═❍⊱❁۪۪
+║╭━━━━━━━━━━━━━━━➣
+║┣⪼  {}
+║┃
+║┣⪼<b>𖨠 ғᴇᴄʜᴇᴅ ᴍᴇssᴀɢᴇs:</b> <code>{}</code>
+║┃
+║┣⪼<b>𖨠 Succefully forwarded:</b> <code>{}</code>
+║┃
+║┣⪼<b>𖨠 Duplicate messages:</b> <code>{}</code>
+║┃
+║┣⪼<b>𖨠 Deleted messages:</b> <code>{}</code>
+║┃
+║┣⪼<b>𖨠 Skipped messages:</b> <code>{}</code>
+║┃
+║┣⪼<b>𖨠 Filtered messages:</b> <code>{}</code>
+║┃
+║┣⪼<b>𖨠 Current status:</b> <code>{}</code>
+║┃
+║┣⪼<b>𖨠 Percentage:</b> <code>{}</code> %
+║╰━━━━━━━━━━━━━━━➣ 
+╚══════════════════❍⊱❁۪۪
+"""
   DOUBLE_CHECK = """<b><u>DOUBLE CHECKING ⚠️</b></u>
 <code>Before forwarding the messages Click the Yes button only after checking the following</code>
 
