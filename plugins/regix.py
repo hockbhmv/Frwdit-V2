@@ -76,7 +76,7 @@ async def pub_(bot, message):
                     pling += 1
                     fetched += 1
                     if pling %10 == 0: 
-                       STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, (filtered, total, start, reply_markup))
+                       STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip)
                        await edit(m, '', 'Fetching', forward_id)
                     if message == "DUPLICATE":
                        duplicate+= 1
@@ -99,15 +99,15 @@ async def pub_(bot, message):
                          or completed <= 100
                     ):
                       if configs['forward_tag']:
-                        STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, (filtered, total, start, reply_markup))
-                        await forward(client, details, MSG, m, forward_id)
+                        STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip)
+                        await forward(client, details, MSG, m, forward_id, (filtered, total, start, reply_markup))
                         total_files+=notcompleted 
                         await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
-                          STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, (filtered, total, start, reply_markup))
+                          STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip)
                           if temp.CANCEL.get(user)==True:
-                            await edit(m, '\n♥️ FORWARDING CANCELLED\n', "cancelled", forward_id)
+                            await edit(m, '\n♥️ FORWARDING CANCELLED\n', "cancelled", forward_id, (filtered, total, start, reply_markup))
                             await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
                             temp.forwardings -= 1
                             await client.stop()
@@ -139,9 +139,9 @@ async def pub_(bot, message):
               await client.stop()
             except:
               pass 
-            await edit(m, '\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', "completed", forward_id)
+            await edit(m, '\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', "completed", forward_id, (filtered, total, start, reply_markup))
 
-async def copy(bot, chat, msg, sts, forward_id):
+async def copy(bot, chat, msg, sts, forward_id, _):
    try:                                  
      if msg.get("media"):
         await bot.send_cached_media(
@@ -156,22 +156,22 @@ async def copy(bot, chat, msg, sts, forward_id):
               caption=msg.get("caption"),
               message_id=msg.get("msg_id"))
    except FloodWait as e:
-     await edit(sts, '', f"Sleeping {e.x} s", forward_id)
+     await edit(sts, '', f"Sleeping {e.x} s", forward_id, _)
      await asyncio.sleep(e.x)
-     await edit(sts, '', "Forwarding", forward_id)
-     await copy(bot, chat, msg, sts, forward_id)
+     await edit(sts, '', "Forwarding", forward_id, _)
+     await copy(bot, chat, msg, sts, forward_id, _)
 
-async def forward(bot, chat, msg, sts, forward_id):
+async def forward(bot, chat, msg, sts, forward_id, _):
    try:                             
      await bot.forward_messages(
            chat_id=chat['TO'],
            from_chat_id=chat['FROM'],
            message_ids=msg)
    except FloodWait as e:
-     await edit(sts, '', f"Sleeping {e.x} s", forward_id)
+     await edit(sts, '', f"Sleeping {e.x} s", forward_id, _)
      await asyncio.sleep(e.x)
-     await edit(sts, '', "Forwarding", forward_id)
-     await forward(bot, chat, msg, sts, forward_id)                                
+     await edit(sts, '', "Forwarding", forward_id, _)
+     await forward(bot, chat, msg, sts, forward_id, _)                                
    
 PROGRESS = """
 📈 Percentage: {0} %
@@ -179,10 +179,10 @@ PROGRESS = """
 ⏳️ETA: {2}
 """
 
-async def edit(msg, title, status, forward_id):
+async def edit(msg, title, status, forward_id, others):
    filters = STATUS.get(forward_id)
-   fetched, total_files, duplicate, deleted, skip, _ = filters
-   filtered, total, start, button = _
+   fetched, total_files, duplicate, deleted, skip = filters
+   filtered, total, start, button = others
    current = deleted + total_files + duplicate + filtered + skip                               
    percentages = "{:.0f}".format(float(current)*100/float(total))
    text = TEXT.format(title, fetched, total_files, duplicate, deleted, skip, filtered, percentages)
