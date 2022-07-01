@@ -170,7 +170,7 @@ async def forward(bot, chat, msg, sts, frwd_id):
    
 PROGRESS = """
 📈 Percentage: {0} %
-⚡️Speed: {1}
+♻️ status: {1}
 ⏳️ETA: {2}
 """
 
@@ -192,12 +192,12 @@ async def edit(msg, title, status, frwd_id, buttons=None):
         elapsed_time = TimeFormatter(milliseconds=elapsed_time)
         estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
 
-        progress = "▣{0}{1}".format(
-            ''.join(["▣" for i in range(math.floor(percentage / 5))]),
-            ''.join(["▢" for i in range(20 - math.floor(percentage / 5))]))
+        progress = "▰{0}{1}".format(
+            ''.join(["▰" for i in range(math.floor(percentage / 5))]),
+            ''.join(["▱" for i in range(20 - math.floor(percentage / 5))]))
         estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
         button =  [[
-                InlineKeyboardButton(progress, f'fwrdstatus#{humanbytes(speed)}#{estimated_total_time}#{percentages}')
+                InlineKeyboardButton(progress, f'fwrdstatus#{status}#{estimated_total_time}#{percentages}')
                 ],[
                 InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
    try:
@@ -265,17 +265,6 @@ def TimeFormatter(milliseconds: int) -> str:
         ((str(milliseconds) + "ms, ") if milliseconds else "")
     return tmp[:-2]
 
-def humanbytes(size):
-    if not size:
-        return ""
-    power = 2**10
-    n = 0
-    Dic_powerN = {0: ' ', 1: '<i>K</i>', 2: '<i>M</i>', 3: '<i>G</i>', 4: '<i>T</i>'}
-    while size > power:
-        size /= power
-        n += 1
-    return str(round(size, 2)) + " " + Dic_powerN[n] + '<i>B</i>'
-
 def add(_id, key, value=1):
    current = STATUS.get(_id)
    current[key] += value
@@ -296,8 +285,8 @@ async def terminate_frwding(bot, m):
           
 @Client.on_callback_query(filters.regex(r'^fwrdstatus'))
 async def status(bot, msg):
-    _, speed, est_time, percentage = msg.data.split("#")
-    return await msg.answer(PROGRESS.format(percentage, speed, est_time), show_alert=True)
+    _, sts, est_time, percentage = msg.data.split("#")
+    return await msg.answer(PROGRESS.format(percentage, sts, est_time), show_alert=True)
                      
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
 async def close(bot, update):
