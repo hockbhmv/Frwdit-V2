@@ -201,7 +201,7 @@ async def edit(msg, title, status, frwd_id, buttons=None):
                 ],[
                 InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
    try:
-     await msg.edit_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+     await msg.edit_text(text=text, reply_markup=InlineKeyboardMarkup(button))
    except (MessageNotModified, FloodWait):
      pass 
    return
