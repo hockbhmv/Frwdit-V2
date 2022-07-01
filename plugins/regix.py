@@ -76,7 +76,7 @@ async def pub_(bot, message):
                     pling += 1
                     fetched += 1
                     if pling %10 == 0: 
-                       STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, filtered, total, start, reply_markup)
+                       STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, filtered, (total, start, reply_markup))
                        await edit(m, '', 'Fetching', forward_id)
                     if message == "DUPLICATE":
                        duplicate+= 1
@@ -105,7 +105,7 @@ async def pub_(bot, message):
                         await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
-                          STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, filtered, total, start, reply_markup)
+                          STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, filtered, (total, start, reply_markup))
                           if temp.CANCEL.get(user)==True:
                             await edit(m, '\n♥️ FORWARDING CANCELLED\n', "cancelled", forward_id)
                             await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
