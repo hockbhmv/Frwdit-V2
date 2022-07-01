@@ -77,7 +77,7 @@ async def pub_(bot, message):
                     fetched += 1
                     if pling %10 == 0: 
                        STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip)
-                       await edit(m, '', 'Fetching', forward_id)
+                       await edit(m, '', 'Fetching', forward_id, (filtered, total, start, reply_markup))
                     if message == "DUPLICATE":
                        duplicate+= 1
                        continue
