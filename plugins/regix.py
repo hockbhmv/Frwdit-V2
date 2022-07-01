@@ -61,7 +61,7 @@ async def pub_(bot, message):
               skip = int(details['SKIP'])
               total = int(details['LIMIT'])
               fetched = skip
-              STATUS[frwd_id] = {'skip': skip, 'total': total, 'fetched': skip, 'start': start
+              STATUS[frwd_id] = {'skip': skip, 'total': total, 'fetched': skip, 'start': start,
                                  'deleted': 0, 'filtered': 0, 'duplicate': 0, 'total_files': 0}
               reply_markup = None
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip, skip_duplicate=True):
