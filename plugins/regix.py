@@ -169,16 +169,18 @@ async def forward(bot, chat, msg, sts, frwd_id):
      await forward(bot, chat, msg, sts, frwd_id)                               
    
 PROGRESS = """
-📈 Percentage: {0} %
-♻️ status: {1}
-⏳️ETA: {2}
+📈 ᴘᴇʀᴄᴇɴᴛᴀɢᴇ: {0} %
+
+♻️ sᴛᴀᴛᴜs: {1}
+
+⏳️ ᴇᴛᴀ: {2}
 """
 
 async def edit(msg, title, status, frwd_id, buttons=None):
    total_files, skip, total, fetched, deleted, filtered, duplicate, start = get(frwd_id, full=True)
    current = deleted + total_files + duplicate + filtered + skip                               
    percentages = "{:.0f}".format(float(current)*100/float(total))
-   text = TEXT.format(title, fetched, total_files, duplicate, deleted, skip, filtered, status, percentages)
+   text = TEXT.format(fetched, total_files, duplicate, deleted, skip, filtered, status, percentages, title)
    #text = "hi"
    if not buttons:
         now = time.time()
