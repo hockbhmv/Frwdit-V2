@@ -102,7 +102,7 @@ async def pub_(bot, message):
                       else:
                         for msgs in MSG:
                           if temp.CANCEL.get(user)==True:
-                            await edit(m, '\n♥️ FORWARDING CANCELLED\n', "cancelled", forward_id, (filtered, total, start, reply_markup))
+                            await edit(m, '\n♥️ FORWARDING CANCELLED\n', "cancelled", forward_id)
                             await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
                             temp.forwardings -= 1
                             await client.stop()
@@ -112,7 +112,7 @@ async def pub_(bot, message):
                             await edit(m, '' , "Forwarding", frwd_id)
                           try:
                             await copy(client, details, msgs, m, frwd_id)
-                            total_files += 1
+                            add(frwd_id, 'total_files')
                             await asyncio.sleep(1.7)
                           except Exception as e:
                             print(e)
@@ -134,7 +134,7 @@ async def pub_(bot, message):
               await client.stop()
             except:
               pass 
-            await edit(m, '\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', "completed", forward_id, (filtered, total, start, reply_markup))
+            await edit(m, '\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', "completed", forward_id)
 
 async def copy(bot, chat, msg, sts, frwd_id):
    try:                                  
@@ -174,13 +174,13 @@ PROGRESS = """
 ⏳️ETA: {2}
 """
 
-async def edit(msg, title, status, frwd_id, button=None):
+async def edit(msg, title, status, frwd_id, buttons=None):
    total_files, skip, total, fetched, deleted, filtered, duplicate, start = get(frwd_id, full=True)
- #  current = deleted + total_files + duplicate + filtered + skip                               
-   percentages = 0#"{:.0f}".format(float(current)*100/float(total))
+   current = deleted + total_files + duplicate + filtered + skip                               
+   percentages = "{:.0f}".format(float(current)*100/float(total))
    text = TEXT.format(title, fetched, total_files, duplicate, deleted, skip, filtered, status, percentages)
    #text = "hi"
-   if button:
+   if not buttons:
         now = time.time()
         diff = now - start
         percentage = current * 100 / total
