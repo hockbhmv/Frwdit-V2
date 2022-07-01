@@ -105,7 +105,7 @@ async def pub_(bot, message):
                         await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
-                           STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, filtered, total, start, reply_markup)
+                          STATUS[forward_id] = (fetched, total_files, duplicate, deleted, skip, filtered, total, start, reply_markup)
                           if temp.CANCEL.get(user)==True:
                             await edit(m, '\n♥️ FORWARDING CANCELLED\n', "cancelled", forward_id)
                             await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
@@ -159,7 +159,7 @@ async def copy(bot, chat, msg, sts, forward_id):
      await edit(sts, '', f"Sleeping {e.x} s", forward_id)
      await asyncio.sleep(e.x)
      await edit(sts, '', "Forwarding", forward_id)
-     await copy(bot, chat, msg)
+     await copy(bot, chat, msg, sts, forward_id)
 
 async def forward(bot, chat, msg, sts, forward_id):
    try:                             
@@ -171,7 +171,7 @@ async def forward(bot, chat, msg, sts, forward_id):
      await edit(sts, '', f"Sleeping {e.x} s", forward_id)
      await asyncio.sleep(e.x)
      await edit(sts, '', "Forwarding", forward_id)
-     await forward(bot, chat, msg)                                
+     await forward(bot, chat, msg, sts, forward_id)                                
    
 PROGRESS = """
 📈 Percentage: {0} %
