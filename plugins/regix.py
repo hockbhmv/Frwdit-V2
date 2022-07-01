@@ -49,7 +49,7 @@ async def pub_(bot, message):
     except:
       return await m.edit(f"**Please Make Your [Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", parse_mode="combined")
     temp.forwardings += 1
-    test = await client.send_message(user, text="<b>🧡 Forwarding Started</b>")
+    test = await client.send_message(user, text="<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
     if test:
         await m.edit("<b>processing</b>") 
         start = time.time()
@@ -66,7 +66,7 @@ async def pub_(bot, message):
               reply_markup = None
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip, skip_duplicate=True):
                     if temp.CANCEL.get(user)==True:
-                       await edit(m, '\n♥️ FORWARDING CANCELLED\n', "cancelled", forward_id)
+                       await edit(m, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", forward_id)
                        await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
                        temp.forwardings -= 1
                        await client.stop()
@@ -74,7 +74,7 @@ async def pub_(bot, message):
                     pling += 1
                     add(frwd_id, 'fetched')
                     if pling %10 == 0: 
-                       await edit(m, '', 'Fetching', frwd_id, reply_markup)
+                       await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 'Fetching', frwd_id, reply_markup)
                     if message == "DUPLICATE":
                        add(frwd_id, 'duplicate')
                        continue
@@ -102,14 +102,14 @@ async def pub_(bot, message):
                       else:
                         for msgs in MSG:
                           if temp.CANCEL.get(user)==True:
-                            await edit(m, '\n♥️ FORWARDING CANCELLED\n', "cancelled", forward_id)
+                            await edit(m, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", forward_id)
                             await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
                             temp.forwardings -= 1
                             await client.stop()
                             return
                           pling += 1
                           if pling % 10 == 0: 
-                            await edit(m, '' , "Forwarding", frwd_id)
+                            await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ' , "Forwarding", frwd_id)
                           try:
                             await copy(client, details, msgs, m, frwd_id)
                             add(frwd_id, 'total_files')
@@ -134,7 +134,7 @@ async def pub_(bot, message):
               await client.stop()
             except:
               pass 
-            await edit(m, '\n♥️ FORWARDING SUCCESSFULLY COMPLETED\n', "completed", forward_id)
+            await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", forward_id)
 
 async def copy(bot, chat, msg, sts, frwd_id):
    try:                                  
@@ -151,9 +151,9 @@ async def copy(bot, chat, msg, sts, frwd_id):
               caption=msg.get("caption"),
               message_id=msg.get("msg_id"))
    except FloodWait as e:
-     await edit(sts, '', f"Sleeping {e.x} s", frwd_id)
+     await edit(sts, 'ᴘʀᴏɢʀᴇssɪɴɢ', f"Sleeping {e.x} s", frwd_id)
      await asyncio.sleep(e.x)
-     await edit(sts, '', "Forwarding", frwd_id)
+     await edit(sts, 'ᴘʀᴏɢʀᴇssɪɴɢ', "Forwarding", frwd_id)
      await copy(bot, chat, msg, sts, frwd_id)
 
 async def forward(bot, chat, msg, sts, frwd_id):
@@ -163,9 +163,9 @@ async def forward(bot, chat, msg, sts, frwd_id):
            from_chat_id=chat['FROM'],
            message_ids=msg)
    except FloodWait as e:
-     await edit(sts, '', f"Sleeping {e.x} s", frwd_id)
+     await edit(sts, 'ᴘʀᴏɢʀᴇssɪɴɢ', f"Sleeping {e.x} s", frwd_id)
      await asyncio.sleep(e.x)
-     await edit(sts, '', "Forwarding", frwd_id)
+     await edit(sts, 'ᴘʀᴏɢʀᴇssɪɴɢ', "Forwarding", frwd_id)
      await forward(bot, chat, msg, sts, frwd_id)                               
    
 PROGRESS = """
