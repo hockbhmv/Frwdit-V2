@@ -42,11 +42,16 @@ I can forward all message from one channel to another channel</i>
 ╚══════════════════❍⊱❁۪۪
 """
   STATUS_TXT = """
-**👱 TOTAL USERS:** `{}`
-
-**🤖 TOTAL BOT:** `{}`
-
-**🔃 FORWARDINGS:** `{}`
+╔════❰ ʙᴏᴛ sᴛᴀᴛᴜs  ❱═❍⊱❁۪۪
+║╭━━━━━━━━━━━━━━━➣
+║┣⪼**👱 ᴛᴏᴛᴀʟ ᴜsᴇʀs:** `{}`
+║┃
+║┣⪼**🤖 ᴛᴏᴛᴀʟ ʙᴏᴛ:** `{}`
+║┃
+║┣⪼**🔃 ғᴏʀᴡᴀʀᴅɪɴɢs:** `{}`
+║┃
+║╰━━━━━━━━━━━━━━━➣
+╚══════════════════❍⊱❁۪۪
 """
   FROM_MSG = "<b><u>SET FROM CHANNEL</b></u>\n\n<b>Forward the last message of From channel OR Send the last message link of From channel.</b>\n<code>Note: Your bot must be admin in From channel if the channel is private</code>\n/cancel <code>- Cancel this process</code>"
   TO_MSG = "<b><u>CHOOSE TO CHANNEL</b></u>\n\n<b>Choose your **To channel** from the given list.</b>\n<b>`Note: </b>`[{}](t.me/{}) `must be admin in there before forwarding`\n/cancel <code>- Cancel this process</code>"
@@ -54,28 +59,26 @@ I can forward all message from one channel to another channel</i>
   CANCEL = "<b>Process Cancelled Succefully !</b>"
   USERNAME = "<b>Send Username with @</b>\n<code>eg: @Username</code>\n<b>Enter /run Again</b>"
   INVALID_CHANNELID = "<b>Send channel id with -100</b>\n<code>eg: -100xxxxxxxxxx</code>\n<b>Enter /run Again</b>"
-  TEXT = """<b><u>FORWARD STATUS</b></u>
+  TEXT = """
 ╔════❰ ғᴏʀᴡᴀʀᴅ sᴛᴀᴛᴜs  ❱═❍⊱❁۪۪
 ║╭━━━━━━━━━━━━━━━➣
-║┣⪼  {}
-║┃
 ║┣⪼<b>𖨠 ғᴇᴄʜᴇᴅ ᴍᴇssᴀɢᴇs:</b> <code>{}</code>
 ║┃
-║┣⪼<b>𖨠 Succefully forwarded:</b> <code>{}</code>
+║┣⪼<b>𖨠 sᴜᴄᴄᴇғᴜʟʟʏ ғᴏʀᴡᴀʀᴅᴇᴅ:</b> <code>{}</code>
 ║┃
-║┣⪼<b>𖨠 Duplicate messages:</b> <code>{}</code>
+║┣⪼<b>𖨠 ᴅᴜᴘʟɪᴄᴀᴛᴇ ᴍᴇssᴀɢᴇs:</b> <code>{}</code>
 ║┃
-║┣⪼<b>𖨠 Deleted messages:</b> <code>{}</code>
+║┣⪼<b>𖨠 ᴅᴇʟᴇᴛᴇᴅ ᴍᴇssᴀɢᴇs:</b> <code>{}</code>
 ║┃
-║┣⪼<b>𖨠 Skipped messages:</b> <code>{}</code>
+║┣⪼<b>𖨠 sᴋɪᴘᴘᴇᴅ ᴍᴇssᴀɢᴇs:</b> <code>{}</code>
 ║┃
-║┣⪼<b>𖨠 Filtered messages:</b> <code>{}</code>
+║┣⪼<b>𖨠 ғɪʟᴛᴇʀᴇᴅ ᴍᴇssᴀɢᴇs:</b> <code>{}</code>
 ║┃
-║┣⪼<b>𖨠 Current status:</b> <code>{}</code>
+║┣⪼<b>𖨠 ᴄᴜʀʀᴇɴᴛ sᴛᴀᴛᴜs:</b> <code>{}</code>
 ║┃
-║┣⪼<b>𖨠 Percentage:</b> <code>{}</code> %
+║┣⪼<b>𖨠 ᴘᴇʀᴄᴇɴᴛᴀɢᴇ:</b> <code>{}</code> %
 ║╰━━━━━━━━━━━━━━━➣ 
-╚══════════════════❍⊱❁۪۪
+╚════❰ {} ❱══❍⊱❁۪۪
 """
   DOUBLE_CHECK = """<b><u>DOUBLE CHECKING ⚠️</b></u>
 <code>Before forwarding the messages Click the Yes button only after checking the following</code>
