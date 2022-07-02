@@ -64,7 +64,7 @@ async def pub_(bot, message):
               STATUS[frwd_id] = {'skip': skip, 'total': total, 'fetched': skip, 'start': start,
                                  'deleted': 0, 'filtered': 0, 'duplicate': 0, 'total_files': 0}
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip, skip_duplicate=True):
-                    if not is_cancelled(client, user, m, frwd_id):
+                    if not await is_cancelled(client, user, m, frwd_id):
                        return
                     pling += 1
                     add(frwd_id, 'fetched')
@@ -96,7 +96,7 @@ async def pub_(bot, message):
                         await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
-                          if not is_cancelled(client, user, m, frwd_id):
+                          if not await is_cancelled(client, user, m, frwd_id):
                              return
                           pling += 1
                           if pling % 10 == 0: 
