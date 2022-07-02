@@ -117,9 +117,9 @@ async def pub_(bot, message):
                 await stop(client)
                 return
             temp.forwardings -= 1
-            temp.lock[user] = False 
-            await stop(client)
+            temp.lock[user] = False
             await client.send_message(user, text="<b>🎉 ғᴏʀᴡᴀᴅɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>")
+            await stop(client)
             await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", frwd_id, True)
 
 async def copy(bot, chat, msg, sts, frwd_id):
@@ -195,7 +195,7 @@ async def edit(msg, title, status, frwd_id, completed=False):
 
 async def is_cancelled(client, user, sts, frwd_id):
    if temp.CANCEL.get(user)==True:
-      await edit(sts, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", frwd_id)
+      await edit(sts, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", frwd_id, True)
       await client.send_message(user, text="<b>❌ ғᴏʀᴡᴀᴅɪɴɢ ᴄᴀɴᴄᴇʟʟᴇᴅ</b>")
       temp.forwardings -= 1
       await stop(client)
