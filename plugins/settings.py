@@ -172,7 +172,15 @@ async def settings_query(bot, query):
      await query.message.edit_text(
         "<b><u>CUSTOM FILTERS</b></u>\n\nconfigure the type of messages which you want forward",
         reply_markup=await filters_buttons(user_id))
-        
+   
+  elif type.startswith("file_size"):
+    settings = await get_configs(user_id)
+    size = settings.get('file_size', 0)
+    extn = 'GB' if size > 1000 else 'MB'
+    await query.message.edit_text(
+       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} {extn}</code>'
+       reply_markup=
+       
 def main_buttons():
   buttons = [[
        InlineKeyboardButton('BOTS 🤖',
@@ -190,6 +198,27 @@ def main_buttons():
        InlineKeyboardButton('FILTERS 🔵',
                     callback_data=f'settings#filters')
        ]]
+  return InlineKeyboardMarkup(buttons)
+
+def size_button():
+  buttons = [[
+       InlineKeyboardButton('+5',
+                    callback_data=f'settings#update_size#+#5'),
+       InlineKeyboardButton('+10',
+                    callback_data=f'settings#update_size#+#10'),
+       InlineKeyboardButton('+50',
+                    callback_data=f'settings#update_size#+#50'),
+       InlineKeyboardButton('+100',
+                    callback_data=f'settings#update_size#+#100'),
+       InlineKeyboardButton('-5',
+                    callback_data=f'settings#update_size#-#5'),
+       InlineKeyboardButton('-10',
+                    callback_data=f'settings#update_size#-#10'),
+       InlineKeyboardButton('-50',
+                    callback_data=f'settings#update_size#-#50'),
+       InlineKeyboardButton('-100',
+                    callback_data=f'settings#update_size#-#100')
+     ]]
   return InlineKeyboardMarkup(buttons)
        
 async def filters_buttons(user_id):
