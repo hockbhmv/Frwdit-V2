@@ -17,11 +17,11 @@ STATUS = {}
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = Translation.TEXT
-buttons = [[
-          InlineKeyboardButton('📜 Support Group', url='https://t.me/venombotsupport')
+BUTTONS = [
+          InlineKeyboardButton('💟 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ 💟', url='https://t.me/venombotsupport')
           ],[
-          InlineKeyboardButton('📡 Update Channel', url='https://t.me/venombotupdates')
-          ]]
+          InlineKeyboardButton('💠 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ 💠', url='https://t.me/venombotupdates')
+          ]
 
 @Client.on_callback_query(filters.regex(r'^start_public'))
 async def pub_(bot, message):
@@ -63,18 +63,13 @@ async def pub_(bot, message):
               fetched = skip
               STATUS[frwd_id] = {'skip': skip, 'total': total, 'fetched': skip, 'start': start,
                                  'deleted': 0, 'filtered': 0, 'duplicate': 0, 'total_files': 0}
-              reply_markup = None
               async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip, skip_duplicate=True):
-                    if temp.CANCEL.get(user)==True:
-                       await edit(m, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", frwd_id)
-                       await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
-                       temp.forwardings -= 1
-                       await client.stop()
-                       return 
+                    if not is_cancelled(client, user, m, frwd_id):
+                       return
                     pling += 1
                     add(frwd_id, 'fetched')
                     if pling %10 == 0: 
-                       await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 'Fetching', frwd_id, reply_markup)
+                       await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 'Fetching', frwd_id)
                     if message == "DUPLICATE":
                        add(frwd_id, 'duplicate')
                        continue
@@ -96,17 +91,13 @@ async def pub_(bot, message):
                          or completed <= 100
                     ):
                       if configs['forward_tag']:
-                        await forward(client, details, MSG, m, frwd_id, reply_markup)
+                        await forward(client, details, MSG, m, frwd_id)
                         add(frwd_id, 'total_files', notcompleted)
                         await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
-                          if temp.CANCEL.get(user)==True:
-                            await edit(m, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", frwd_id)
-                            await client.send_message(user, text="<b>❌ Forwarding Cancelled</b>")
-                            temp.forwardings -= 1
-                            await client.stop()
-                            return
+                          if not is_cancelled(client, user, m, frwd_id):
+                             return
                           pling += 1
                           if pling % 10 == 0: 
                             await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ' , "Forwarding", frwd_id)
@@ -123,18 +114,13 @@ async def pub_(bot, message):
                 temp.forwardings -= 1
                 temp.lock[user] = False
                 await m.edit_text(f'<b>Error:</b>\n\n<code>{e}</code>')
-                try:
-                  await client.stop()
-                except:
-                  pass 
+                await stop(client)
                 return
             temp.forwardings -= 1
-            temp.lock[user] = False
-            try:
-              await client.stop()
-            except:
-              pass 
-            await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", frwd_id)
+            temp.lock[user] = False 
+            await stop(client)
+            await client.send_message(user, text="<b>🎉 ғᴏʀᴡᴀᴅɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>")
+            await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", frwd_id, True)
 
 async def copy(bot, chat, msg, sts, frwd_id):
    try:                                  
@@ -176,37 +162,50 @@ PROGRESS = """
 ⏳️ ᴇᴛᴀ: {2}
 """
 
-async def edit(msg, title, status, frwd_id, buttons=None):
+async def edit(msg, title, status, frwd_id, completed=False):
    total_files, skip, total, fetched, deleted, filtered, duplicate, start = get(frwd_id, full=True)
    current = deleted + total_files + duplicate + filtered + skip                               
    percentages = "{:.0f}".format(float(current)*100/float(total))
    text = TEXT.format(fetched, total_files, duplicate, deleted, skip, filtered, status, percentages, title)
-   #text = "hi"
-   if not buttons:
-        now = time.time()
-        diff = now - start
-        percentage = current * 100 / total
-        speed = current / diff
-        elapsed_time = round(diff) * 1000
-        time_to_completion = round((total - current) / speed) * 1000
-        estimated_total_time = elapsed_time + time_to_completion
+   now = time.time()
+   diff = now - start
+   percentage = current * 100 / total
+   speed = current / diff
+   elapsed_time = round(diff) * 1000
+   time_to_completion = round((total - current) / speed) * 1000
+   estimated_total_time = elapsed_time + time_to_completion
 
-        elapsed_time = TimeFormatter(milliseconds=elapsed_time)
-        estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
+   elapsed_time = TimeFormatter(milliseconds=elapsed_time)
+   estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
 
-        progress = "▰{0}{1}".format(
-            ''.join(["▰" for i in range(math.floor(percentage / 5))]),
-            ''.join(["▱" for i in range(20 - math.floor(percentage / 5))]))
-        estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
-        button =  [[
-                InlineKeyboardButton(progress, f'fwrdstatus#{status}#{estimated_total_time}#{percentages}')
-                ],[
-                InlineKeyboardButton('Cancel🚫', 'terminate_frwd')]]
+   progress = "▰{0}{1}".format(
+       ''.join(["▰" for i in range(math.floor(percentage / 5))]),
+       ''.join(["▱" for i in range(20 - math.floor(percentage / 5))]))
+   estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
+   button =  [[InlineKeyboardButton(progress, f'fwrdstatus#{status}#{estimated_total_time}#{percentages}')]]
+   if completed:
+      button.append(BUTTONS)
+   else:
+      button.append([InlineKeyboardButton('• ᴄᴀɴᴄᴇʟ', 'terminate_frwd')])
    try:
      await msg.edit_text(text=text, reply_markup=InlineKeyboardMarkup(button))
    except (MessageNotModified, FloodWait):
      pass 
    return
+
+async def is_cancelled(client, user, sts, frwd_id):
+   if temp.CANCEL.get(user)==True:
+      await edit(sts, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", frwd_id)
+      await client.send_message(user, text="<b>❌ ғᴏʀᴡᴀᴅɪɴɢ ᴄᴀɴᴄᴇʟʟᴇᴅ</b>")
+      temp.forwardings -= 1
+      await stop(client)
+      return False 
+
+async def stop(client):
+   try:
+     await client.stop()
+   except:
+     pass 
 
 def check_filters(data, msg):
    if not data['texts'] and msg.text:
@@ -288,6 +287,7 @@ async def terminate_frwding(bot, m):
 @Client.on_callback_query(filters.regex(r'^fwrdstatus'))
 async def status(bot, msg):
     _, sts, est_time, percentage = msg.data.split("#")
+    est_time = '0 s' if sts in ['completed', 'cancelled'] else est_time
     return await msg.answer(PROGRESS.format(percentage, sts, est_time), show_alert=True)
                      
 @Client.on_callback_query(filters.regex(r'^close_btn$'))
