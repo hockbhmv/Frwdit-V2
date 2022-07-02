@@ -181,9 +181,9 @@ async def settings_query(bot, query):
        reply_markup=size_button())
       
   elif type.startswith("update_size"):
-    _, __, i, count = query.data.split('#') 
+    _, i, count = query.data.split(':') 
     settings = await get_configs(user_id)
-    size = settings['file_size'] + count
+    size = settings['file_size'] i count
     if 0 < size > 2000:
        return
     await update_configs(user_id, 'file_size', size)
@@ -213,21 +213,21 @@ def main_buttons():
 def size_button():
   buttons = [[
        InlineKeyboardButton('+5',
-                    callback_data=f'settings#update_size#+#5'),
+                    callback_data=f'settings#update_size:+:5'),
        InlineKeyboardButton('+10',
-                    callback_data=f'settings#update_size#+#10'),
+                    callback_data=f'settings#update_size:+:10'),
        InlineKeyboardButton('+50',
-                    callback_data=f'settings#update_size#+#50'),
+                    callback_data=f'settings#update_size:+:50'),
        InlineKeyboardButton('+100',
-                    callback_data=f'settings#update_size#+#100'),
+                    callback_data=f'settings#update_size:+:100'),
        InlineKeyboardButton('-5',
-                    callback_data=f'settings#update_size#-#5'),
+                    callback_data=f'settings#update_size:-:5'),
        InlineKeyboardButton('-10',
-                    callback_data=f'settings#update_size#-#10'),
+                    callback_data=f'settings#update_size:-:10'),
        InlineKeyboardButton('-50',
-                    callback_data=f'settings#update_size#-#50'),
+                    callback_data=f'settings#update_size:-:50'),
        InlineKeyboardButton('-100',
-                    callback_data=f'settings#update_size#-#100')
+                    callback_data=f'settings#update_size:-:100')
      ]]
   return InlineKeyboardMarkup(buttons)
        
@@ -273,10 +273,11 @@ async def filters_buttons(user_id):
                     callback_data='commingsoon'),
        InlineKeyboardButton('comming soon',
                     callback_data='commingsoon')
+       ],[
        InlineKeyboardButton('size limit',
-                    callback_data='commingsoon'),
-       InlineKeyboardButton('comming soon',
-                    callback_data='file_size')
+                    callback_data='file_size'),
+       InlineKeyboardButton('customize',
+                    callback_data='file_size_')
        ],[
        InlineKeyboardButton('back',
                     callback_data="settings#main")
