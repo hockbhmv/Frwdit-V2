@@ -200,6 +200,7 @@ async def is_cancelled(client, user, sts, frwd_id):
       temp.forwardings -= 1
       await stop(client)
       return False 
+   return True 
 
 async def stop(client):
    try:
