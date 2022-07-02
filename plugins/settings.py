@@ -176,11 +176,21 @@ async def settings_query(bot, query):
   elif type.startswith("file_size"):
     settings = await get_configs(user_id)
     size = settings.get('file_size', 0)
-    extn = 'GB' if size > 1000 else 'MB'
     await query.message.edit_text(
-       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} {extn}</code>'
-       reply_markup=
-       
+       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} MB</code>',
+       reply_markup=size_button())
+      
+  elif type.startswith("update_size"):
+    _, __, i, count = query.data.split('#') 
+    settings = await get_configs(user_id)
+    size = settings['file_size'] + count
+    if 0 < size > 2000:
+       return
+    await update_configs(user_id, 'file_size', size)
+    await query.message.edit_text(
+       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} MB</code>',
+       reply_markup=size_button())
+      
 def main_buttons():
   buttons = [[
        InlineKeyboardButton('BOTS 🤖',
@@ -263,6 +273,10 @@ async def filters_buttons(user_id):
                     callback_data='commingsoon'),
        InlineKeyboardButton('comming soon',
                     callback_data='commingsoon')
+       InlineKeyboardButton('size limit',
+                    callback_data='commingsoon'),
+       InlineKeyboardButton('comming soon',
+                    callback_data='file_size')
        ],[
        InlineKeyboardButton('back',
                     callback_data="settings#main")
