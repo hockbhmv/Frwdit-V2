@@ -25,5 +25,5 @@ class STS:
 
     def add(self, key, value=1, time=False):
         if time:
-          return self.data[self.id].update({key: time})
+          return self.data[self.id].update({key: time.time()})
         self.data[self.id].update({key: self.get(key) + value, 'current': self.get('current') + value}) 
