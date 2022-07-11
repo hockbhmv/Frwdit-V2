@@ -1,5 +1,6 @@
-#(c) hockbhmv 
 import time 
+
+STATUS = {}
 
 class STS:
     def __init__(self, id):
