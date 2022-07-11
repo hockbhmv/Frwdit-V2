@@ -11,7 +11,7 @@ class STS:
         return self.data.get(self.id)
     
     def store(self, From, to,  skip, limit):
-        self.data[self.id] = {'FROM': From, 'TO': to, 'total_files': 0, 'skip': skip, 'limit': limit, 'fetched': 0,
+        self.data[self.id] = {"FROM": From, 'TO': to, 'total_files': 0, 'skip': skip, 'limit': limit, 'fetched': 0,
                      'filtered': 0, 'deleted': 0, 'duplicate': 0, 'total': 0, 'current': 0, 'start': time.time()}
         return STS(self.id)
         
