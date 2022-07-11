@@ -215,7 +215,7 @@ def size_button(size):
        InlineKeyboardButton('+10',
                     callback_data=f'settings#update_size-{size + 10}'),
        InlineKeyboardButton('+50',
-                    callback_data=f'settings#update_size-{size + 50'),
+                    callback_data=f'settings#update_size-{size + 50}'),
        InlineKeyboardButton('+100',
                     callback_data=f'settings#update_size-{size + 100}'),
        InlineKeyboardButton('-5',
