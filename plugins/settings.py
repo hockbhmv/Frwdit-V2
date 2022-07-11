@@ -178,18 +178,16 @@ async def settings_query(bot, query):
     size = settings.get('file_size', 0)
     await query.message.edit_text(
        f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} MB</code>',
-       reply_markup=size_button())
+       reply_markup=size_button(size))
       
   elif type.startswith("update_size"):
-    _, i, count = query.data.split(':') 
-    settings = await get_configs(user_id)
-    size = settings['file_size'] i count
+    _, size = query.data.split('-')
     if 0 < size > 2000:
-       return
+      return
     await update_configs(user_id, 'file_size', size)
     await query.message.edit_text(
        f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} MB</code>',
-       reply_markup=size_button())
+       reply_markup=size_button(size))
       
 def main_buttons():
   buttons = [[
@@ -210,24 +208,27 @@ def main_buttons():
        ]]
   return InlineKeyboardMarkup(buttons)
 
-def size_button():
+def size_button(size):
   buttons = [[
        InlineKeyboardButton('+5',
-                    callback_data=f'settings#update_size:+:5'),
+                    callback_data=f'settings#update_size-{size + 5}'),
        InlineKeyboardButton('+10',
-                    callback_data=f'settings#update_size:+:10'),
+                    callback_data=f'settings#update_size-{size + 10}'),
        InlineKeyboardButton('+50',
-                    callback_data=f'settings#update_size:+:50'),
+                    callback_data=f'settings#update_size-{size + 50'),
        InlineKeyboardButton('+100',
-                    callback_data=f'settings#update_size:+:100'),
+                    callback_data=f'settings#update_size-{size + 100}'),
        InlineKeyboardButton('-5',
-                    callback_data=f'settings#update_size:-:5'),
+                    callback_data=f'settings#update_size-{size - 5}'),
        InlineKeyboardButton('-10',
-                    callback_data=f'settings#update_size:-:10'),
+                    callback_data=f'settings#update_size-{size - 10}'),
        InlineKeyboardButton('-50',
-                    callback_data=f'settings#update_size:-:50'),
+                    callback_data=f'settings#update_size-{size - 50}'),
        InlineKeyboardButton('-100',
-                    callback_data=f'settings#update_size:-:100')
+                    callback_data=f'settings#update_size-{size - 100}')
+       ],[
+       InlineKeyboardButton('back',
+                    callback_data="settings#main")
      ]]
   return InlineKeyboardMarkup(buttons)
        
