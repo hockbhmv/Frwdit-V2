@@ -9,7 +9,7 @@ class STS:
         
     def store(self, From, to,  skip, limit):
         self.data = {'FROM': From, 'TO': to, 'total_files': 0, 'skip': skip, 'limit': limit, 'fetched': 0,
-                     'filtered': 0, 'deleted': 0, 'duplicate': 0, 'total': 0, 'start': time.time()}
+                     'filtered': 0, 'deleted': 0, 'duplicate': 0, 'total': 0, 'current': 0, 'start': time.time()}
         return STS(self.id)
         
     def get(self, value=None, full=False):
@@ -20,7 +20,7 @@ class STS:
             setattr(value, k, v)
         return value
 
-    def add(self, key, value=1):
-        prevalue = self.get(key) + value,
-        total = self.get('total') + value
-        self.data.update({key: prevalue, 'total': total})
+    def add(self, key, value=1, time=False):
+        if time:
+          return self.data.update({key: time})
+        self.data.update({key: self.get(key) + value, 'current': self.get('current') + value}) 
