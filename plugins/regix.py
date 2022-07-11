@@ -54,7 +54,7 @@ async def pub_(bot, message):
             try:
               MSG = []
               pling=0
-              async for message in client.iter_messages(chat_id=i.FROM, limit=i.limit, offset=i.skip, skip_duplicate=True):
+              async for message in client.iter_messages(chat_id=sts.get('FROM'), limit=i.limit, offset=i.skip, skip_duplicate=True):
                     if not await is_cancelled(client, user, m, sts):
                        return
                     pling += 1
