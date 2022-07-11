@@ -29,6 +29,7 @@ async def pub_(bot, message):
     if not sts.verify():
       await message.answer("your are clicking on my old button", show_alert=True)
       return await message.message.delete()
+    i = sts.get(full=True)
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
     _bot = await db.get_bot(user)
     if not _bot:
@@ -39,14 +40,14 @@ async def pub_(bot, message):
     except Exception as e:  
       return await m.edit(e)
     try:
-      k = await client.send_message(details['TO'], "Testing")
+      k = await client.send_message(i.TO, "Testing")
       await k.delete()
     except:
       return await m.edit(f"**Please Make Your [Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", parse_mode="combined")
     temp.forwardings += 1
     test = await client.send_message(user, text="<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
     if test:
-        sts.add('start',time=time.time())
+        sts.add('start',time=True)
         await m.edit("<b>processing</b>") 
         temp.lock[user] = locked = True
         if locked:
