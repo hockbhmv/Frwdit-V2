@@ -4,6 +4,7 @@ import math
 import time
 import asyncio 
 import logging
+from .utils import STS
 from database import db 
 from .test import CLIENT 
 from config import Config, temp
@@ -13,7 +14,6 @@ from pyrogram.file_id import unpack_new_file_id
 from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 
-STATUS = {}
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = Translation.TEXT
@@ -25,8 +25,8 @@ async def pub_(bot, message):
     frwd_id = message.data.split("_")[2]
     if temp.lock.get(user) and str(temp.lock.get(user))=="True":
       return await message.answer("please wait until previous task complete", show_alert=True)
-    details = temp.FORWARD.get(frwd_id)
-    if not details:
+    sts = STS(frwd_id)
+    if not sts.data:
       await message.answer("your are clicking on my old button", show_alert=True)
       return await message.message.delete()
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
@@ -46,34 +46,29 @@ async def pub_(bot, message):
     temp.forwardings += 1
     test = await client.send_message(user, text="<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
     if test:
+        sts.add('start',time=time.time())
         await m.edit("<b>processing</b>") 
-        start = time.time()
         temp.lock[user] = locked = True
         if locked:
             try:
               MSG = []
               pling=0
-              skip = int(details['SKIP'])
-              total = int(details['LIMIT'])
-              fetched = skip
-              STATUS[frwd_id] = {'skip': skip, 'total': total, 'fetched': skip, 'start': start,
-                                 'deleted': 0, 'filtered': 0, 'duplicate': 0, 'total_files': 0}
-              async for message in client.iter_messages(chat_id=details['FROM'], limit=total, offset=skip, skip_duplicate=True):
-                    if not await is_cancelled(client, user, m, frwd_id):
+              async for message in client.iter_messages(chat_id=i.FROM, limit=i.limit, offset=i.skip, skip_duplicate=True):
+                    if not await is_cancelled(client, user, m, sts):
                        return
                     pling += 1
-                    add(frwd_id, 'fetched')
+                    sts.add('fetched')
                     if pling %10 == 0: 
-                       await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 'Fetching', frwd_id)
+                       await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 'Fetching', sts)
                     if message == "DUPLICATE":
-                       add(frwd_id, 'duplicate')
+                       sts.add('duplicate')
                        continue
                     if message.empty or message.service:
-                       add(frwd_id, 'deleted')
+                       sts.add('deleted')
                        continue 
                     filter = check_filters(configs, message)
                     if filter:
-                       add(frwd_id, 'filtered')
+                       sts.add('filtered')
                        continue 
                     if not configs['forward_tag']:
                        caption = custom_caption(message, configs)
@@ -81,24 +76,24 @@ async def pub_(bot, message):
                     else:
                        MSG.append(message.message_id)
                     notcompleted = len(MSG)
-                    completed = get(frwd_id,'total') - get(frwd_id, 'fetched')
+                    completed = sts.get('total') - sts.get('fetched')
                     if ( notcompleted >= 100 
                          or completed <= 100
                     ):
                       if configs['forward_tag']:
-                        await forward(client, details, MSG, m, frwd_id)
-                        add(frwd_id, 'total_files', notcompleted)
+                        await forward(client, MSG, m, sts)
+                        sts.add('total_files', notcompleted)
                         await asyncio.sleep(10)
                       else:
                         for msgs in MSG:
-                          if not await is_cancelled(client, user, m, frwd_id):
+                          if not await is_cancelled(client, user, m, sts):
                              return
                           pling += 1
                           if pling % 10 == 0: 
-                            await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ' , "Forwarding", frwd_id)
+                            await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ' , "Forwarding", sts)
                           try:
-                            await copy(client, details, msgs, m, frwd_id)
-                            add(frwd_id, 'total_files')
+                            await copy(client, msgs, m, sts)
+                            sts.add('total_files')
                             await asyncio.sleep(1.7)
                           except Exception as e:
                             print(e)
@@ -115,39 +110,39 @@ async def pub_(bot, message):
             temp.lock[user] = False
             await client.send_message(user, text="<b>🎉 ғᴏʀᴡᴀᴅɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>")
             await stop(client)
-            await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", frwd_id, True)
+            await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", sts)
 
-async def copy(bot, chat, msg, sts, frwd_id):
+async def copy(bot, msg, m, sts):
    try:                                  
      if msg.get("media"):
         await bot.send_cached_media(
-              chat_id=chat['TO'],
+              chat_id=sts.get('TO'),
               file_id=msg.get("media"),
               caption=msg.get("caption"))
      else:
         await bot.copy_message(
-              chat_id=chat['TO'],
-              from_chat_id=chat['FROM'],
+              chat_id=sts.get('TO'),
+              from_chat_id=sts.get('FROM'),
               parse_mode="combined",       
               caption=msg.get("caption"),
               message_id=msg.get("msg_id"))
    except FloodWait as e:
-     await edit(sts, 'ᴘʀᴏɢʀᴇssɪɴɢ', f"Sleeping {e.x} s", frwd_id)
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', f"Sleeping {e.x} s", sts)
      await asyncio.sleep(e.x)
-     await edit(sts, 'ᴘʀᴏɢʀᴇssɪɴɢ', "Forwarding", frwd_id)
-     await copy(bot, chat, msg, sts, frwd_id)
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', "Forwarding", sts)
+     await copy(bot, msg, m, sts)
 
-async def forward(bot, chat, msg, sts, frwd_id):
+async def forward(bot, msg, m, sts):
    try:                             
      await bot.forward_messages(
-           chat_id=chat['TO'],
-           from_chat_id=chat['FROM'],
+           chat_id=sts.get('TO'),
+           from_chat_id=sts.get('FROM'),
            message_ids=msg)
    except FloodWait as e:
-     await edit(sts, 'ᴘʀᴏɢʀᴇssɪɴɢ', f"Sleeping {e.x} s", frwd_id)
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', f"Sleeping {e.x} s", sts)
      await asyncio.sleep(e.x)
-     await edit(sts, 'ᴘʀᴏɢʀᴇssɪɴɢ', "Forwarding", frwd_id)
-     await forward(bot, chat, msg, sts, frwd_id)                               
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', "Forwarding", sts)
+     await forward(bot, msg, m, sts)                               
    
 PROGRESS = """
 📈 ᴘᴇʀᴄᴇɴᴛᴀɢᴇ: {0} %
@@ -157,17 +152,15 @@ PROGRESS = """
 ⏳️ ᴇᴛᴀ: {2}
 """
 
-async def edit(msg, title, status, frwd_id, completed=False):
-   total_files, skip, total, fetched, deleted, filtered, duplicate, start = get(frwd_id, full=True)
-   current = deleted + total_files + duplicate + filtered + skip                               
-   percentages = "{:.0f}".format(float(current)*100/float(total))
-   text = TEXT.format(fetched, total_files, duplicate, deleted, skip, filtered, status, percentages, title)
+async def edit(msg, title, status, sts):
+   i = sts.get(full=True)
+   percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
+   text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, i.status, percentage, i.title)
    now = time.time()
-   diff = now - start
-   percentage = current * 100 / total
+   diff = now - i.start
    speed = current / diff
    elapsed_time = round(diff) * 1000
-   time_to_completion = round((total - current) / speed) * 1000
+   time_to_completion = round((i.total - i.current) / speed) * 1000
    estimated_total_time = elapsed_time + time_to_completion
 
    elapsed_time = TimeFormatter(milliseconds=elapsed_time)
@@ -177,8 +170,8 @@ async def edit(msg, title, status, frwd_id, completed=False):
        ''.join(["▰" for i in range(math.floor(percentage / 5))]),
        ''.join(["▱" for i in range(20 - math.floor(percentage / 5))]))
    estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
-   button =  [[InlineKeyboardButton(progress, f'fwrdstatus#{status}#{estimated_total_time}#{percentages}')]]
-   if completed:
+   button =  [[InlineKeyboardButton(progress, f'fwrdstatus#{status}#{estimated_total_time}#{percentage}')]]
+   if status in ["cancelled", "completed"]:
       button.append([InlineKeyboardButton('💟 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ 💟', url='https://t.me/venombotsupport')])
       button.append([InlineKeyboardButton('💠 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ 💠', url='https://t.me/venombotupdates')])
    else:
@@ -189,9 +182,9 @@ async def edit(msg, title, status, frwd_id, completed=False):
      pass 
    return
 
-async def is_cancelled(client, user, sts, frwd_id):
+async def is_cancelled(client, user, msg, sts):
    if temp.CANCEL.get(user)==True:
-      await edit(sts, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", frwd_id, True)
+      await edit(msg, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", sts)
       await client.send_message(user, text="<b>❌ ғᴏʀᴡᴀᴅɪɴɢ ᴄᴀɴᴄᴇʟʟᴇᴅ</b>")
       temp.forwardings -= 1
       await stop(client)
@@ -268,18 +261,7 @@ def TimeFormatter(milliseconds: int) -> str:
         ((str(seconds) + "s, ") if seconds else "") + \
         ((str(milliseconds) + "ms, ") if milliseconds else "")
     return tmp[:-2]
-
-def add(_id, key, value=1):
-   current = STATUS.get(_id)
-   current[key] += value
-   STATUS[_id] = current
-
-def get(_id, key=None, full=False):
-   get = STATUS.get(_id)
-   if not full:
-      return get[key]
-   return get['total_files'], get['skip'], get["total"], get['fetched'], get['deleted'], get['filtered'], get['duplicate'], get['start']
-
+ 
 @Client.on_callback_query(filters.regex(r'^terminate_frwd$'))
 async def terminate_frwding(bot, m):
     user_id = m.from_user.id 
