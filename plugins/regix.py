@@ -26,7 +26,7 @@ async def pub_(bot, message):
     if temp.lock.get(user) and str(temp.lock.get(user))=="True":
       return await message.answer("please wait until previous task complete", show_alert=True)
     sts = STS(frwd_id)
-    if not sts.data:
+    if not sts.status.get(str(frwd_id)):
       await message.answer("your are clicking on my old button", show_alert=True)
       return await message.message.delete()
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
