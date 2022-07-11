@@ -276,9 +276,9 @@ async def filters_buttons(user_id):
                     callback_data='commingsoon')
        ],[
        InlineKeyboardButton('size limit',
-                    callback_data='file_size'),
+                    callback_data='settings#file_size'),
        InlineKeyboardButton('customize',
-                    callback_data='file_size_')
+                    callback_data='settings#file_size_')
        ],[
        InlineKeyboardButton('back',
                     callback_data="settings#main")
