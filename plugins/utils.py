@@ -20,7 +20,8 @@ class STS:
         if not full:
            return values.get(value)
         for k, v in values.items():
-            setattr(values, str(k), v)
+            #setattr(values, str(k), v)
+            values[k] = v
         return values
 
     def add(self, key, value=1, time=False):
