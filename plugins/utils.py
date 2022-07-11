@@ -1,4 +1,4 @@
-import time 
+import time as tm
 
 STATUS = {}
 
@@ -21,10 +21,9 @@ class STS:
            return values.get(value)
         for k, v in values.items():
             setattr(self, k, v)
-            #values[k] = v
         return self
 
     def add(self, key, value=1, time=False):
         if time:
-          return self.data[self.id].update({key: time.time()})
+          return self.data[self.id].update({key: tm.time()})
         self.data[self.id].update({key: self.get(key) + value, 'current': self.get('current') + value}) 
