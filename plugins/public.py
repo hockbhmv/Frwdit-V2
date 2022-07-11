@@ -1,5 +1,6 @@
 import re
 import asyncio 
+from .utils import STS
 from database import db
 from config import temp 
 from translation import Translation
@@ -78,9 +79,4 @@ async def run(bot, message):
         disable_web_page_preview=True,
         reply_markup=reply_markup
     )
-    temp.FORWARD[forward_id] = {
-        'TO': toid,
-        'FROM': chat_id,
-        'SKIP': skipno.text,
-        'LIMIT': last_msg_id
-    }
+    STS(forward_id).store(chat_id, toid, skipno.text, last_msg_id)
