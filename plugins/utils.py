@@ -15,7 +15,7 @@ class STS:
                      'filtered': 0, 'deleted': 0, 'duplicate': 0, 'total': 0, 'current': 0, 'start': time.time()}
         return STS(self.id)
         
-    def get(self, value=None, full=False):
+    def get(self, value="status", full=False):
         values = self.data.get(self.id)
         if not full:
            return values.get(value)
