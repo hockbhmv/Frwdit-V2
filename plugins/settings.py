@@ -181,7 +181,7 @@ async def settings_query(bot, query):
        reply_markup=size_button(size))
       
   elif type.startswith("update_size"):
-    _, size = query.data.split('-')
+    size = int(query.data.split('-')[1])
     if 0 < size > 2000:
       return
     await update_configs(user_id, 'file_size', size)
