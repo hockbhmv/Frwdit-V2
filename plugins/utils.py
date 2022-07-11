@@ -22,7 +22,7 @@ class STS:
         for k, v in values.items():
             setattr(self, k, v)
             #values[k] = v
-        return value
+        return self
 
     def add(self, key, value=1, time=False):
         if time:
