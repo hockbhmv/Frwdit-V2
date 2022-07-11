@@ -217,6 +217,11 @@ def check_filters(data, msg):
       return True
    elif not data['animations'] and (msg.animation or msg.sticker):
       return True 
+   elif msg.media:
+      size = data.get('file_size', 0)
+      fsize = getattr(msg.media, 'file_size' None)
+      if fsize and size != 0 and fsize <= size:
+         return True
    return False 
 
 def custom_caption(msg, get):
