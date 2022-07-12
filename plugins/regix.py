@@ -156,7 +156,7 @@ PROGRESS = """
 async def edit(msg, title, status, sts):
    i = sts.get(full=True)
    percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
-   text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, i.status, percentage, i.title)
+   text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    now = time.time()
    diff = now - i.start
    speed = current / diff
