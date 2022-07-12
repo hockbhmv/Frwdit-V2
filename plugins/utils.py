@@ -11,8 +11,8 @@ class STS:
         return self.data.get(self.id)
     
     def store(self, From, to,  skip, limit):
-        self.data[self.id] = {"FROM": From, 'TO': to, 'total_files': 0, 'skip': skip, 'limit': limit, 'fetched': 0,
-                     'filtered': 0, 'deleted': 0, 'duplicate': 0, 'total': limit, 'current': 0, 'start': 0}
+        self.data[self.id] = {"FROM": From, 'TO': to, 'total_files': 0, 'skip': int(skip), 'limit': int(limit), 'fetched': 0,
+                     'filtered': 0, 'deleted': 0, 'duplicate': 0, 'total': int(limit), 'current': int(skip), 'start': 0}
         return STS(self.id)
         
     def get(self, value=None, full=False):
@@ -20,7 +20,7 @@ class STS:
         if not full:
            return values.get(value)
         for k, v in values.items():
-            setattr(self, k, v)
+            setattr(self, k, int(v))
         return self
 
     def add(self, key, value=1, time=False):
