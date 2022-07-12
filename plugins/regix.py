@@ -158,18 +158,18 @@ async def edit(msg, title, status, sts):
    percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    now = time.time()
-   diff = now - i.start
-   speed = i.current / int(diff)
+   diff = int(now - i.start)
+   speed = float(i.current) / float(diff))
    elapsed_time = round(diff) * 1000
-   time_to_completion = round((i.total - i.current) / speed) * 1000
+   time_to_completion = round((int(i.total - i.current)) / int(speed)) * 1000
    estimated_total_time = elapsed_time + time_to_completion
 
    elapsed_time = TimeFormatter(milliseconds=elapsed_time)
    estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
 
    progress = "▰{0}{1}".format(
-       ''.join(["▰" for i in range(math.floor(percentage / 5))]),
-       ''.join(["▱" for i in range(20 - math.floor(percentage / 5))]))
+       ''.join(["▰" for i in range(math.floor(int(percentage) / 5))]),
+       ''.join(["▱" for i in range(20 - math.floor(int(percentage) / 5))]))
    estimated_total_time = estimated_total_time if estimated_total_time != '' else '0 s'
    button =  [[InlineKeyboardButton(progress, f'fwrdstatus#{status}#{estimated_total_time}#{percentage}')]]
    if status in ["cancelled", "completed"]:
