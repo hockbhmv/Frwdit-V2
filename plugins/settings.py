@@ -188,7 +188,47 @@ async def settings_query(bot, query):
     await query.message.edit_text(
        f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} MB</code>',
        reply_markup=size_button(size))
-      
+  
+  elif type == "add_extenstion":
+    ext = await bot.ask(user_id, text='send your extensions")
+    if ex.text == '/cancel':
+       return await ext.reply_text(
+                  "<b>process canceled</b>",
+                  reply_markup=InlineKeyboardMarkup(buttons))
+    extensions = ext.text.split()
+    extension = await get_configs(id).get('extension', None)
+    if extension:
+        for extn in extensions:
+            extension.append(extn)
+    else:
+        extension = extensions
+    await update_configs(user_id, 'extension', extension)
+  
+  elif type == "get_extension":
+    i = 0
+    btn = []
+    extensions = (await get_configs(user_id)).get('extension', None)
+    for extn in extensions:
+        if i >= 5:
+            i = 0
+        if i == 0:
+           btn.append([InlineKeyboardButton(extn, f'settings#extn_{extn}')])
+           i += 1
+           continue
+        elif i > 0:
+           btn[-1].append(InlineKeyboardButton(extn, f'settings#extn_{extn}'))
+           i += 1
+    btn.append(InlimeKeyboardButton('✚ ADD ✚', 'settings#add_extension'))
+    btn.append(InlimeKeyboardButton('Remove all', 'settings#rmve_all_extension'))
+    btn.append([InlineKeyboardButton('back', 'settings#main')])
+    await query.message.edit_text(
+        text='your skipping extensions using file_name',
+        reply_markup=InlineKeyboardMarkup(btn))
+  
+  elif type == "rmve_all_extension":
+      await update_configs(user_id, 'extension', None)
+      await query.message.reply_text(text="successfully deleted",
+                                     reply_markup=InlineKeyboardMarkup(buttons))
 def main_buttons():
   buttons = [[
        InlineKeyboardButton('BOTS 🤖',
@@ -237,37 +277,37 @@ async def filters_buttons(user_id):
   buttons = [[
        InlineKeyboardButton('🏷️ Forward tag',
                     callback_data=f'settings_#updatefilter-forward_tag-{filters["forward_tag"]}'),
-       InlineKeyboardButton('✔️' if filters['forward_tag'] else '❌',
+       InlineKeyboardButton('☑' if filters['forward_tag'] else '☒',
                     callback_data=f'settings#updatefilter-forward_tag-{filters["forward_tag"]}')
        ],[
        InlineKeyboardButton('🖍️ Texts',
                     callback_data=f'settings_#updatefilter-texts-{filters["texts"]}'),
-       InlineKeyboardButton('✔️' if filters['texts'] else '❌',
+       InlineKeyboardButton('☑' if filters['texts'] else '☒',
                     callback_data=f'settings#updatefilter-texts-{filters["texts"]}')
        ],[
        InlineKeyboardButton('📁 Documents',
                     callback_data=f'settings_#updatefilter-documents-{filters["documents"]}'),
-       InlineKeyboardButton('✔️' if filters['documents'] else '❌',
+       InlineKeyboardButton('☑' if filters['documents'] else '☒',
                     callback_data=f'settings#updatefilter-documents-{filters["documents"]}')
        ],[
        InlineKeyboardButton('🎞️ Videos',
                     callback_data=f'settings_#updatefilter-videos-{filters["videos"]}'),
-       InlineKeyboardButton('✔️' if filters['videos'] else '❌',
+       InlineKeyboardButton('☑' if filters['videos'] else '☒',
                     callback_data=f'settings#updatefilter-videos-{filters["videos"]}')
        ],[
        InlineKeyboardButton('📷 Photos',
                     callback_data=f'settings_#updatefilter-photos-{filters["photos"]}'),
-       InlineKeyboardButton('✔️' if filters['photos'] else '❌',
+       InlineKeyboardButton('☑' if filters['photos'] else '☒',
                     callback_data=f'settings#updatefilter-photos-{filters["photos"]}')
        ],[
        InlineKeyboardButton('🎧 Audios',
                     callback_data=f'settings_#updatefilter-audios-{filters["audios"]}'),
-       InlineKeyboardButton('✔️' if filters['audios'] else '❌',
+       InlineKeyboardButton('☑' if filters['audios'] else '☒',
                     callback_data=f'settings#updatefilter-audios-{filters["audios"]}')
        ],[
        InlineKeyboardButton('🎭 Animations',
                     callback_data=f'settings_#updatefilter-animations-{filters["animations"]}'),
-       InlineKeyboardButton('✔️' if filters['animations'] else '❌',
+       InlineKeyboardButton('☑' if filters['animations'] else '☒',
                     callback_data=f'settings#updatefilter-animations-{filters["animations"]}')
        ],[
        InlineKeyboardButton('▶️ Skip duplicate files',
@@ -277,8 +317,8 @@ async def filters_buttons(user_id):
        ],[
        InlineKeyboardButton('size limit',
                     callback_data='settings#file_size'),
-       InlineKeyboardButton('customize',
-                    callback_data='settings#file_size_')
+       InlineKeyboardButton('extension',
+                    callback_data='settings#get_extension')
        ],[
        InlineKeyboardButton('back',
                     callback_data="settings#main")
