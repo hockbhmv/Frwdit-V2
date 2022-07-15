@@ -219,8 +219,8 @@ async def settings_query(bot, query):
         elif i > 0:
            btn[-1].append(InlineKeyboardButton(extn, f'settings#extn_{extn}'))
            i += 1
-    btn.append(InlineKeyboardButton('✚ ADD ✚', 'settings#add_extension'))
-    btn.append(InlineKeyboardButton('Remove all', 'settings#rmve_all_extension'))
+    btn.append([InlineKeyboardButton('✚ ADD ✚', 'settings#add_extension')])
+    btn.append([InlineKeyboardButton('Remove all', 'settings#rmve_all_extension')])
     btn.append([InlineKeyboardButton('back', 'settings#main')])
     await query.message.edit_text(
         text='your skipping extensions using file_name',
