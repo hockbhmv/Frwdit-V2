@@ -29,7 +29,7 @@ async def settings_query(bot, query):
         buttons.append([InlineKeyboardButton(_bot['name'],
                          callback_data=f"settings#editbot")])
      else:
-        buttons.append([InlineKeyboardButton('➕ Add bot ➕', 
+        buttons.append([InlineKeyboardButton('✚ Add bot ✚', 
                          callback_data="settings#addbot")])
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
@@ -52,7 +52,7 @@ async def settings_query(bot, query):
      async for channel in channels:
         buttons.append([InlineKeyboardButton(f"{channel['title']}",
                          callback_data=f"settings#editchannels_{channel['chat_id']}")])
-     buttons.append([InlineKeyboardButton('➕ Add Channel ➕', 
+     buttons.append([InlineKeyboardButton('✚ Add Channel ✚', 
                       callback_data="settings#addchannel")])
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
@@ -116,7 +116,7 @@ async def settings_query(bot, query):
      data = await get_configs(user_id)
      caption = data['caption']
      if caption is None:
-        buttons.append([InlineKeyboardButton('➕ Add Caption ➕', 
+        buttons.append([InlineKeyboardButton('✚ Add Caption ✚', 
                       callback_data="settings#addcaption")])
      else:
         buttons.append([InlineKeyboardButton('See Caption', 
@@ -208,7 +208,8 @@ async def settings_query(bot, query):
     i = 0
     btn = []
     extensions = (await get_configs(user_id)).get('extension', None)
-    for extn in extensions:
+    if extensions:
+      for extn in extensions:
         if i >= 5:
             i = 0
         if i == 0:
