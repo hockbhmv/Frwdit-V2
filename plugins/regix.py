@@ -39,6 +39,7 @@ async def pub_(bot, message):
       client = await bot.start_clone_bot(CLIENT(_bot['token']).bot)
     except Exception as e:  
       return await m.edit(e)
+    await m.edit("<i>processing..</i>")
     try:
       k = await client.send_message(i.TO, "Testing")
       await k.delete()
@@ -48,7 +49,7 @@ async def pub_(bot, message):
     test = await client.send_message(user, text="<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
     if test:
         sts.add('start',time=True)
-        await m.edit("<b>processing</b>") 
+        await m.edit("<i>processing...</i>") 
         temp.lock[user] = locked = True
         if locked:
             try:
@@ -57,10 +58,10 @@ async def pub_(bot, message):
               async for message in client.iter_messages(chat_id=sts.get('FROM'), limit=i.limit, offset=i.skip, skip_duplicate=True):
                     if await is_cancelled(client, user, m, sts):
                        return
-                    pling += 1
-                    sts.add('fetched')
-                    if pling %10 == 0: 
+                    pling += 1 
+                    if pling %5 == 0: 
                        await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
+                    sts.add('fetched')
                     if message == "DUPLICATE":
                        sts.add('duplicate')
                        continue
@@ -138,12 +139,12 @@ PROGRESS = """
 
 async def edit(msg, title, status, sts):
    i = sts.get(full=True)
-   status = f"sleeping for {status} s" if status is int else 'Forwarding' if status != 0 else status
+   status = 'Forwarding' if status == 0 else f"sleeping for {status} s" if status.isnumeric() else status
    percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    now = time.time()
    diff = int(now - i.start)
-   speed = i.current / float(diff)
+   speed = float(i.current) / float(diff)
    elapsed_time = round(diff) * 1000
    time_to_completion = round((int(i.total - i.current)) / int(speed)) * 1000
    estimated_total_time = elapsed_time + time_to_completion
