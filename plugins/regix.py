@@ -60,7 +60,7 @@ async def pub_(bot, message):
                     pling += 1
                     sts.add('fetched')
                     if pling %10 == 0: 
-                       await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 'Fetching', sts)
+                       await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
                     if message == "DUPLICATE":
                        sts.add('duplicate')
                        continue
@@ -71,48 +71,29 @@ async def pub_(bot, message):
                     if filter:
                        sts.add('filtered')
                        continue 
-                    if not configs['forward_tag']:
-                       caption = custom_caption(message, configs)
-                       MSG.append({"msg_id": message.message_id, "media": media(message), "caption": caption})
-                    else:
+                    if configs['forward_tag']:
                        MSG.append(message.message_id)
-                    notcompleted = len(MSG)
-                    completed = sts.get('total') - sts.get('fetched')
-                    if ( notcompleted >= 100 
-                         or completed <= 100
-                    ):
-                      if configs['forward_tag']:
-                        await forward(client, MSG, m, sts)
-                        sts.add('total_files', notcompleted)
-                        await asyncio.sleep(10)
-                      else:
-                        for msgs in MSG:
-                          if not await is_cancelled(client, user, m, sts):
-                             return
-                          pling += 1
-                          if pling % 10 == 0: 
-                            await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ' , "Forwarding", sts)
-                          try:
-                            await copy(client, msgs, m, sts)
-                            sts.add('total_files')
-                            await asyncio.sleep(1.7)
-                          except Exception as e:
-                            print(e)
-                            pass
-                      MSG = []
+                       notcompleted = len(MSG)
+                       completed = sts.get('total') - sts.get('fetched')
+                       if ( notcompleted >= 100 
+                            or completed <= 100): 
+                          await forward(client, MSG, m, sts)
+                          sts.add('total_files', notcompleted)
+                          await asyncio.sleep(10)
+                       MSG = []
+                    else:
+                       caption = custom_caption(message, configs)
+                       details = {"msg_id": message.message_id, "media": media(message), "caption": caption}
+                       await copy(client, details, m, sts)
+                       sts.add('total_files')
+                       await asyncio.sleep(1) 
             except Exception as e:
-                print(e) 
-                temp.forwardings -= 1
-                temp.lock[user] = False
                 await m.edit_text(f'<b>Error:</b>\n\n<code>{e}</code>')
-                await stop(client)
-                return
-            temp.forwardings -= 1
-            temp.lock[user] = False
+                return await stop(client, user)
             await client.send_message(user, text="<b>🎉 ғᴏʀᴡᴀᴅɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>")
-            await stop(client)
             await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", sts)
-
+            await stop(client, user)
+            
 async def copy(bot, msg, m, sts):
    try:                                  
      if msg.get("media"):
@@ -128,11 +109,13 @@ async def copy(bot, msg, m, sts):
               caption=msg.get("caption"),
               message_id=msg.get("msg_id"))
    except FloodWait as e:
-     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', f"Sleeping {e.x} s", sts)
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.x, sts)
      await asyncio.sleep(e.x)
-     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', "Forwarding", sts)
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
      await copy(bot, msg, m, sts)
-
+   except Exception:
+     sts.add('deleted')
+        
 async def forward(bot, msg, m, sts):
    try:                             
      await bot.forward_messages(
@@ -140,11 +123,11 @@ async def forward(bot, msg, m, sts):
            from_chat_id=sts.get('FROM'),
            message_ids=msg)
    except FloodWait as e:
-     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', f"Sleeping {e.x} s", sts)
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.x, sts)
      await asyncio.sleep(e.x)
-     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', "Forwarding", sts)
-     await forward(bot, msg, m, sts)                               
-   
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
+     await forward(bot, msg, m, sts)
+
 PROGRESS = """
 📈 ᴘᴇʀᴄᴇɴᴛᴀɢᴇ: {0} %
 
@@ -155,11 +138,12 @@ PROGRESS = """
 
 async def edit(msg, title, status, sts):
    i = sts.get(full=True)
+   status = 'Forwarding' if status==0 else f'sleeping for {status} s"
    percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    now = time.time()
    diff = int(now - i.start)
-   speed = float(i.current) / float(diff)
+   speed = i.current / float(diff)
    elapsed_time = round(diff) * 1000
    time_to_completion = round((int(i.total - i.current)) / int(speed)) * 1000
    estimated_total_time = elapsed_time + time_to_completion
@@ -197,7 +181,9 @@ async def stop(client):
      await client.stop()
    except:
      pass 
-
+   temp.forwardings -= 1
+   temp.lock[user] = False 
+    
 def check_filters(data, msg):
    if not data['texts'] and msg.text:
       return True
