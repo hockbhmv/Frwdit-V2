@@ -144,7 +144,7 @@ async def edit(msg, title, status, sts):
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    now = time.time()
    diff = int(now - i.start)
-   speed = float(i.current) / float(diff)
+   speed = i.current / diff if diff != 0 else 10
    elapsed_time = round(diff) * 1000
    time_to_completion = round((int(i.total - i.current)) / int(speed)) * 1000
    estimated_total_time = elapsed_time + time_to_completion
