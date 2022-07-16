@@ -55,7 +55,7 @@ async def pub_(bot, message):
               MSG = []
               pling=0
               async for message in client.iter_messages(chat_id=sts.get('FROM'), limit=i.limit, offset=i.skip, skip_duplicate=True):
-                    if not await is_cancelled(client, user, m, sts):
+                    if await is_cancelled(client, user, m, sts):
                        return
                     pling += 1
                     sts.add('fetched')
@@ -138,7 +138,7 @@ PROGRESS = """
 
 async def edit(msg, title, status, sts):
    i = sts.get(full=True)
-   status = f"sleeping for {status} s" if status is int else 'Forwarding' if status != 0 status
+   status = f"sleeping for {status} s" if status is int else 'Forwarding' if status != 0 else status
    percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    now = time.time()
