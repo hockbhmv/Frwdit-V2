@@ -79,4 +79,4 @@ async def run(bot, message):
         disable_web_page_preview=True,
         reply_markup=reply_markup
     )
-    STS(forward_id).store(chat_id, toid, skipno.text, last_msg_id)
+    STS(forward_id).store(chat_id, toid, int(skipno.text), int(last_msg_id))
