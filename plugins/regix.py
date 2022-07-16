@@ -138,7 +138,7 @@ PROGRESS = """
 
 async def edit(msg, title, status, sts):
    i = sts.get(full=True)
-   status = 'Forwarding' if status==0 else f'sleeping for {status} s"
+   status = f"sleeping for {status} s" if status is int else 'Forwarding' if status != 0 status
    percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    now = time.time()
@@ -165,18 +165,16 @@ async def edit(msg, title, status, sts):
      await msg.edit_text(text=text, reply_markup=InlineKeyboardMarkup(button))
    except (MessageNotModified, FloodWait):
      pass 
-   return
 
 async def is_cancelled(client, user, msg, sts):
    if temp.CANCEL.get(user)==True:
       await edit(msg, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", sts)
       await client.send_message(user, text="<b>❌ ғᴏʀᴡᴀᴅɪɴɢ ᴄᴀɴᴄᴇʟʟᴇᴅ</b>")
-      temp.forwardings -= 1
-      await stop(client)
-      return False 
-   return True 
+      await stop(client, user)
+      return True 
+   return False 
 
-async def stop(client):
+async def stop(client, user):
    try:
      await client.stop()
    except:
