@@ -4,6 +4,8 @@ from pyrogram import Client, filters
 from .test import get_configs, update_configs, CLIENT
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+CLIENT = CLIENT()
+
 @Client.on_message(filters.command('settings'))
 async def settings(client, message):
    await message.reply_text(
