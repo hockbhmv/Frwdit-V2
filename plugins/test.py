@@ -20,7 +20,8 @@ class CLIENT:
   def __init__(self, session=None):
      self.session = session
      self.bot = Client(":memory:", Config.API_ID, Config.API_HASH, bot_token=self.session)
-     self.user = Client(self.session, Config.API_ID, Config.API_HASH)
+     if self.session:
+        self.user = Client(self.session, Config.API_ID, Config.API_HASH)
   
   async def add_bot(bot, message):
      user_id = message.from_user.id
