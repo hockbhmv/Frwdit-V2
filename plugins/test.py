@@ -21,12 +21,12 @@ class CLIENT:
      self.api_id = Config.API_ID
      self.api_hash = Config.API_HASH
     
-  def client(data, user=False):
+  def client(self, data, user=False):
      if not (data.get('is_bot') or user):
         return Client(data.get('session') or data, self.api_id, self.api_hash)
      return Client(":memory:", self.api_id, self.api_hash, bot_token=data)
   
-  async def add_bot(bot, message):
+  async def add_bot(self, bot, message):
      user_id = message.from_user.id
      msg = await bot.ask(chat_id=user_id, text=BOT_TOKEN_TEXT)
      if msg.text=='/cancel':
@@ -54,7 +54,7 @@ class CLIENT:
      await update_configs(user_id, 'bot', details)
      return True
     
-  async def add_session(bot, message):
+  async def add_session(self, bot, message):
      user_id = message.from_user.id
      text = "send your session string get it from None"
      msg = await bot.ask(chat_id=user_id, text=text)
