@@ -80,10 +80,12 @@ class Database:
             'forward_tag': False,
             'text': True,
             'audio': True,
+            'voice': True,
             'video': True,
             'photo': True,
             'document': True,
             'animation': True,
+            'sticker': True
         }
         user = await self.col.find_one({'id':int(id)})
         if user:
@@ -124,10 +126,6 @@ class Database:
        for k, v in configs.items():
           if not k in waste and v == False:
             filters.append(k)
-            if k == 'audio':
-               filters.append('voice')
-            elif k == 'animation':
-               filters.append('audio')
        return filters
               
     async def add_frwd(self, user_id):
