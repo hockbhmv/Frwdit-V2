@@ -1,5 +1,6 @@
 import asyncio 
 from database import db
+from translation import Translation
 from pyrogram import Client, filters
 from .test import get_configs, update_configs, CLIENT
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -92,11 +93,12 @@ async def settings_query(bot, query):
   
   elif type=="editbot": 
      bot = await db.get_bot(user_id)
+     TEXT = Translation.BOT_DETAILS if bot['is_bot'] else Translation.USER_DETAILS
      buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removebot")
                ],
                [InlineKeyboardButton('back', callback_data="settings#bots")]]
      await query.message.edit_text(
-        f"<b><u>📄 BOT DETAILS</b></u>\n\n<b>- NAME:</b> <code>{bot['name']}</code>\n<b>- BOT ID:</b> <code>{bot['id']}</code>\n<b>- USERNAME:</b> @{bot['username']}",
+        TEXT.format(bot['name'], bot['id'], bot['username']),
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
   elif type=="removebot":
