@@ -9,7 +9,8 @@ class Database:
         self.db = self._client[database_name]
         self.col = self.db.users
         self.chl = self.db.channels
-
+        self.nfy = self.db.notify
+        
     def new_user(self, id, name):
         return dict(
             id = id,
@@ -75,13 +76,14 @@ class Database:
         default = {
             'bot': None,
             'caption': None,
-            'texts': True,
-            'audios': True,
-            'videos': True,
-            'photos': True,
-            'documents': True,
-            'animations': True,
-            'forward_tag': False 
+            'duplicate': False,
+            'forward_tag': False,
+            'text': True,
+            'audio': True,
+            'video': True,
+            'photo': True,
+            'document': True,
+            'animation': True,
         }
         user = await self.col.find_one({'id':int(id)})
         if user:
@@ -114,5 +116,28 @@ class Database:
        
     async def get_user_channels(self, user_id: int):
        return self.chl.find({"user_id": int(user_id)})
+     
+    async def get_filters(self, user_id):
+       filters = []
+       configs = await self.get_configs(user_id)
+       waste = ['bot', 'caption', 'duplicate', 'forwad_tag']
+       for k, v in configs.items():
+          if not k in waste and v == False:
+            filters.append(k)
+            if k == 'audio':
+               filters.append('voice')
+            elif k == 'animation':
+               filters.append('audio')
+       return filters
+              
+    async def add_frwd(self, user_id):
+       return await self.nfy.insert_one({'user_id': int(user_id)})
+    
+    async def rmve_frwd(self, user_id, all=False):
+       data = {} if all else {'user_id': int(user_id)}
+       return await self.nfy.delete_many(data)
+    
+    async def get_all_frwd(self):
+       return self.nfy.find({})
      
 db = Database(Config.DATABASE_URI, Config.DATABASE_NAME)
