@@ -14,6 +14,7 @@ from pyrogram.file_id import unpack_new_file_id
 from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 
+CLIENT = CLIENT()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = Translation.TEXT
@@ -36,7 +37,7 @@ async def pub_(bot, message):
       return await m.edit("<b>You didn't added any bot. Please add a bot using /settings !</b>")
     configs = await db.get_configs(user)
     try:
-      client = await bot.start_clone_bot(CLIENT(_bot['token']).bot)
+      client = await bot.start_clone_bot(await CLIENT.client(_bot))
     except Exception as e:  
       return await m.edit(e)
     await m.edit("<code>processing..</code>")
@@ -49,6 +50,7 @@ async def pub_(bot, message):
     test = await client.send_message(user, text="<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
     if test:
         sts.add('start',time=True)
+        sleep = 1 if _bot['is_bot'] else 7
         await m.edit("<code>processing...</code>") 
         temp.lock[user] = locked = True
         if locked:
@@ -87,7 +89,7 @@ async def pub_(bot, message):
                        details = {"msg_id": message.message_id, "media": media(message), "caption": caption}
                        await copy(client, details, m, sts)
                        sts.add('total_files')
-                       await asyncio.sleep(1) 
+                       await asyncio.sleep(sleep) 
             except Exception as e:
                 await m.edit_text(f'<b>Error:</b>\n\n<code>{e}</code>')
                 return await stop(client, user)
