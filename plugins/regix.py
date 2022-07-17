@@ -72,7 +72,7 @@ async def pub_(bot, message):
                        sts.add('deleted')
                        continue 
                     #filter = check_filters(configs, message)
-                    if message === "FILTERED":
+                    if message == "FILTERED":
                        sts.add('filtered')
                        continue 
                     if configs['forward_tag']:
