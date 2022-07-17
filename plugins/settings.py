@@ -1,7 +1,7 @@
 import asyncio 
 from database import db
 from pyrogram import Client, filters
-from .test import get_configs, update_configs, bot_token
+from .test import get_configs, update_configs, CLIENT
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 @Client.on_message(filters.command('settings'))
@@ -31,6 +31,8 @@ async def settings_query(bot, query):
      else:
         buttons.append([InlineKeyboardButton('✚ Add bot ✚', 
                          callback_data="settings#addbot")])
+        buttons.append([InlineKeyboardButton('✚ Add User bot ✚', 
+                         callback_data="settings#adduserbot"])
      buttons.append([InlineKeyboardButton('back', 
                       callback_data="settings#main")])
      await query.message.edit_text(
@@ -39,13 +41,20 @@ async def settings_query(bot, query):
   
   elif type=="addbot":
      await query.message.delete()
-     bot = await bot_token(bot, query)
-     if not bot:
-        return
+     bot = CLIENT().add_bot(bot, query)
+     if bot == True: return
      await query.message.reply_text(
-        "bot token successfully added to db",
+        "<b>bot token successfully added to db</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
-   
+  
+  elif type=="adduserbot":
+     await quey.message.delete()
+     user = CLIENT().add_session(bot, query)
+     if user == True: return
+     await query.message.reply_text(
+        "<b>session successfully added to db</b>",
+        reply_markup=InlineKeyboardMarkup(buttons))
+      
   elif type=="channels":
      buttons = []
      channels = await db.get_user_channels(user_id)
