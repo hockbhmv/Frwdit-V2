@@ -41,7 +41,7 @@ async def settings_query(bot, query):
   
   elif type=="addbot":
      await query.message.delete()
-     bot = CLIENT().add_bot(bot, query)
+     bot = CLIENT.add_bot(bot, query)
      if bot != True: return
      await query.message.reply_text(
         "<b>bot token successfully added to db</b>",
@@ -49,7 +49,7 @@ async def settings_query(bot, query):
   
   elif type=="adduserbot":
      await query.message.delete()
-     user = CLIENT().add_session(bot, query)
+     user = CLIENT.add_session(bot, query)
      if user != True: return
      await query.message.reply_text(
         "<b>session successfully added to db</b>",
