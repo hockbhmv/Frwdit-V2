@@ -37,7 +37,7 @@ async def pub_(bot, message):
       return await m.edit("<b>You didn't added any bot. Please add a bot using /settings !</b>")
     configs = await db.get_configs(user)
     try:
-      client = await bot.start_clone_bot(await CLIENT.client(_bot))
+      client = await bot.start_clone_bot(CLIENT.client(_bot))
     except Exception as e:  
       return await m.edit(e)
     await m.edit("<code>processing..</code>")
