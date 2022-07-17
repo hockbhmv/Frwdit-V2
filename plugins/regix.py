@@ -40,6 +40,7 @@ async def pub_(bot, message):
       client = await bot.start_clone_bot(CLIENT.client(_bot))
     except Exception as e:  
       return await m.edit(e)
+    filters = await db.get_filters(user_id)
     await m.edit("<code>processing..</code>")
     try:
       k = await client.send_message(i.TO, "Testing")
@@ -57,7 +58,7 @@ async def pub_(bot, message):
             try:
               MSG = []
               pling=0
-              async for message in client.iter_messages(chat_id=sts.get('FROM'), limit=i.limit, offset=i.skip, skip_duplicate=True):
+              async for message in client.iter_messages(chat_id=sts.get('FROM'), limit=i.limit, offset=i.skip, filters=filters, skip_duplicate=True):
                     if await is_cancelled(client, user, m, sts):
                        return
                     if pling %5 == 0: 
@@ -70,8 +71,8 @@ async def pub_(bot, message):
                     if message.empty or message.service:
                        sts.add('deleted')
                        continue 
-                    filter = check_filters(configs, message)
-                    if filter:
+                    #filter = check_filters(configs, message)
+                    if message === "FILTERED":
                        sts.add('filtered')
                        continue 
                     if configs['forward_tag']:
