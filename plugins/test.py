@@ -17,11 +17,14 @@ BOT_TOKEN_TEXT = "1) create a bot using @BotFather\n2) Then you will get a messa
 SESSION_STRING_SIZE = 351
 
 class CLIENT: 
-  def __init__(self, session=None):
-     self.session = session
-     self.bot = Client(":memory:", Config.API_ID, Config.API_HASH, bot_token=self.session)
-     if self.session:
-        self.user = Client(self.session, Config.API_ID, Config.API_HASH)
+  def __init__(self):
+     self.api_id = Config.API_ID
+     self.api_hash = Config.API_HASH
+    
+  def client(data, user=False):
+     if not (data.get('is_bot') or user):
+        return Client(data.get('session') or data, self.api_id, self.api_hash)
+     return Client(":memory:", self.api_id, self.api_hash, bot_token=data)
   
   async def add_bot(bot, message):
      user_id = message.from_user.id
@@ -37,7 +40,7 @@ class CLIENT:
      if not bot_token:
        return await msg.reply_text("<b>There is no bot token in that message</b>")
      try:
-       _client = await bot.start_clone_bot(CLIENT(bot_token).bot, True)
+       _client = await bot.start_clone_bot(self.client(bot_token), True)
      except Exception as e:
        await msg.reply_text(f"<b>BOT ERROR:</b> `{e}`")
      _bot = _client.details
@@ -60,7 +63,7 @@ class CLIENT:
      elif len(msg.text) < SESSION_STRING_SIZE:
         return await msg.reply('<b>invalid session sring</b>')
      try:
-       client = await bot.start_clone_bot(CLIENT(msg.text).user, True)
+       client = await bot.start_clone_bot(self.client(msg.text), True)
      except Exception as e:
        await msg.reply_text(f"<b>USER BOT ERROR:</b> `{e}`")
      user = client.details
