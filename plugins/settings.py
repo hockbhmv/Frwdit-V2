@@ -48,7 +48,7 @@ async def settings_query(bot, query):
         reply_markup=InlineKeyboardMarkup(buttons))
   
   elif type=="adduserbot":
-     await quey.message.delete()
+     await query.message.delete()
      user = CLIENT().add_session(bot, query)
      if user == True: return
      await query.message.reply_text(
