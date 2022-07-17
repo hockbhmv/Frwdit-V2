@@ -21,9 +21,13 @@ class CLIENT:
      self.api_id = Config.API_ID
      self.api_hash = Config.API_HASH
     
-  def client(self, data, user=False):
-     if not (data.get('is_bot') or user):
-        return Client(data.get('session') or data, self.api_id, self.api_hash)
+  def client(self, data, user=None):
+     if user == None and data.get('is_bot') == False:
+        return Client(data.get('session'), self.api_id, self.api_hash)
+     elif user == True:
+        return Client(data, self.api_id, self.api_hash)
+     elif user != False:
+        data = data.get('token')
      return Client(":memory:", self.api_id, self.api_hash, bot_token=data)
   
   async def add_bot(self, bot, message):
@@ -40,7 +44,7 @@ class CLIENT:
      if not bot_token:
        return await msg.reply_text("<b>There is no bot token in that message</b>")
      try:
-       _client = await bot.start_clone_bot(self.client(bot_token), True)
+       _client = await bot.start_clone_bot(self.client(bot_token, False), True)
      except Exception as e:
        await msg.reply_text(f"<b>BOT ERROR:</b> `{e}`")
      _bot = _client.details
@@ -63,7 +67,7 @@ class CLIENT:
      elif len(msg.text) < SESSION_STRING_SIZE:
         return await msg.reply('<b>invalid session sring</b>')
      try:
-       client = await bot.start_clone_bot(self.client(msg.text), True)
+       client = await bot.start_clone_bot(self.client(msg.text, True), True)
      except Exception as e:
        await msg.reply_text(f"<b>USER BOT ERROR:</b> `{e}`")
      user = client.details
