@@ -40,7 +40,7 @@ async def pub_(bot, message):
       client = await bot.start_clone_bot(CLIENT.client(_bot))
     except Exception as e:  
       return await m.edit(e)
-    filters = await db.get_filters(user_id)
+    filters = await db.get_filters(user)
     await m.edit("<code>processing..</code>")
     try:
       k = await client.send_message(i.TO, "Testing")
