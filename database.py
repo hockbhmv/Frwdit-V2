@@ -123,7 +123,7 @@ class Database:
      
     async def get_filters(self, user_id):
        filters = []
-       filter = await self.get_configs(user_id)['filters']
+       filter = (await self.get_configs(user_id))['filters']
        for k, v in filter.items():
           if v == False:
             filters.append(str(k))
