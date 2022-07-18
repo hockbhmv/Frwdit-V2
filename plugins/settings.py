@@ -296,34 +296,34 @@ async def filters_buttons(user_id):
                     callback_data=f'settings#updatefilter-forward_tag-{filter["forward_tag"]}')
        ],[
        InlineKeyboardButton('🖍️ Texts',
-                    callback_data=f'settings_#updatefilter-filters.text-{filters["text"]}'),
+                    callback_data=f'settings_#updatefilter-text-{filters["text"]}'),
        InlineKeyboardButton('【✔】' if filters['text'] else '【✘】',
-                    callback_data=f'settings#updatefilter-filters.text-{filters["text"]}')
+                    callback_data=f'settings#updatefilter-text-{filters["text"]}')
        ],[
        InlineKeyboardButton('📁 Documents',
-                    callback_data=f'settings_#updatefilter-filters.document-{filters["document"]}'),
+                    callback_data=f'settings_#updatefilter-document-{filters["document"]}'),
        InlineKeyboardButton('【✔】' if filters['document'] else '【✘】',
-                    callback_data=f'settings#updatefilter-filters.document-{filters["document"]}')
+                    callback_data=f'settings#updatefilter-document-{filters["document"]}')
        ],[
        InlineKeyboardButton('🎞️ Videos',
-                    callback_data=f'settings_#updatefilter-filters.video-{filters["video"]}'),
+                    callback_data=f'settings_#updatefilter-video-{filters["video"]}'),
        InlineKeyboardButton('【✔】' if filters['video'] else '【✘】',
-                    callback_data=f'settings#updatefilter-filters.video-{filters["video"]}')
+                    callback_data=f'settings#updatefilter-video-{filters["video"]}')
        ],[
        InlineKeyboardButton('📷 Photos',
-                    callback_data=f'settings_#updatefilter-filters.photo-{filters["photo"]}'),
+                    callback_data=f'settings_#updatefilter-photo-{filters["photo"]}'),
        InlineKeyboardButton('【✔】' if filters['photo'] else '【✘】',
-                    callback_data=f'settings#updatefilter-filters.photo-{filters["photo"]}')
+                    callback_data=f'settings#updatefilter-photo-{filters["photo"]}')
        ],[
        InlineKeyboardButton('🎧 Audios',
-                    callback_data=f'settings_#updatefilter-filters.audio-{filters["audio"]}'),
+                    callback_data=f'settings_#updatefilter-audio-{filters["audio"]}'),
        InlineKeyboardButton('【✔】' if filters['audio'] else '【✘】',
-                    callback_data=f'settings#updatefilter-filters.audio-{filters["audio"]}')
+                    callback_data=f'settings#updatefilter-audio-{filters["audio"]}')
        ],[
        InlineKeyboardButton('🎭 Animations',
-                    callback_data=f'settings_#updatefilter-filters.animation-{filters["animation"]}'),
+                    callback_data=f'settings_#updatefilter-animation-{filters["animation"]}'),
        InlineKeyboardButton('【✔】' if filters['animation'] else '【✘】',
-                    callback_data=f'settings#updatefilter-filters.animation-{filters["animation"]}')
+                    callback_data=f'settings#updatefilter-animation-{filters["animation"]}')
        ],[
        InlineKeyboardButton('▶️ Skip duplicate files',
                     callback_data=f'settings_#updatefilter-duplicate-{filter["duplicate"]}'),
