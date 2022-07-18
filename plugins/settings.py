@@ -287,47 +287,48 @@ def size_button(size):
   return InlineKeyboardMarkup(buttons)
        
 async def filters_buttons(user_id):
-  filters = await get_configs(user_id)
+  filter = await get_configs(user_id)
+  filters = filter['filters']
   buttons = [[
        InlineKeyboardButton('🏷️ Forward tag',
-                    callback_data=f'settings_#updatefilter-forward_tag-{filters["forward_tag"]}'),
-       InlineKeyboardButton('☑' if filters['forward_tag'] else '☒',
-                    callback_data=f'settings#updatefilter-forward_tag-{filters["forward_tag"]}')
+                    callback_data=f'settings_#updatefilter-forward_tag-{filter["forward_tag"]}'),
+       InlineKeyboardButton('【✔】' if filter['forward_tag'] else '【✘】',
+                    callback_data=f'settings#updatefilter-forward_tag-{filter["forward_tag"]}')
        ],[
        InlineKeyboardButton('🖍️ Texts',
-                    callback_data=f'settings_#updatefilter-texts-{filters["texts"]}'),
-       InlineKeyboardButton('☑' if filters['texts'] else '☒',
-                    callback_data=f'settings#updatefilter-texts-{filters["texts"]}')
+                    callback_data=f'settings_#updatefilter-filters.text-{filters["text"]}'),
+       InlineKeyboardButton('【✔】' if filters['text'] else '【✘】',
+                    callback_data=f'settings#updatefilter-filters.text-{filters["text"]}')
        ],[
        InlineKeyboardButton('📁 Documents',
-                    callback_data=f'settings_#updatefilter-documents-{filters["documents"]}'),
-       InlineKeyboardButton('☑' if filters['documents'] else '☒',
-                    callback_data=f'settings#updatefilter-documents-{filters["documents"]}')
+                    callback_data=f'settings_#updatefilter-filters.document-{filters["document"]}'),
+       InlineKeyboardButton('【✔】' if filters['document'] else '【✘】',
+                    callback_data=f'settings#updatefilter-filters.document-{filters["document"]}')
        ],[
        InlineKeyboardButton('🎞️ Videos',
-                    callback_data=f'settings_#updatefilter-videos-{filters["videos"]}'),
-       InlineKeyboardButton('☑' if filters['videos'] else '☒',
-                    callback_data=f'settings#updatefilter-videos-{filters["videos"]}')
+                    callback_data=f'settings_#updatefilter-filters.video-{filters["video"]}'),
+       InlineKeyboardButton('【✔】' if filters['video'] else '【✘】',
+                    callback_data=f'settings#updatefilter-filters.video-{filters["video"]}')
        ],[
        InlineKeyboardButton('📷 Photos',
-                    callback_data=f'settings_#updatefilter-photos-{filters["photos"]}'),
-       InlineKeyboardButton('☑' if filters['photos'] else '☒',
-                    callback_data=f'settings#updatefilter-photos-{filters["photos"]}')
+                    callback_data=f'settings_#updatefilter-filters.photo-{filters["photo"]}'),
+       InlineKeyboardButton('【✔】' if filters['photo'] else '【✘】',
+                    callback_data=f'settings#updatefilter-filters.photo-{filters["photo"]}')
        ],[
        InlineKeyboardButton('🎧 Audios',
-                    callback_data=f'settings_#updatefilter-audios-{filters["audios"]}'),
-       InlineKeyboardButton('☑' if filters['audios'] else '☒',
-                    callback_data=f'settings#updatefilter-audios-{filters["audios"]}')
+                    callback_data=f'settings_#updatefilter-filters.audio-{filters["audio"]}'),
+       InlineKeyboardButton('【✔】' if filters['audio'] else '【✘】',
+                    callback_data=f'settings#updatefilter-filters.audio-{filters["audio"]}')
        ],[
        InlineKeyboardButton('🎭 Animations',
-                    callback_data=f'settings_#updatefilter-animations-{filters["animations"]}'),
-       InlineKeyboardButton('☑' if filters['animations'] else '☒',
-                    callback_data=f'settings#updatefilter-animations-{filters["animations"]}')
+                    callback_data=f'settings_#updatefilter-filters.animation-{filters["animation"]}'),
+       InlineKeyboardButton('【✔】' if filters['animation'] else '【✘】',
+                    callback_data=f'settings#updatefilter-filters.animation-{filters["animation"]}')
        ],[
        InlineKeyboardButton('▶️ Skip duplicate files',
-                    callback_data='commingsoon'),
-       InlineKeyboardButton('comming soon',
-                    callback_data='commingsoon')
+                    callback_data=f'settings_#updatefilter-duplicate-{filter["duplicate"]}'),
+       InlineKeyboardButton('【✔】' if filter['duplicate'] else '【✘】',
+                    callback_data=f'settings#updatefilter-duplicate-{filter["duplicate"]}')
        ],[
        InlineKeyboardButton('size limit',
                     callback_data='settings#file_size'),
