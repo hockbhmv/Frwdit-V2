@@ -78,14 +78,16 @@ class Database:
             'caption': None,
             'duplicate': False,
             'forward_tag': False,
-            'text': True,
-            'audio': True,
-            'voice': True,
-            'video': True,
-            'photo': True,
-            'document': True,
-            'animation': True,
-            'sticker': True
+            'filters': {
+               'text': True,
+               'audio': True,
+               'voice': True,
+               'video': True,
+               'photo': True,
+               'document': True,
+               'animation': True,
+               'sticker': True
+            }
         }
         user = await self.col.find_one({'id':int(id)})
         if user:
@@ -121,10 +123,9 @@ class Database:
      
     async def get_filters(self, user_id):
        filters = []
-       configs = await self.get_configs(user_id)
-       waste = ["bot", "caption", "duplicate", "forwad_tag"]
-       for k, v in configs.items():
-          if not str(k) in waste and v == False:
+       filter = await self.get_configs(user_id)['filters']
+       for k, v in filter.items():
+          if v == False:
             filters.append(str(k))
        return filters
               
