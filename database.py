@@ -122,10 +122,10 @@ class Database:
     async def get_filters(self, user_id):
        filters = []
        configs = await self.get_configs(user_id)
-       waste = ['bot', 'caption', 'duplicate', 'forwad_tag']
+       waste = ["bot", "caption", "duplicate", "forwad_tag"]
        for k, v in configs.items():
-          if not k in waste and v == False:
-            filters.append(k)
+          if not str(k) in waste and v == False:
+            filters.append(str(k))
        return filters
               
     async def add_frwd(self, user_id):
