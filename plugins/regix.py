@@ -187,19 +187,7 @@ async def stop(client, user):
    temp.lock[user] = False 
     
 def check_filters(data, msg):
-   if not data['texts'] and msg.text:
-      return True
-   elif not data['photos'] and msg.photo:
-      return True
-   elif not data['videos'] and msg.video:
-      return True 
-   elif not data['documents'] and msg.document:
-      return True 
-   elif not data['audios'] and (msg.audio or msg.voice):
-      return True
-   elif not data['animations'] and (msg.animation or msg.sticker):
-      return True 
-   elif msg.media:
+   if msg.media:
       size = data.get('file_size', 1000)
       fsize = getattr(getattr(msg, msg.media), 'file_size', None)
       if fsize and size != 0:
