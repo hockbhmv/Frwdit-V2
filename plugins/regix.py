@@ -34,7 +34,7 @@ async def pub_(bot, message):
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
     _bot = await db.get_bot(user)
     if not _bot:
-      return await m.edit("<b>You didn't added any bot. Please add a bot using /settings !</b>")
+      return await m.edit("<code>You didn't added any bot. Please add a bot using /settings !</code>")
     configs = await db.get_configs(user)
     try:
       client = await bot.start_clone_bot(CLIENT.client(_bot))
@@ -46,57 +46,56 @@ async def pub_(bot, message):
       k = await client.send_message(i.TO, "Testing")
       await k.delete()
     except:
+      await stop(client)
       return await m.edit(f"**Please Make Your [Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", parse_mode="combined")
     temp.forwardings += 1
-    test = await client.send_message(user, text="<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
-    if test:
-        sts.add('start',time=True)
-        sleep = 1 if _bot['is_bot'] else 7
-        await m.edit("<code>processing...</code>") 
-        temp.lock[user] = locked = True
-        if locked:
-            try:
-              MSG = []
-              pling=0
-              async for message in client.iter_messages(chat_id=sts.get('FROM'), limit=i.limit, offset=i.skip, filters=filters, skip_duplicate=True):
-                    if await is_cancelled(client, user, m, sts):
-                       return
-                    if pling %5 == 0: 
-                       await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
-                    pling += 1
-                    sts.add('fetched')
-                    if message == "DUPLICATE":
-                       sts.add('duplicate')
-                       continue
-                    if message.empty or message.service:
-                       sts.add('deleted')
-                       continue 
-                    #filter = check_filters(configs, message)
-                    if message == "FILTERED":
-                       sts.add('filtered')
-                       continue 
-                    if configs['forward_tag']:
-                       MSG.append(message.message_id)
-                       notcompleted = len(MSG)
-                       completed = sts.get('total') - sts.get('fetched')
-                       if ( notcompleted >= 100 
-                            or completed <= 100): 
-                          await forward(client, MSG, m, sts)
-                          sts.add('total_files', notcompleted)
-                          await asyncio.sleep(10)
-                       MSG = []
-                    else:
-                       caption = custom_caption(message, configs)
-                       details = {"msg_id": message.message_id, "media": media(message), "caption": caption}
-                       await copy(client, details, m, sts)
-                       sts.add('total_files')
-                       await asyncio.sleep(sleep) 
-            except Exception as e:
-                await m.edit_text(f'<b>Error:</b>\n\n<code>{e}</code>')
-                return await stop(client, user)
-            await client.send_message(user, text="<b>🎉 ғᴏʀᴡᴀᴅɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>")
-            await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", sts)
-            await stop(client, user)
+    await send(client, user, "<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
+    sts.add('start',time=True)
+    sleep = 1 if _bot['is_bot'] else 7
+    await m.edit("<code>processing...</code>") 
+    temp.lock[user] = locked = True
+    if locked:
+        try:
+          MSG = []
+          pling=0
+          async for message in client.iter_messages(chat_id=sts.get('FROM'), limit=i.limit, offset=i.skip, filters=filters, skip_duplicate=True):
+                if await is_cancelled(client, user, m, sts):
+                   return
+                if pling %5 == 0: 
+                   await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
+                   pling += 1
+                   sts.add('fetched')
+                if message == "DUPLICATE":
+                   sts.add('duplicate')
+                   continue
+                if message.empty or message.service:
+                   sts.add('deleted')
+                   continue 
+                if message == "FILTERED":
+                   sts.add('filtered')
+                   continue 
+                if configs['forward_tag']:
+                   MSG.append(message.message_id)
+                   notcompleted = len(MSG)
+                   completed = sts.get('total') - sts.get('fetched')
+                   if ( notcompleted >= 100 
+                        or completed <= 100): 
+                      await forward(client, MSG, m, sts)
+                      sts.add('total_files', notcompleted)
+                      await asyncio.sleep(10)
+                   MSG = []
+                 else:
+                    caption = custom_caption(message, configs)
+                    details = {"msg_id": message.message_id, "media": media(message), "caption": caption}
+                    await copy(client, details, m, sts)
+                    sts.add('total_files')
+                    await asyncio.sleep(sleep) 
+        except Exception as e:
+            await m.edit_text(f'<b>ERROR:</b>\n<code>{e}</code>')
+            return await stop(client, user)
+        await send(client, user, "<b>🎉 ғᴏʀᴡᴀᴅɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>")
+        await edit(m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", sts)
+        await stop(client, user)
             
 async def copy(bot, msg, m, sts):
    try:                                  
@@ -173,7 +172,7 @@ async def edit(msg, title, status, sts):
 async def is_cancelled(client, user, msg, sts):
    if temp.CANCEL.get(user)==True:
       await edit(msg, 'ᴄᴀɴᴄᴇʟʟᴇᴅ', "cancelled", sts)
-      await client.send_message(user, text="<b>❌ ғᴏʀᴡᴀᴅɪɴɢ ᴄᴀɴᴄᴇʟʟᴇᴅ</b>")
+      await send(client, user, "<b>❌ ғᴏʀᴡᴀᴅɪɴɢ ᴄᴀɴᴄᴇʟʟᴇᴅ</b>")
       await stop(client, user)
       return True 
    return False 
@@ -186,15 +185,12 @@ async def stop(client, user):
    temp.forwardings -= 1
    temp.lock[user] = False 
     
-def check_filters(data, msg):
-   if msg.media:
-      size = data.get('file_size', 1000)
-      fsize = getattr(getattr(msg, msg.media), 'file_size', None)
-      if fsize and size != 0:
-         if fsize <= size:
-            return True
-   return False 
-
+async def send(bot, user, text):
+   try:
+      await bot.send_message(user, text=text)
+   except:
+      pass 
+     
 def custom_caption(msg, get):
   if not (msg.media 
      and get['caption']):
