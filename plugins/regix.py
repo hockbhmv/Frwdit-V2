@@ -63,8 +63,8 @@ async def pub_(bot, message):
                    return
                 if pling %5 == 0: 
                    await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
-                   pling += 1
-                   sts.add('fetched')
+                pling += 1
+                sts.add('fetched')
                 if message == "DUPLICATE":
                    sts.add('duplicate')
                    continue
