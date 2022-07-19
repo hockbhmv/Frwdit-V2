@@ -84,12 +84,12 @@ async def pub_(bot, message):
                       sts.add('total_files', notcompleted)
                       await asyncio.sleep(10)
                    MSG = []
-                 else:
-                    caption = custom_caption(message, configs)
-                    details = {"msg_id": message.message_id, "media": media(message), "caption": caption}
-                    await copy(client, details, m, sts)
-                    sts.add('total_files')
-                    await asyncio.sleep(sleep) 
+                else:
+                   caption = custom_caption(message, configs)
+                   details = {"msg_id": message.message_id, "media": media(message), "caption": caption}
+                   await copy(client, details, m, sts)
+                   sts.add('total_files')
+                   await asyncio.sleep(sleep) 
         except Exception as e:
             await m.edit_text(f'<b>ERROR:</b>\n<code>{e}</code>')
             return await stop(client, user)
