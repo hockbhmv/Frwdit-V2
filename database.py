@@ -76,8 +76,11 @@ class Database:
         default = {
             'bot': None,
             'caption': None,
-            'duplicate': False,
+            'duplicate': True,
             'forward_tag': False,
+            'file_size': 0,
+            'size_limit': None,
+            'extension': None,
             'filters': {
                'text': True,
                'audio': True,
@@ -86,10 +89,7 @@ class Database:
                'photo': True,
                'document': True,
                'animation': True,
-               'sticker': True,
-               'file_size': 0,
-               'size_limit': None,
-               'extension': None 
+               'sticker': True 
             }
         }
         user = await self.col.find_one({'id':int(id)})
