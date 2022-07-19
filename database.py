@@ -86,7 +86,10 @@ class Database:
                'photo': True,
                'document': True,
                'animation': True,
-               'sticker': True
+               'sticker': True,
+               'file_size': 0,
+               'size_limit': None,
+               'extension': None 
             }
         }
         user = await self.col.find_one({'id':int(id)})
