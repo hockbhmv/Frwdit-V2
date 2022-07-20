@@ -32,15 +32,13 @@ async def pub_(bot, message):
       return await message.message.delete()
     i = sts.get(full=True)
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
-    _bot = await db.get_bot(user)
+    _bot, data = await sts.data(user)
     if not _bot:
       return await m.edit("<code>You didn't added any bot. Please add a bot using /settings !</code>")
-    configs = await db.get_configs(user)
     try:
       client = await bot.start_clone_bot(CLIENT.client(_bot))
     except Exception as e:  
       return await m.edit(e)
-    filters = await db.get_filters(user)
     await m.edit("<code>processing..</code>")
     try:
       k = await client.send_message(i.TO, "Testing")
@@ -58,7 +56,7 @@ async def pub_(bot, message):
         try:
           MSG = []
           pling=0
-          async for message in client.iter_messages(chat_id=sts.get('FROM'), limit=i.limit, offset=i.skip, filters=filters, skip_duplicate=True):
+          async for message in client.iter_messages(**data):
                 if await is_cancelled(client, user, m, sts):
                    return
                 if pling %5 == 0: 
