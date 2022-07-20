@@ -202,14 +202,14 @@ async def settings_query(bot, query):
        f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} MB</code>',
        reply_markup=size_button(size))
   
-  elif type == "add_extenstion":
+  elif type == "add_extention":
     ext = await bot.ask(user_id, text="send your extensions")
     if ex.text == '/cancel':
        return await ext.reply_text(
                   "<b>process canceled</b>",
                   reply_markup=InlineKeyboardMarkup(buttons))
     extensions = ext.text.split()
-    extension = await get_configs(user_id).get('extension', None)
+    extension = (await get_configs(user_id))['extension']
     if extension:
         for extn in extensions:
             extension.append(extn)
