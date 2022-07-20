@@ -97,7 +97,7 @@ async def get_configs(user_id):
                           
 async def update_configs(user_id, key, value):
   current = await db.get_configs(user_id)
-  if key in ['bot', 'caption', 'duplicate', 'forward_tag']:
+  if key in ['bot', 'caption', 'duplicate', 'forward_tag', 'file_size', 'size_limit', 'extension']:
      current[key] = value
   else: 
      current['filters'][key] = value
