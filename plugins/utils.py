@@ -29,7 +29,7 @@ class STS:
           return self.data[self.id].update({key: tm.time()})
         self.data[self.id].update({key: self.get(key) + value, 'current': self.get('current') + value}) 
         
-    async def data(self, user_id):
+    async def get_data(self, user_id):
         k, filters = self, await db.get_filters(user_id)
         size, configs = None, await db.get_configs(user_id)
         if configs['file_size'] != 0:
