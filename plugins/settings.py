@@ -217,14 +217,14 @@ async def settings_query(bot, query):
         extension = extensions
     await update_configs(user_id, 'extension', extension)
     await ext.reply_text(
-        "successfully updated",
+        f"successfully updated {extensions}",
         reply_markup=InlineKeyboardMarkup(buttons))
       
   elif type == "get_extension":
     i = 0
     btn = []
     extensions = (await get_configs(user_id))['extension']
-    if i == 0:
+    if extensions:
       for extn in extensions:
         if i >= 5:
             i = 0
