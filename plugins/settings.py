@@ -208,7 +208,7 @@ async def settings_query(bot, query):
        return await ext.reply_text(
                   "<b>process canceled</b>",
                   reply_markup=InlineKeyboardMarkup(buttons))
-    extensions = ext.text.split()
+    extensions = ext.text.split(" ")
     extension = (await get_configs(user_id))['extension']
     if extension:
         for extn in extensions:
@@ -224,7 +224,7 @@ async def settings_query(bot, query):
     i = 0
     btn = []
     extensions = (await get_configs(user_id))['extension']
-    if extensions:
+    if i == 0:
       for extn in extensions:
         if i >= 5:
             i = 0
