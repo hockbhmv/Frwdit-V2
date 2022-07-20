@@ -216,11 +216,14 @@ async def settings_query(bot, query):
     else:
         extension = extensions
     await update_configs(user_id, 'extension', extension)
-  
+    await ext.reply_text(
+        "successfully updated",
+        reply_markup=InlineKeyboardMarkup(buttons))
+      
   elif type == "get_extension":
     i = 0
     btn = []
-    extensions = (await get_configs(user_id)).get('extension', None)
+    extensions = (await get_configs(user_id))['extension']
     if extensions:
       for extn in extensions:
         if i >= 5:
@@ -236,7 +239,7 @@ async def settings_query(bot, query):
     btn.append([InlineKeyboardButton('Remove all', 'settings#rmve_all_extension')])
     btn.append([InlineKeyboardButton('back', 'settings#main')])
     await query.message.edit_text(
-        text='your skipping extensions using file_name',
+        text='**you can skip files with specific extensions**',
         reply_markup=InlineKeyboardMarkup(btn))
   
   elif type == "rmve_all_extension":
