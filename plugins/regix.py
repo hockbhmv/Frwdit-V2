@@ -32,7 +32,7 @@ async def pub_(bot, message):
       return await message.message.delete()
     i = sts.get(full=True)
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
-    _bot, data = await sts.get_data(user)
+    _bot, caption, forward_tag, data = await sts.get_data(user)
     if not _bot:
       return await m.edit("<code>You didn't added any bot. Please add a bot using /settings !</code>")
     try:
@@ -72,7 +72,7 @@ async def pub_(bot, message):
                 if message == "FILTERED":
                    sts.add('filtered')
                    continue 
-                if configs['forward_tag']:
+                if forward_tag:
                    MSG.append(message.message_id)
                    notcompleted = len(MSG)
                    completed = sts.get('total') - sts.get('fetched')
@@ -83,7 +83,7 @@ async def pub_(bot, message):
                       await asyncio.sleep(10)
                    MSG = []
                 else:
-                   caption = custom_caption(message, configs)
+                   caption = custom_caption(message, caption)
                    details = {"msg_id": message.message_id, "media": media(message), "caption": caption}
                    await copy(client, details, m, sts)
                    sts.add('total_files')
@@ -189,17 +189,17 @@ async def send(bot, user, text):
    except:
       pass 
      
-def custom_caption(msg, get):
+def custom_caption(msg, caption):
   if not (msg.media 
-     and get['caption']):
+     and caption):
      return None
   if (msg.video or msg.document or msg.audio or msg.photo):
      media = getattr(msg, msg.media)
      file_id, file_ref = unpack_new_file_id(media.file_id)
      file_name = getattr(media, 'file_name', '')
      file_size = getattr(media, 'file_size', '')
-     caption = getattr(media, 'caption', file_name)
-     return get['caption'].format(filename=file_name, size=get_size(file_size), caption=caption)
+     fcaption = getattr(media, 'caption', '')
+     return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
   else:
      return None
 
