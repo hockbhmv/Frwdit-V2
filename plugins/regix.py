@@ -32,7 +32,7 @@ async def pub_(bot, message):
       return await message.message.delete()
     i = sts.get(full=True)
     m = await message.message.edit_text("<b>verifying your data's, please wait.</b>")
-    _bot, data = await sts.data(user)
+    _bot, data = await sts.get_data(user)
     if not _bot:
       return await m.edit("<code>You didn't added any bot. Please add a bot using /settings !</code>")
     try:
