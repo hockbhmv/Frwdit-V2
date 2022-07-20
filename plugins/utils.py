@@ -11,8 +11,8 @@ class STS:
     def verify(self):
         return self.data.get(self.id)
     
-    def store(self, from, to,  skip, limit):
-        self.data[self.id] = {"FROM": from, 'TO': to, 'total_files': 0, 'skip': skip, 'limit': limit, 'fetched': skip,
+    def store(self, From, to,  skip, limit):
+        self.data[self.id] = {"FROM": From, 'TO': to, 'total_files': 0, 'skip': skip, 'limit': limit, 'fetched': skip,
                      'filtered': 0, 'deleted': 0, 'duplicate': 0, 'total': limit, 'current': skip, 'start': 0}
         return STS(self.id)
         
