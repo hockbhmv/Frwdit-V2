@@ -203,8 +203,8 @@ async def settings_query(bot, query):
        reply_markup=size_button(size))
   
   elif type == "add_extension":
-    ext = await bot.ask(user_id, text="send your extensions")
-    if ex.text == '/cancel':
+    ext = await bot.ask(user_id, text="**send your extensions (seperete by space if extension more than one)**")
+    if ext.text == '/cancel':
        return await ext.reply_text(
                   "<b>process canceled</b>",
                   reply_markup=InlineKeyboardMarkup(buttons))
