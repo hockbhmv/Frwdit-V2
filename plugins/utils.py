@@ -1,4 +1,5 @@
 import time as tm
+from database import db 
 
 STATUS = {}
 
@@ -10,8 +11,8 @@ class STS:
     def verify(self):
         return self.data.get(self.id)
     
-    def store(self, From, to,  skip, limit):
-        self.data[self.id] = {"FROM": From, 'TO': to, 'total_files': 0, 'skip': skip, 'limit': limit, 'fetched': skip,
+    def store(self, from, to,  skip, limit):
+        self.data[self.id] = {"FROM": from, 'TO': to, 'total_files': 0, 'skip': skip, 'limit': limit, 'fetched': skip,
                      'filtered': 0, 'deleted': 0, 'duplicate': 0, 'total': limit, 'current': skip, 'start': 0}
         return STS(self.id)
         
@@ -27,3 +28,12 @@ class STS:
         if time:
           return self.data[self.id].update({key: tm.time()})
         self.data[self.id].update({key: self.get(key) + value, 'current': self.get('current') + value}) 
+        
+    async def data(self, user_id):
+        k, filters = self, await db.get_filters(user_id)
+        size, configs = None, await db.get_configs(user_id)
+        if configs['file_size'] != 0:
+            size = [configs['filesize'], configs['size_limit']]
+        return {'chat_id': k.from, 'limit': k.limit, 'off_set': k.skip, 'filters': filters,
+                'media_size': size, 'extensions': configs['extensions'], 'skip_duplicate': configs['duplicate']}
+        
