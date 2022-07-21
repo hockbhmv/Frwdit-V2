@@ -27,7 +27,7 @@ class Bot(Client):
         self.username = me.username
         self.first_name = me.first_name
         self.set_parse_mode("combined")
-        text = f"**๏[-ิ_•ิ]๏ bot restarted !**}"
+        text = "**๏[-ิ_•ิ]๏ bot restarted !**"
         success = failed = 0
         users = await get_all_frwd()
         async for user in users:
