@@ -48,7 +48,7 @@ async def pub_(bot, message):
       return await m.edit(f"**Please Make Your [Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", parse_mode="combined")
     temp.forwardings += 1
     await send(client, user, "<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
-    sts.add('start',time=True)
+    sts.add(time=True)
     sleep = 1 if _bot['is_bot'] else 7
     await m.edit("<code>processing...</code>") 
     temp.lock[user] = locked = True
@@ -140,15 +140,15 @@ PROGRESS = """
 async def edit(msg, title, status, sts):
    i = sts.get(full=True)
    status = 'Forwarding' if status == 5 else f"sleeping for {status} s" if str(status).isnumeric() else status
-   percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
+   percentage = "{:.0f}".format(float(i.fetched)*100/float(i.total))
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    try:
      now = time.time()
      diff = int(now - i.start)
-     speed = i.current / diff
+     speed = i.fetched / diff
      speed = 5 if str(speed) == "0" else speed
      elapsed_time = round(diff) * 1000
-     time_to_completion = round((int(i.total - i.current)) / int(speed)) * 1000
+     time_to_completion = round((int(i.total - i.fetched)) / int(speed)) * 1000
    except Exception as e:
      await msg.edit(f"`{e}`\ndiff: {diff}\nspeed: {speed}")
    estimated_total_time = elapsed_time + time_to_completion
