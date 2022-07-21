@@ -146,11 +146,11 @@ async def edit(msg, title, status, sts):
      now = time.time()
      diff = int(now - i.start)
      speed = i.fetched / diff
-     speed = 5 if str(speed) == "0" else speed
+     speed = 5 if speed == 0 else speed
      elapsed_time = round(diff) * 1000
      time_to_completion = round((int(i.total - i.fetched)) / int(speed)) * 1000
    except Exception as e:
-     await msg.edit(f"`{e}`\ndiff: {diff}\nspeed: {speed}")
+     return await msg.edit(f"`{e}`\ndiff: {diff}\nspeed: {speed}")
    estimated_total_time = elapsed_time + time_to_completion
 
    elapsed_time = TimeFormatter(milliseconds=elapsed_time)
