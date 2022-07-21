@@ -24,7 +24,7 @@ class STS:
             setattr(self, k, v)
         return self
 
-    def add(self, key, value=1, time=False):
+    def add(self, key=None, value=1, time=False):
         if time:
           return self.data[self.id].update({'start': tm.time()})
         self.data[self.id].update({key: self.get(key) + value}) 
