@@ -142,15 +142,11 @@ async def edit(msg, title, status, sts):
    status = 'Forwarding' if status == 5 else f"sleeping for {status} s" if str(status).isnumeric() else status
    percentage = "{:.0f}".format(float(i.fetched)*100/float(i.total))
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
-   try:
-     now = time.time()
-     diff = int(now - i.start)
-     speed = i.fetched / diff
-     speed = 5 if speed == 0 else speed
-     elapsed_time = round(diff) * 1000
-     time_to_completion = round((int(i.total - i.fetched)) / int(speed)) * 1000
-   except Exception as e:
-     return await msg.edit(f"`{e}`\ndiff: {diff}\nspeed: {speed}")
+   now = time.time()
+   diff = int(now - i.start)
+   speed = sts.divide(i.fetched, diff)
+   elapsed_time = round(diff) * 1000
+   time_to_completion = round(sts.divide(i.total - i.fetched, int(speed))) * 1000
    estimated_total_time = elapsed_time + time_to_completion
 
    elapsed_time = TimeFormatter(milliseconds=elapsed_time)
