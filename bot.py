@@ -41,7 +41,7 @@ class Bot(Client):
            except Exception:
               failed += 1
         if (success + failed) != 0:
-           await db.rmv_frwd(all=True)
+           await db.rmve_frwd(all=True)
            print(f"Restart message status"
                  f"success: {success}"
                  f"failed: {failed}")
