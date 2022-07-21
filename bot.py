@@ -1,8 +1,8 @@
 import pyromod.listen
+from database import db
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
-from config import Config
-from config import LOGGER
+from config import Config, LOGGER 
 
 class Bot(Client):
     
@@ -27,7 +27,25 @@ class Bot(Client):
         self.username = me.username
         self.first_name = me.first_name
         self.set_parse_mode("combined")
-        
+        text = f"**๏[-ิ_•ิ]๏ bot restarted !**}"
+        success = failed = 0
+        users = await get_all_frwd()
+        async for user in users:
+           chat_id = user['user_id']
+           try:
+              await self.send_message(chat_id, text)
+              success += 1
+           except FloodAwait as e:
+              await self.send_message(chat_id, text)
+              success += 1
+           except Exception:
+              failed += 1
+        if (success + failed) != 0:
+           await db.rmv_frwd(all=True)
+           print(f"Restart message status"
+                 f"success: {success}"
+                 f"failed: {failed}")
+
     async def stop(self, *args):
         msg = f"@{self.username} stopped. Bye."
         await super().stop()
