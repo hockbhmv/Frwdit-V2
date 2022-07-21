@@ -22,7 +22,7 @@ class Bot(Client):
     async def start(self):
         await super().start()
         me = await self.get_me()
-        self.logger.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on @{me.username}.")
+        print(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on @{me.username}.")
         self.id = me.id
         self.username = me.username
         self.first_name = me.first_name
@@ -42,7 +42,7 @@ class Bot(Client):
               failed += 1
         if (success + failed) != 0:
            await db.rmv_frwd(all=True)
-           self.logger.info(f"Restart message status"
+           print(f"Restart message status"
                  f"success: {success}"
                  f"failed: {failed}")
 
