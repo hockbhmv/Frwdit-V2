@@ -29,9 +29,9 @@ class STS:
           return self.data[self.id].update({'start': tm.time()})
         self.data[self.id].update({key: self.get(key) + value}) 
     
-    def divide(no, by):
+    def divide(self, no, by):
        by = 1 if int(by) == 0 else by 
-       return no / by 
+       return int(no) / by 
     
     async def get_data(self, user_id):
         k, filters = self, await db.get_filters(user_id)
