@@ -60,18 +60,18 @@ async def pub_(bot, message):
                 if await is_cancelled(client, user, m, sts):
                    return
                 if pling %5 == 0: 
-                   await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
+                   await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
                 pling += 1
                 sts.add('fetched')
                 if message == "DUPLICATE":
                    sts.add('duplicate')
-                   continue
-                if message.empty or message.service:
-                   sts.add('deleted')
                    continue 
-                if message == "FILTERED":
+                elif message == "FILTERED":
                    sts.add('filtered')
                    continue 
+                elif message.empty or message.service:
+                   sts.add('deleted')
+                   continue
                 if forward_tag:
                    MSG.append(message.message_id)
                    notcompleted = len(MSG)
@@ -112,7 +112,7 @@ async def copy(bot, msg, m, sts):
    except FloodWait as e:
      await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.x, sts)
      await asyncio.sleep(e.x)
-     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
      await copy(bot, msg, m, sts)
    except Exception:
      sts.add('deleted')
@@ -126,7 +126,7 @@ async def forward(bot, msg, m, sts):
    except FloodWait as e:
      await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', e.x, sts)
      await asyncio.sleep(e.x)
-     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 0, sts)
+     await edit(m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
      await forward(bot, msg, m, sts)
 
 PROGRESS = """
@@ -139,12 +139,13 @@ PROGRESS = """
 
 async def edit(msg, title, status, sts):
    i = sts.get(full=True)
-   status = 'Forwarding' if status == 0 else f"sleeping for {status} s" if str(status).isnumeric() else status
+   status = 'Forwarding' if status == 5 else f"sleeping for {status} s" if str(status).isnumeric() else status
    percentage = "{:.0f}".format(float(i.current)*100/float(i.total))
    text = TEXT.format(i.fetched, i.total_files, i.duplicate, i.deleted, i.skip, i.filtered, status, percentage, title)
    now = time.time()
    diff = int(now - i.start)
-   speed = i.current / diff if diff != 0 else 10
+   speed = i.current / diff
+   speed = 5 if str(speed) == "0" else speed
    elapsed_time = round(diff) * 1000
    time_to_completion = round((int(i.total - i.current)) / int(speed)) * 1000
    estimated_total_time = elapsed_time + time_to_completion
