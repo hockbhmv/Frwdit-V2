@@ -47,6 +47,7 @@ async def pub_(bot, message):
       await stop(client)
       return await m.edit(f"**Please Make Your [Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", parse_mode="combined")
     temp.forwardings += 1
+    await db.add_frwd(user)
     await send(client, user, "<b>🧡 ғᴏʀᴡᴀʀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ</b>")
     sts.add(time=True)
     sleep = 1 if _bot['is_bot'] else 7
@@ -81,7 +82,7 @@ async def pub_(bot, message):
                       await forward(client, MSG, m, sts)
                       sts.add('total_files', notcompleted)
                       await asyncio.sleep(10)
-                   MSG = []
+                      MSG = []
                 else:
                    caption = custom_caption(message, caption)
                    details = {"msg_id": message.message_id, "media": media(message), "caption": caption}
@@ -180,6 +181,7 @@ async def stop(client, user):
      await client.stop()
    except:
      pass 
+   await db.rmve_frwd(user)
    temp.forwardings -= 1
    temp.lock[user] = False 
     
