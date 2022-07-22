@@ -135,7 +135,7 @@ class Database:
     async def add_frwd(self, user_id):
        return await self.nfy.insert_one({'user_id': int(user_id)})
     
-    async def rmve_frwd(self, user_id, all=False):
+    async def rmve_frwd(self, user_id=0, all=False):
        data = {} if all else {'user_id': int(user_id)}
        return await self.nfy.delete_many(data)
     
