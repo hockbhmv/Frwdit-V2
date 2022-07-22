@@ -37,7 +37,7 @@ class STS:
         k, filters = self, await db.get_filters(user_id)
         size, configs = None, await db.get_configs(user_id)
         if configs['file_size'] != 0:
-            size = [configs['filesize'], configs['size_limit']]
+            size = [configs['file_size'], configs['size_limit']]
         return configs['bot'], configs['caption'], configs['forward_tag'], {'chat_id': k.FROM, 'limit': k.limit, 'offset': k.skip, 'filters': filters,
                 'media_size': size, 'extensions': configs['extension'], 'skip_duplicate': configs['duplicate']}
         
