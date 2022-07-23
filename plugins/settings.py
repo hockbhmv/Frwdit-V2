@@ -189,19 +189,31 @@ async def settings_query(bot, query):
   elif type.startswith("file_size"):
     settings = await get_configs(user_id)
     size = settings.get('file_size', 0)
+    limit = str(settings.get('size_limit', None))
+    limit = "" if limit=="None" else "more than" if limit=="True" else "less than"
     await query.message.edit_text(
-       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} MB</code>',
+       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: files with {limit} <code>{size} MB will forward<',
        reply_markup=size_button(size))
-      
+  
   elif type.startswith("update_size"):
     size = int(query.data.split('-')[1])
     if 0 < size > 2000:
       return
     await update_configs(user_id, 'file_size', size)
+    limit = str((await get_configs(user_id))['size_limit'])
+    limit = "" if limit=="None" else "more than" if limit=="True" else "less than"
     await query.message.edit_text(
-       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: <code>{size} MB</code>',
+       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: files with {limit} <code>{size} MB will forward</code>',
        reply_markup=size_button(size))
   
+  elif type.startswith('update_limit'):
+    i, limit, size = type.split('-')
+    await update_configs(user_id, 'size_limit', size) 
+    limit = "" if limit=="None" else "more than" if limit=="True" else "less than"
+    await query.message.edit_text(
+       f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: files with {limit} <code>{size} MB will forward</code>',
+       reply_markup=size_button(size))
+      
   elif type == "add_extension":
     ext = await bot.ask(user_id, text="**send your extensions (seperete by space if extension more than one)**")
     if ext.text == '/cancel':
@@ -267,20 +279,30 @@ def main_buttons():
 
 def size_button(size):
   buttons = [[
+       InlineKeyboardButton('+',
+                    callback_data=f'settings#updatelimit-True-{size}'),
+       InlineKeyboardButton('=',
+                    callback_data=f'settings#updatelimit-None-{size}'),
+       InlineKeyboardButton('-',
+                    callback_data=f'settings#updatelimit-False-{size}')
+       ],[
        InlineKeyboardButton('+5',
                     callback_data=f'settings#update_size-{size + 5}'),
+       InlineKeyboardButton('-5',
+                    callback_data=f'settings#update_size-{size - 5}')
+       ],[
        InlineKeyboardButton('+10',
                     callback_data=f'settings#update_size-{size + 10}'),
+       InlineKeyboardButton('-10',
+                    callback_data=f'settings#update_size-{size - 10}')
+       ],[
        InlineKeyboardButton('+50',
                     callback_data=f'settings#update_size-{size + 50}'),
+       InlineKeyboardButton('-50',
+                    callback_data=f'settings#update_size-{size - 50}')
+       ],[
        InlineKeyboardButton('+100',
                     callback_data=f'settings#update_size-{size + 100}'),
-       InlineKeyboardButton('-5',
-                    callback_data=f'settings#update_size-{size - 5}'),
-       InlineKeyboardButton('-10',
-                    callback_data=f'settings#update_size-{size - 10}'),
-       InlineKeyboardButton('-50',
-                    callback_data=f'settings#update_size-{size - 50}'),
        InlineKeyboardButton('-100',
                     callback_data=f'settings#update_size-{size - 100}')
        ],[
