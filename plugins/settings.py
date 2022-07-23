@@ -189,8 +189,7 @@ async def settings_query(bot, query):
   elif type.startswith("file_size"):
     settings = await get_configs(user_id)
     size = settings.get('file_size', 0)
-    limit = str(settings.get('size_limit', None))
-    limit = "" if limit=="None" else "more than" if limit=="True" else "less than"
+    limit = size_limit(str(settings['size_limit']))
     await query.message.edit_text(
        f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: files with {limit} <code>{size} MB will forward<',
        reply_markup=size_button(size))
@@ -200,8 +199,7 @@ async def settings_query(bot, query):
     if 0 < size > 2000:
       return
     await update_configs(user_id, 'file_size', size)
-    limit = str((await get_configs(user_id))['size_limit'])
-    limit = "" if limit=="None" else "more than" if limit=="True" else "less than"
+    limit = size_limit(str((await get_configs(user_id))['size_limit']))
     await query.message.edit_text(
        f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: files with {limit} <code>{size} MB will forward</code>',
        reply_markup=size_button(size))
@@ -209,7 +207,7 @@ async def settings_query(bot, query):
   elif type.startswith('update_limit'):
     i, limit, size = type.split('-')
     await update_configs(user_id, 'size_limit', size) 
-    limit = "" if limit=="None" else "more than" if limit=="True" else "less than"
+    limit = size_limit(limit)
     await query.message.edit_text(
        f'<b><u>SIZE LIMIT</b></u>\n\nyou can set file size limit to forward\n\n<b>current</b>: files with {limit} <code>{size} MB will forward</code>',
        reply_markup=size_button(size))
@@ -277,6 +275,14 @@ def main_buttons():
        ]]
   return InlineKeyboardMarkup(buttons)
 
+def size_limit(limit):
+   if limit == "None":
+      return ""
+   elif limit == "True":
+      return "more than"
+   else:
+      return "less than"
+   
 def size_button(size):
   buttons = [[
        InlineKeyboardButton('+',
